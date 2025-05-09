@@ -18,4 +18,6 @@ dependencies = [
     "paho-mqtt>=2.1.0",
     "joblib>=1.5.0",
     "scikit-learn>=1.6.1",
+    "openai>=1.78.0",
+    "gtts>=2.5.4",
 ]

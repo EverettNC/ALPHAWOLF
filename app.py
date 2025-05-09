@@ -48,6 +48,12 @@ from services.cognitive_service import CognitiveService
 from services.caregiver_service import CaregiverService
 from services.memory_exercises import MemoryExercises
 from services.wandering_prevention import WanderingPrevention
+from services.eye_tracking_service import EyeTrackingService
+from services.neural_learning_core import NeuralLearningCore
+from services.alphavox_input_nlu import AlphaVoxInputProcessor
+from services.learning_journey import LearningJourney
+from services.research_module import ResearchModule
+from services.tts_engine import TTSEngine
 
 # Initialize services
 gesture_service = GestureService()
@@ -57,6 +63,12 @@ cognitive_service = CognitiveService()
 caregiver_service = CaregiverService()
 memory_exercises = MemoryExercises()
 wandering_prevention = WanderingPrevention()
+eye_tracking_service = EyeTrackingService()
+neural_learning_core = NeuralLearningCore()
+alphavox_input = AlphaVoxInputProcessor()
+learning_journey = LearningJourney()
+research_module = ResearchModule()
+tts_engine = TTSEngine()
 
 with app.app_context():
     # Import models

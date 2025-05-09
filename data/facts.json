@@ -1,0 +1,52 @@
+[
+  {
+    "text": "Regular physical activity, even mild movement like walking, can help maintain cognitive function.",
+    "category": "health",
+    "source": "Alzheimer's Association"
+  },
+  {
+    "text": "The Mediterranean diet, rich in fruits, vegetables, and healthy fats, may help reduce the risk of cognitive decline.",
+    "category": "nutrition",
+    "source": "National Institute on Aging"
+  },
+  {
+    "text": "Social engagement and regular interaction with others can help maintain cognitive health.",
+    "category": "social",
+    "source": "Dementia Care Central"
+  },
+  {
+    "text": "Mental stimulation through puzzles, reading, and learning new skills can help maintain brain health.",
+    "category": "cognitive",
+    "source": "Alzheimer's Society"
+  },
+  {
+    "text": "Quality sleep is important for brain health and may help clear abnormal proteins associated with Alzheimer's disease.",
+    "category": "health",
+    "source": "Sleep Foundation"
+  },
+  {
+    "text": "Music therapy can improve mood and trigger positive memories in people with dementia.",
+    "category": "therapy",
+    "source": "American Music Therapy Association"
+  },
+  {
+    "text": "Reminiscence therapy using personal items, photos, and familiar songs can help maintain identity and improve mood.",
+    "category": "therapy",
+    "source": "Dementia UK"
+  },
+  {
+    "text": "Hydration is important for brain function. Dehydration can worsen confusion and cognitive symptoms.",
+    "category": "nutrition",
+    "source": "Mayo Clinic"
+  },
+  {
+    "text": "Creating a daily routine can help reduce anxiety and confusion for people with dementia.",
+    "category": "daily_living",
+    "source": "Alzheimer's Association"
+  },
+  {
+    "text": "Pet therapy can help reduce agitation and improve social interaction in people with dementia.",
+    "category": "therapy",
+    "source": "National Center for Biotechnology Information"
+  }
+]

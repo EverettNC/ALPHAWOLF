@@ -1,0 +1,163 @@
+{
+  "reminiscence": {
+    "name": "Reminiscence Therapy",
+    "description": "Therapy that involves discussing past experiences, often with photos or other memory triggers",
+    "content": [
+      {
+        "type": "photo_prompt",
+        "difficulty": "easy",
+        "prompt": "Look at this photo. What memories does it bring back?",
+        "follow_up": "Can you tell me more about that time in your life?"
+      },
+      {
+        "type": "question",
+        "difficulty": "medium",
+        "question": "What was your favorite holiday when you were younger?",
+        "follow_up": "What did you enjoy most about it?"
+      },
+      {
+        "type": "music",
+        "difficulty": "easy",
+        "description": "Listen to music from your youth and discuss memories associated with it",
+        "prompt": "What memories does this song bring back?"
+      }
+    ]
+  },
+  "reality_orientation": {
+    "name": "Reality Orientation",
+    "description": "Therapy focused on improving awareness of time, place, and person",
+    "content": [
+      {
+        "type": "calendar",
+        "difficulty": "easy",
+        "prompt": "Today is [[day_of_week]], [[month]] [[day]], [[year]]. What season are we in?",
+        "options": [
+          "Spring",
+          "Summer",
+          "Fall",
+          "Winter"
+        ]
+      },
+      {
+        "type": "location",
+        "difficulty": "medium",
+        "prompt": "We are currently in [[location]]. What city are we in?",
+        "answer": "[[city]]"
+      },
+      {
+        "type": "person",
+        "difficulty": "hard",
+        "prompt": "Who is the current president of the United States?",
+        "options": [
+          "Joe Biden",
+          "Donald Trump",
+          "Barack Obama",
+          "George Bush"
+        ]
+      }
+    ]
+  },
+  "cognitive_stimulation": {
+    "name": "Cognitive Stimulation",
+    "description": "Activities designed to stimulate thinking, concentration, and memory",
+    "content": [
+      {
+        "type": "word_game",
+        "difficulty": "easy",
+        "prompt": "How many words can you think of that begin with the letter B?",
+        "target": 5,
+        "time_limit": 60
+      },
+      {
+        "type": "calculation",
+        "difficulty": "medium",
+        "prompt": "If you buy an item for $3.45 and pay with $5, how much change should you receive?",
+        "answer": 1.55
+      },
+      {
+        "type": "categorization",
+        "difficulty": "hard",
+        "prompt": "Sort these items into their correct categories: apple, car, dog, banana, truck, cat, orange, bus",
+        "categories": {
+          "Fruits": [
+            "apple",
+            "banana",
+            "orange"
+          ],
+          "Vehicles": [
+            "car",
+            "truck",
+            "bus"
+          ],
+          "Animals": [
+            "dog",
+            "cat"
+          ]
+        }
+      }
+    ]
+  },
+  "validation_therapy": {
+    "name": "Validation Therapy",
+    "description": "Therapy that focuses on validating feelings rather than correcting factual misperceptions",
+    "content": [
+      {
+        "type": "emotional_prompt",
+        "difficulty": "easy",
+        "prompt": "You seem to be feeling [[emotion]]. Can you tell me more about what you're feeling?",
+        "follow_up": "That sounds difficult. How can I help you feel more comfortable?"
+      },
+      {
+        "type": "validation_statement",
+        "difficulty": "medium",
+        "situation": "Patient looking for deceased spouse",
+        "statement": "I can see you miss your [[spouse_name]] very much. Tell me about the times you shared together."
+      },
+      {
+        "type": "empathy_exercise",
+        "difficulty": "hard",
+        "prompt": "You seem worried about something. What concerns are on your mind right now?",
+        "approach": "Listen without correcting and validate emotions"
+      }
+    ]
+  },
+  "multisensory_stimulation": {
+    "name": "Multisensory Stimulation",
+    "description": "Therapy using sensory experiences (touch, smell, sound, etc.) to stimulate responses",
+    "content": [
+      {
+        "type": "aromatherapy",
+        "difficulty": "easy",
+        "prompt": "What does this scent remind you of?",
+        "options": [
+          "lavender",
+          "cinnamon",
+          "vanilla",
+          "coffee"
+        ]
+      },
+      {
+        "type": "tactile",
+        "difficulty": "medium",
+        "prompt": "Without looking, can you identify this object by touch?",
+        "objects": [
+          "soft fabric",
+          "smooth stone",
+          "rough sandpaper",
+          "cool metal"
+        ]
+      },
+      {
+        "type": "sound",
+        "difficulty": "hard",
+        "prompt": "Listen to these sounds and tell me what they are.",
+        "sounds": [
+          "rain",
+          "birds chirping",
+          "car engine",
+          "doorbell"
+        ]
+      }
+    ]
+  }
+}

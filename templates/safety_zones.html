@@ -1,0 +1,409 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    .zone-card {
+        transition: all 0.3s ease;
+    }
+    .zone-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .radius-slider {
+        width: 100%;
+    }
+    .patient-marker {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .marker-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #0d6efd;
+        margin-right: 10px;
+    }
+    .outside-zone {
+        background-color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>
+            <i data-feather="map-pin"></i>
+            Safety Zones
+        </h1>
+        <p class="lead">Define and manage safe areas for wandering prevention</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Map View</h5>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addZoneModal">
+                    <i data-feather="plus"></i> Add Zone
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="map"></div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Patient Locations</h5>
+                        <div id="patientLocations">
+                            {% for patient in patients %}
+                            <div class="patient-marker">
+                                <div class="marker-dot {% if not patient.is_in_safe_zone %}outside-zone{% endif %}"></div>
+                                <span>{{ patient.name }}</span>
+                                <span class="ms-2 badge {% if patient.is_in_safe_zone %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if patient.is_in_safe_zone %}In Safe Zone{% else %}Outside Safe Zone{% endif %}
+                                </span>
+                                <span class="ms-2 text-muted small">
+                                    Last update: {{ patient.last_location_update|datetime }}
+                                </span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Zone Legend</h5>
+                        <ul class="list-unstyled">
+                            <li>
+                                <span class="badge" style="background-color: #4CAF50;">&nbsp;</span>
+                                Home Zone - Primary safe area
+                            </li>
+                            <li>
+                                <span class="badge" style="background-color: #2196F3;">&nbsp;</span>
+                                Regular Zone - Frequently visited locations
+                            </li>
+                            <li>
+                                <span class="badge" style="background-color: #FF9800;">&nbsp;</span>
+                                Temporary Zone - Limited time safe area
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h4>Defined Safety Zones</h4>
+        
+        <div class="row" id="zoneCards">
+            {% for zone in safe_zones %}
+            <div class="col-md-4 mb-3">
+                <div class="card zone-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ zone.name }}</h5>
+                        <p class="card-text">
+                            <strong>Radius:</strong> {{ zone.radius }} meters<br>
+                            <strong>Coordinates:</strong> {{ zone.latitude|round(6) }}, {{ zone.longitude|round(6) }}
+                        </p>
+                        <div class="d-flex justify-content-between mt-3">
+                            <button class="btn btn-sm btn-outline-primary edit-zone-btn" 
+                                    data-zone-id="{{ zone.id }}"
+                                    data-zone-name="{{ zone.name }}"
+                                    data-zone-lat="{{ zone.latitude }}"
+                                    data-zone-lng="{{ zone.longitude }}"
+                                    data-zone-radius="{{ zone.radius }}"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editZoneModal">
+                                <i data-feather="edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger delete-zone-btn" 
+                                    data-zone-id="{{ zone.id }}"
+                                    data-zone-name="{{ zone.name }}"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteZoneModal">
+                                <i data-feather="trash-2"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i data-feather="info"></i> No safety zones defined yet. Click "Add Zone" to create your first safe area.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Zone Modal -->
+<div class="modal fade" id="addZoneModal" tabindex="-1" aria-labelledby="addZoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addZoneModalLabel">Add Safety Zone</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('add_safety_zone') }}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="zoneName" class="form-label">Zone Name</label>
+                        <input type="text" class="form-control" id="zoneName" name="name" required>
+                        <div class="form-text">E.g., Home, Park, Doctor's Office</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="zoneRadius" class="form-label">Safety Radius (meters): <span id="radiusValue">100</span></label>
+                        <input type="range" class="form-range radius-slider" id="zoneRadius" name="radius" min="50" max="1000" step="50" value="100">
+                        <div class="form-text">Adjust the safety radius around this location</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Latitude</span>
+                            <input type="number" class="form-control" id="latitude" name="latitude" step="0.000001" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Longitude</span>
+                            <input type="number" class="form-control" id="longitude" name="longitude" step="0.000001" required>
+                        </div>
+                        <div class="form-text mb-2">Click on the map to set coordinates or use current location</div>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="useCurrentLocation">
+                            <i data-feather="navigation"></i> Use Current Location
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Zone</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Zone Modal -->
+<div class="modal fade" id="editZoneModal" tabindex="-1" aria-labelledby="editZoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editZoneModalLabel">Edit Safety Zone</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editZoneForm" action="{{ url_for('update_safety_zone') }}" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="editZoneId" name="zone_id">
+                    <div class="mb-3">
+                        <label for="editZoneName" class="form-label">Zone Name</label>
+                        <input type="text" class="form-control" id="editZoneName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editZoneRadius" class="form-label">Safety Radius (meters): <span id="editRadiusValue">100</span></label>
+                        <input type="range" class="form-range radius-slider" id="editZoneRadius" name="radius" min="50" max="1000" step="50" value="100">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Latitude</span>
+                            <input type="number" class="form-control" id="editLatitude" name="latitude" step="0.000001" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Longitude</span>
+                            <input type="number" class="form-control" id="editLongitude" name="longitude" step="0.000001" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Zone Modal -->
+<div class="modal fade" id="deleteZoneModal" tabindex="-1" aria-labelledby="deleteZoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteZoneModalLabel">Delete Safety Zone</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the safety zone "<span id="deleteZoneName"></span>"?</p>
+                <div class="alert alert-warning">
+                    <i data-feather="alert-triangle"></i> This action cannot be undone. Deleting this zone may trigger alerts if patients are currently within it.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('delete_safety_zone') }}" method="post">
+                    <input type="hidden" id="deleteZoneId" name="zone_id">
+                    <button type="submit" class="btn btn-danger">Delete Zone</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize map
+        const map = L.map('map').setView([40.7128, -74.0060], 13); // Default to NYC
+        
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+        }).addTo(map);
+        
+        // Add zones to map
+        const safeZones = {{ safe_zones_json|safe }};
+        const zoneColors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#795548'];
+        
+        safeZones.forEach((zone, index) => {
+            const color = zoneColors[index % zoneColors.length];
+            
+            // Add circle for zone
+            L.circle([zone.latitude, zone.longitude], {
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.2,
+                radius: zone.radius
+            }).addTo(map).bindPopup(`<b>${zone.name}</b><br>Radius: ${zone.radius}m`);
+            
+            // Add marker for center
+            L.marker([zone.latitude, zone.longitude])
+                .addTo(map)
+                .bindPopup(`<b>${zone.name}</b>`);
+        });
+        
+        // Add patient markers
+        const patients = {{ patients_json|safe }};
+        
+        patients.forEach(patient => {
+            if (patient.last_latitude && patient.last_longitude) {
+                const markerColor = patient.is_in_safe_zone ? 'green' : 'red';
+                const markerIcon = L.divIcon({
+                    html: `<span style="background-color: ${markerColor}; width: 10px; height: 10px; border-radius: 50%; display: block;"></span>`,
+                    className: 'patient-location-marker',
+                    iconSize: [10, 10]
+                });
+                
+                L.marker([patient.last_latitude, patient.last_longitude], {icon: markerIcon})
+                    .addTo(map)
+                    .bindPopup(`
+                        <b>${patient.name}</b><br>
+                        ${patient.is_in_safe_zone ? '<span class="text-success">In safe zone</span>' : '<span class="text-danger">Outside safe zones</span>'}<br>
+                        Last update: ${new Date(patient.last_location_update).toLocaleString()}
+                    `);
+            }
+        });
+        
+        // Fit map to include all zones and patients
+        const allPoints = [];
+        safeZones.forEach(zone => {
+            allPoints.push([zone.latitude, zone.longitude]);
+        });
+        
+        patients.forEach(patient => {
+            if (patient.last_latitude && patient.last_longitude) {
+                allPoints.push([patient.last_latitude, patient.last_longitude]);
+            }
+        });
+        
+        if (allPoints.length > 0) {
+            map.fitBounds(L.latLngBounds(allPoints).pad(0.2));
+        }
+        
+        // Handle click on map to set coordinates
+        map.on('click', function(e) {
+            // Set coordinates in add form if it's open
+            if (document.getElementById('addZoneModal').classList.contains('show')) {
+                document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
+                document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
+            }
+            
+            // Set coordinates in edit form if it's open
+            if (document.getElementById('editZoneModal').classList.contains('show')) {
+                document.getElementById('editLatitude').value = e.latlng.lat.toFixed(6);
+                document.getElementById('editLongitude').value = e.latlng.lng.toFixed(6);
+            }
+        });
+        
+        // Use current location
+        document.getElementById('useCurrentLocation').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    document.getElementById('latitude').value = position.coords.latitude.toFixed(6);
+                    document.getElementById('longitude').value = position.coords.longitude.toFixed(6);
+                    
+                    // Center map on current location
+                    map.setView([position.coords.latitude, position.coords.longitude], 15);
+                    
+                    // Add temporary marker
+                    L.marker([position.coords.latitude, position.coords.longitude])
+                        .addTo(map)
+                        .bindPopup('Your current location')
+                        .openPopup();
+                }, function() {
+                    alert('Could not get your location. Please enter coordinates manually.');
+                });
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        });
+        
+        // Radius sliders
+        document.getElementById('zoneRadius').addEventListener('input', function() {
+            document.getElementById('radiusValue').textContent = this.value;
+        });
+        
+        document.getElementById('editZoneRadius').addEventListener('input', function() {
+            document.getElementById('editRadiusValue').textContent = this.value;
+        });
+        
+        // Edit zone button
+        document.querySelectorAll('.edit-zone-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const zoneId = this.getAttribute('data-zone-id');
+                const zoneName = this.getAttribute('data-zone-name');
+                const zoneLat = this.getAttribute('data-zone-lat');
+                const zoneLng = this.getAttribute('data-zone-lng');
+                const zoneRadius = this.getAttribute('data-zone-radius');
+                
+                document.getElementById('editZoneId').value = zoneId;
+                document.getElementById('editZoneName').value = zoneName;
+                document.getElementById('editLatitude').value = zoneLat;
+                document.getElementById('editLongitude').value = zoneLng;
+                document.getElementById('editZoneRadius').value = zoneRadius;
+                document.getElementById('editRadiusValue').textContent = zoneRadius;
+            });
+        });
+        
+        // Delete zone button
+        document.querySelectorAll('.delete-zone-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const zoneId = this.getAttribute('data-zone-id');
+                const zoneName = this.getAttribute('data-zone-name');
+                
+                document.getElementById('deleteZoneId').value = zoneId;
+                document.getElementById('deleteZoneName').textContent = zoneName;
+            });
+        });
+    });
+</script>
+{% endblock %}

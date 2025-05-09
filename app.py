@@ -275,33 +275,114 @@ def safety_zones():
         return redirect(url_for('index'))
     
     safe_zones = models.SafeZone.query.all()
-    return render_template('safety_dashboard.html', safe_zones=safe_zones)
+    patients = models.Patient.query.all()  # In production, filter by caregiver-patient relationship
+    
+    # Check if each patient is in a safe zone
+    for patient in patients:
+        if patient.last_latitude and patient.last_longitude:
+            safety_status = geolocation_service.check_safe_zones(
+                patient.id, patient.last_latitude, patient.last_longitude
+            )
+            patient.is_in_safe_zone = safety_status.get('is_safe', False)
+        else:
+            patient.is_in_safe_zone = None  # No location data
+    
+    # Prepare JSON data for the map
+    safe_zones_json = []
+    for zone in safe_zones:
+        safe_zones_json.append({
+            'id': zone.id,
+            'name': zone.name,
+            'latitude': zone.latitude,
+            'longitude': zone.longitude,
+            'radius': zone.radius
+        })
+    
+    patients_json = []
+    for patient in patients:
+        if patient.last_latitude and patient.last_longitude:
+            patients_json.append({
+                'id': patient.id,
+                'name': patient.name,
+                'last_latitude': patient.last_latitude,
+                'last_longitude': patient.last_longitude,
+                'last_location_update': patient.last_location_update.isoformat() if patient.last_location_update else None,
+                'is_in_safe_zone': patient.is_in_safe_zone
+            })
+    
+    return render_template(
+        'safety_zones.html', 
+        safe_zones=safe_zones, 
+        patients=patients,
+        safe_zones_json=json.dumps(safe_zones_json),
+        patients_json=json.dumps(patients_json)
+    )
 
 @app.route('/safety/zones/add', methods=['POST'])
 def add_safety_zone():
     if 'user_id' not in session or session.get('user_type') != 'caregiver':
-        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+        flash('Please log in as a caregiver to add safety zones', 'error')
+        return redirect(url_for('safety_zones'))
     
-    data = request.json
-    name = data.get('name')
-    latitude = data.get('latitude')
-    longitude = data.get('longitude')
-    radius = data.get('radius', 100)  # Default radius of 100 meters
+    # If it's a form submission (not JSON)
+    name = request.form.get('name')
+    latitude = float(request.form.get('latitude'))
+    longitude = float(request.form.get('longitude'))
+    radius = float(request.form.get('radius', 100))  # Default radius of 100 meters
     
     if not all([name, latitude, longitude]):
-        return jsonify({'success': False, 'message': 'Missing required fields'}), 400
+        flash('Missing required fields', 'error')
+        return redirect(url_for('safety_zones'))
     
-    new_zone = models.SafeZone(
-        name=name,
-        latitude=latitude,
-        longitude=longitude,
-        radius=radius
-    )
+    # Use the geolocation service to add the zone
+    result = geolocation_service.add_safe_zone(name, latitude, longitude, radius)
     
-    db.session.add(new_zone)
-    db.session.commit()
+    if result.get('success'):
+        flash(f'Safety zone "{name}" added successfully', 'success')
+    else:
+        flash(f'Error adding safety zone: {result.get("error")}', 'error')
     
-    return jsonify({'success': True, 'message': 'Safety zone added successfully', 'zone_id': new_zone.id})
+    return redirect(url_for('safety_zones'))
+
+@app.route('/safety/zones/update', methods=['POST'])
+def update_safety_zone():
+    if 'user_id' not in session or session.get('user_type') != 'caregiver':
+        flash('Please log in as a caregiver to update safety zones', 'error')
+        return redirect(url_for('safety_zones'))
+    
+    zone_id = int(request.form.get('zone_id'))
+    name = request.form.get('name')
+    latitude = float(request.form.get('latitude'))
+    longitude = float(request.form.get('longitude'))
+    radius = float(request.form.get('radius'))
+    
+    # Use the geolocation service to update the zone
+    result = geolocation_service.update_safe_zone(zone_id, name, latitude, longitude, radius)
+    
+    if result.get('success'):
+        flash(f'Safety zone "{name}" updated successfully', 'success')
+    else:
+        flash(f'Error updating safety zone: {result.get("error")}', 'error')
+    
+    return redirect(url_for('safety_zones'))
+
+@app.route('/safety/zones/delete', methods=['POST'])
+def delete_safety_zone():
+    if 'user_id' not in session or session.get('user_type') != 'caregiver':
+        flash('Please log in as a caregiver to delete safety zones', 'error')
+        return redirect(url_for('safety_zones'))
+    
+    zone_id = int(request.form.get('zone_id'))
+    
+    # Use the geolocation service to delete the zone
+    result = geolocation_service.delete_safe_zone(zone_id)
+    
+    if result.get('success'):
+        flash('Safety zone deleted successfully', 'success')
+    else:
+        flash(f'Error deleting safety zone: {result.get("error")}', 'error')
+    
+    return redirect(url_for('safety_zones'))
 
 @app.route('/location/update', methods=['POST'])
 def update_location():
@@ -349,7 +430,57 @@ def alerts():
         return redirect(url_for('index'))
     
     alerts = models.Alert.query.order_by(models.Alert.timestamp.desc()).limit(50).all()
-    return render_template('alerts.html', alerts=alerts)
+    safe_zones = models.SafeZone.query.all()
+    
+    # Prepare JSON data for the map
+    safe_zones_json = []
+    for zone in safe_zones:
+        safe_zones_json.append({
+            'id': zone.id,
+            'name': zone.name,
+            'latitude': zone.latitude,
+            'longitude': zone.longitude,
+            'radius': zone.radius
+        })
+    
+    alerts_json = []
+    for alert in alerts:
+        if alert.latitude and alert.longitude:
+            alerts_json.append({
+                'id': alert.id,
+                'patient_id': alert.patient_id,
+                'message': alert.message,
+                'alert_type': alert.alert_type,
+                'latitude': alert.latitude,
+                'longitude': alert.longitude,
+                'is_resolved': alert.is_resolved,
+                'timestamp': alert.timestamp.isoformat() if alert.timestamp else None
+            })
+    
+    return render_template(
+        'alerts.html', 
+        alerts=alerts, 
+        safe_zones_json=json.dumps(safe_zones_json),
+        alerts_json=json.dumps(alerts_json)
+    )
+
+@app.route('/alerts/resolve', methods=['POST'])
+def resolve_alert():
+    if 'user_id' not in session or session.get('user_type') != 'caregiver':
+        flash('Please log in as a caregiver to resolve alerts', 'error')
+        return redirect(url_for('alerts'))
+    
+    alert_id = int(request.form.get('alert_id'))
+    
+    # Use the caregiver service to resolve the alert
+    result = caregiver_service.resolve_alert(alert_id)
+    
+    if result:
+        flash('Alert marked as resolved', 'success')
+    else:
+        flash('Error resolving alert', 'error')
+    
+    return redirect(url_for('alerts'))
 
 @app.route('/api/gesture', methods=['POST'])
 def process_gesture():

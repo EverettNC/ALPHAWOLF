@@ -944,5 +944,28 @@ def get_navigation_instructions(patient_id):
             'message': 'Failed to generate navigation instructions'
         }), 500
 
+# New pages for AlphaWolf platform
+@app.route('/learning-corner')
+def learning_corner():
+    """Learning resources about dementia and Alzheimer's."""
+    return render_template('learning_corner.html')
+
+@app.route('/caregivers')
+def caregivers_page():
+    """Support and tools for caregivers."""
+    # In a production version, we would load actual data for the caregiver
+    if 'user_id' in session and session.get('user_type') == 'caregiver':
+        caregiver = models.Caregiver.query.get(session['user_id'])
+        # Fetch associated patients
+        patients = models.Patient.query.all()  # In a real app, filter by caregiver-patient relationship
+        return render_template('caregivers_page.html', caregiver=caregiver, patients=patients)
+    
+    return render_template('caregivers_page.html')
+
+@app.route('/memory-lane')
+def memory_lane():
+    """Memory preservation and reminiscence tools."""
+    return render_template('memory_lane.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -2,7 +2,7 @@ import logging
 import math
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from geopy.distance import geodesic
 from flask import current_app
 from models import SafeZone, Alert, db

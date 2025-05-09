@@ -121,69 +121,10 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize map
-        const map = L.map('alertMap').setView([40.7128, -74.0060], 13); // Default to NYC
-        
-        // Add OpenStreetMap tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-        }).addTo(map);
-        
-        // Add safe zones to map
+        // Initialize the alert map using our custom function
         const safeZones = {{ safe_zones_json|safe }};
-        
-        safeZones.forEach(zone => {
-            // Add circle for zone
-            L.circle([zone.latitude, zone.longitude], {
-                color: '#28a745',
-                fillColor: '#28a745',
-                fillOpacity: 0.2,
-                radius: zone.radius
-            }).addTo(map).bindPopup(`<b>${zone.name}</b><br>Radius: ${zone.radius}m`);
-        });
-        
-        // Add alert markers
         const alerts = {{ alerts_json|safe }};
-        const markers = {};
-        
-        alerts.forEach(alert => {
-            if (alert.latitude && alert.longitude) {
-                const isCritical = alert.message.includes('CRITICAL');
-                const markerColor = isCritical ? 'red' : 'orange';
-                const icon = L.divIcon({
-                    html: `<i class="fa fa-exclamation-triangle" style="color: ${markerColor}; font-size: 24px;"></i>`,
-                    className: 'alert-marker',
-                    iconSize: [24, 24]
-                });
-                
-                const marker = L.marker([alert.latitude, alert.longitude], {icon: icon})
-                    .addTo(map)
-                    .bindPopup(`
-                        <b>${alert.message}</b><br>
-                        <small>${new Date(alert.timestamp).toLocaleString()}</small><br>
-                        ${alert.is_resolved ? '<span class="text-secondary">Resolved</span>' : '<span class="text-danger">Active</span>'}
-                    `);
-                
-                markers[alert.id] = marker;
-            }
-        });
-        
-        // Fit map to include all zones and alerts
-        const allPoints = [];
-        safeZones.forEach(zone => {
-            allPoints.push([zone.latitude, zone.longitude]);
-        });
-        
-        alerts.forEach(alert => {
-            if (alert.latitude && alert.longitude) {
-                allPoints.push([alert.latitude, alert.longitude]);
-            }
-        });
-        
-        if (allPoints.length > 0) {
-            map.fitBounds(L.latLngBounds(allPoints).pad(0.2));
-        }
+        const { map } = initAlertMap('alertMap', safeZones, alerts);
         
         // View on map button
         document.querySelectorAll('.view-on-map').forEach(button => {

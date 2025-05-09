@@ -261,110 +261,30 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize map
-        const map = L.map('map').setView([40.7128, -74.0060], 13); // Default to NYC
-        
-        // Add OpenStreetMap tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-        }).addTo(map);
-        
-        // Add zones to map
+        // Initialize the map using our custom function
         const safeZones = {{ safe_zones_json|safe }};
-        const zoneColors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#795548'];
-        
-        safeZones.forEach((zone, index) => {
-            const color = zoneColors[index % zoneColors.length];
-            
-            // Add circle for zone
-            L.circle([zone.latitude, zone.longitude], {
-                color: color,
-                fillColor: color,
-                fillOpacity: 0.2,
-                radius: zone.radius
-            }).addTo(map).bindPopup(`<b>${zone.name}</b><br>Radius: ${zone.radius}m`);
-            
-            // Add marker for center
-            L.marker([zone.latitude, zone.longitude])
-                .addTo(map)
-                .bindPopup(`<b>${zone.name}</b>`);
-        });
-        
-        // Add patient markers
         const patients = {{ patients_json|safe }};
+        const { map } = initSafetyMap('map', safeZones, patients);
         
-        patients.forEach(patient => {
-            if (patient.last_latitude && patient.last_longitude) {
-                const markerColor = patient.is_in_safe_zone ? 'green' : 'red';
-                const markerIcon = L.divIcon({
-                    html: `<span style="background-color: ${markerColor}; width: 10px; height: 10px; border-radius: 50%; display: block;"></span>`,
-                    className: 'patient-location-marker',
-                    iconSize: [10, 10]
-                });
-                
-                L.marker([patient.last_latitude, patient.last_longitude], {icon: markerIcon})
-                    .addTo(map)
-                    .bindPopup(`
-                        <b>${patient.name}</b><br>
-                        ${patient.is_in_safe_zone ? '<span class="text-success">In safe zone</span>' : '<span class="text-danger">Outside safe zones</span>'}<br>
-                        Last update: ${new Date(patient.last_location_update).toLocaleString()}
-                    `);
-            }
-        });
-        
-        // Fit map to include all zones and patients
-        const allPoints = [];
-        safeZones.forEach(zone => {
-            allPoints.push([zone.latitude, zone.longitude]);
-        });
-        
-        patients.forEach(patient => {
-            if (patient.last_latitude && patient.last_longitude) {
-                allPoints.push([patient.last_latitude, patient.last_longitude]);
-            }
-        });
-        
-        if (allPoints.length > 0) {
-            map.fitBounds(L.latLngBounds(allPoints).pad(0.2));
-        }
-        
-        // Handle click on map to set coordinates
-        map.on('click', function(e) {
-            // Set coordinates in add form if it's open
-            if (document.getElementById('addZoneModal').classList.contains('show')) {
-                document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
-                document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
-            }
-            
-            // Set coordinates in edit form if it's open
-            if (document.getElementById('editZoneModal').classList.contains('show')) {
-                document.getElementById('editLatitude').value = e.latlng.lat.toFixed(6);
-                document.getElementById('editLongitude').value = e.latlng.lng.toFixed(6);
-            }
-        });
-        
-        // Use current location
+        // Use current location button
         document.getElementById('useCurrentLocation').addEventListener('click', function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    document.getElementById('latitude').value = position.coords.latitude.toFixed(6);
-                    document.getElementById('longitude').value = position.coords.longitude.toFixed(6);
+            getCurrentLocation(function(locationResult) {
+                if (locationResult.success) {
+                    document.getElementById('latitude').value = locationResult.latitude.toFixed(6);
+                    document.getElementById('longitude').value = locationResult.longitude.toFixed(6);
                     
                     // Center map on current location
-                    map.setView([position.coords.latitude, position.coords.longitude], 15);
+                    map.setView([locationResult.latitude, locationResult.longitude], 15);
                     
                     // Add temporary marker
-                    L.marker([position.coords.latitude, position.coords.longitude])
+                    L.marker([locationResult.latitude, locationResult.longitude])
                         .addTo(map)
                         .bindPopup('Your current location')
                         .openPopup();
-                }, function() {
-                    alert('Could not get your location. Please enter coordinates manually.');
-                });
-            } else {
-                alert('Geolocation is not supported by your browser.');
-            }
+                } else {
+                    alert('Could not get your location: ' + locationResult.error);
+                }
+            });
         });
         
         // Radius sliders

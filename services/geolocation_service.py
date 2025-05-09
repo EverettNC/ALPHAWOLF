@@ -203,12 +203,11 @@ class GeolocationService:
         """
         try:
             # Create new safe zone
-            new_zone = SafeZone(
-                name=name,
-                latitude=latitude,
-                longitude=longitude,
-                radius=radius
-            )
+            new_zone = SafeZone()
+            new_zone.name = name
+            new_zone.latitude = latitude
+            new_zone.longitude = longitude
+            new_zone.radius = radius
             
             # Save to database
             db.session.add(new_zone)
@@ -452,7 +451,7 @@ class GeolocationService:
                 Alert.patient_id == patient_id,
                 Alert.alert_type == 'wandering',
                 Alert.is_resolved == False,
-                Alert.timestamp > datetime.utcnow() - datetime.timedelta(seconds=self.alert_thresholds['alert_cooldown'])
+                Alert.timestamp > datetime.utcnow() - timedelta(seconds=self.alert_thresholds['alert_cooldown'])
             ).first()
             
             if recent_alert:

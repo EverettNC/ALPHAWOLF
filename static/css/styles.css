@@ -1,0 +1,202 @@
+/* AlphaWolf - Custom Styles */
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    background-color: #f5f8fa;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand svg {
+    margin-right: 8px;
+}
+
+/* Card styling */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 20px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-weight: 600;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Exercise cards */
+.exercise-card {
+    height: 100%;
+}
+
+.exercise-card .card-footer {
+    background-color: transparent;
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Safety zone map */
+#safetyMap {
+    height: 400px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Profile styles */
+.profile-header {
+    background-color: #f1f8ff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.stat-item {
+    padding: 10px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Alert styling */
+.alert-wandering {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba;
+}
+
+.alert-resolved {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border-color: #badbcc;
+}
+
+/* Reminder styles */
+.reminder-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: #fff;
+    border-left: 4px solid #0d6efd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.reminder-item.completed {
+    opacity: 0.7;
+    border-left: 4px solid #6c757d;
+}
+
+.reminder-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.reminder-time {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Exercise result chart */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Footer styling */
+footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .profile-stats {
+        flex-direction: column;
+    }
+    
+    .stat-item {
+        margin-bottom: 15px;
+    }
+}
+
+/* Memory game styles */
+.memory-card {
+    perspective: 1000px;
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    cursor: pointer;
+}
+
+.memory-card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-front {
+    background-color: #0d6efd;
+    color: white;
+    transform: rotateY(180deg);
+}
+
+.card-back {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+/* Accessibility improvements */
+.btn {
+    font-weight: 600;
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.form-text {
+    color: #6c757d;
+}

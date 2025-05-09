@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">AlphaWolf</h1>
+            <h2 class="h4 text-muted mb-4">A Comprehensive AI Solution for Alzheimer's and Dementia Care</h2>
+            <p class="lead">
+                Empowering patients and caregivers through AI-driven support,
+                cognitive exercises, and safety monitoring.
+            </p>
+        </div>
+    </div>
+
+    {% if not session.get('user_id') %}
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 text-center mb-4 mb-md-0">
+                            <h3 class="h4 mb-3">For Patients</h3>
+                            <p>Access personalized cognitive exercises, set reminders, and maintain independence while staying safe.</p>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal">Register as Patient</button>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <h3 class="h4 mb-3">For Caregivers</h3>
+                            <p>Monitor loved ones, receive alerts, and provide better care with real-time information.</p>
+                            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#registerModal" onclick="document.getElementById('regCaregiverRadio').checked = true">Register as Caregiver</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity text-primary">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="h5">Cognitive Exercises</h3>
+                    <p>Personalized memory games and activities adapted to individual cognitive needs.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin text-primary">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <h3 class="h5">Geolocation Safety</h3>
+                    <p>GPS-powered geofencing creates virtual safe zones and monitors location in real-time.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell text-primary">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </div>
+                    <h3 class="h5">Reminders & Alerts</h3>
+                    <p>Scheduled medication reminders and instant alerts for caregivers when assistance is needed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">How AlphaWolf Works</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="h6">For Patients:</h4>
+                            <ul>
+                                <li>Engage with personalized cognitive exercises</li>
+                                <li>Receive timely reminders for medications and appointments</li>
+                                <li>Stay independent while maintaining safety through geolocation monitoring</li>
+                                <li>Request help through simple gesture recognition</li>
+                                <li>Track cognitive progress over time</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="h6">For Caregivers:</h4>
+                            <ul>
+                                <li>Monitor patient location and wandering prevention</li>
+                                <li>Receive immediate alerts when assistance is needed</li>
+                                <li>Set up customized safe zones and reminders</li>
+                                <li>Track cognitive performance and health patterns</li>
+                                <li>Stay connected with secure, real-time information</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

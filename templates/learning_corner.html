@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+
+{% block title %}Learning Corner{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/learning_corner.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">Learning Corner</h1>
+  
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">About Learning Corner</h4>
+        <p>Welcome to the Learning Corner, a space dedicated to education about dementia and Alzheimer's disease. Here you'll find the latest research, helpful articles, and practical tips for both patients and caregivers.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Quick Navigation</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="#latest-research">Latest Research</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#daily-tips">Daily Tips</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#resources">Resources</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#expert-insights">Expert Insights</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Latest Research Section -->
+  <section id="latest-research" class="mb-5">
+    <div class="section-header">
+      <h2>Latest Research</h2>
+      <p class="text-muted">Stay updated with the newest findings in dementia and Alzheimer's research</p>
+    </div>
+    
+    <div class="row" id="research-articles">
+      <!-- Research articles will be populated here -->
+      <div class="col-md-4 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="card-date">May 5, 2025</div>
+            <h5 class="card-title">Advances in Early Detection</h5>
+            <p class="card-text">New research shows promising results in early detection of Alzheimer's biomarkers, potentially allowing for earlier intervention.</p>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-sm btn-primary" id="read-more-1">Read More</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="card-date">April 28, 2025</div>
+            <h5 class="card-title">Diet and Cognitive Health</h5>
+            <p class="card-text">Recent studies link Mediterranean diet adherence with slower cognitive decline in adults with early-stage dementia.</p>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-sm btn-primary" id="read-more-2">Read More</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="card-date">April 15, 2025</div>
+            <h5 class="card-title">Sleep Quality and Memory</h5>
+            <p class="card-text">New findings suggest that improving sleep quality may help preserve memory function in people with mild cognitive impairment.</p>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-sm btn-primary" id="read-more-3">Read More</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-3">
+      <button class="btn btn-outline-primary" id="load-more-research">Load More Research</button>
+    </div>
+  </section>
+  
+  <!-- Daily Tips Section -->
+  <section id="daily-tips" class="mb-5">
+    <div class="section-header">
+      <h2>Daily Tips</h2>
+      <p class="text-muted">Practical advice for daily living with dementia</p>
+    </div>
+    
+    <div class="tip-card">
+      <div class="tip-card-header">
+        <i class="fas fa-lightbulb tip-icon"></i>
+        <h4>Today's Tip: Morning Routines</h4>
+      </div>
+      <div class="tip-card-body">
+        <p>Establishing a consistent morning routine can help reduce anxiety and confusion. Consider creating a visual checklist of morning activities such as brushing teeth, getting dressed, and having breakfast.</p>
+        <div class="tip-actions">
+          <button class="btn btn-sm btn-success" id="useful-tip">Mark as Useful</button>
+          <button class="btn btn-sm btn-outline-secondary" id="save-tip">Save for Later</button>
+          <button class="btn btn-sm btn-outline-primary" id="share-tip">Share this Tip</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-3">
+      <button class="btn btn-outline-success" id="get-new-tip">Get a New Tip</button>
+    </div>
+  </section>
+  
+  <!-- Resources Section -->
+  <section id="resources" class="mb-5">
+    <div class="section-header">
+      <h2>Resources</h2>
+      <p class="text-muted">Helpful tools and external references</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <div class="resource-card">
+          <div class="resource-icon">
+            <i class="fas fa-book"></i>
+          </div>
+          <div class="resource-content">
+            <h5>Recommended Books</h5>
+            <ul class="resource-list">
+              <li>The 36-Hour Day: A Family Guide</li>
+              <li>Creating Moments of Joy</li>
+              <li>Dementia Reimagined</li>
+              <li>The Alzheimer's Solution</li>
+            </ul>
+            <button class="btn btn-sm btn-outline-info">See All Books</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 mb-3">
+        <div class="resource-card">
+          <div class="resource-icon">
+            <i class="fas fa-globe"></i>
+          </div>
+          <div class="resource-content">
+            <h5>Helpful Websites</h5>
+            <ul class="resource-list">
+              <li>Alzheimer's Association</li>
+              <li>National Institute on Aging</li>
+              <li>Family Caregiver Alliance</li>
+              <li>Dementia Society of America</li>
+            </ul>
+            <button class="btn btn-sm btn-outline-info">Visit Websites</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 mb-3">
+        <div class="resource-card">
+          <div class="resource-icon">
+            <i class="fas fa-file-pdf"></i>
+          </div>
+          <div class="resource-content">
+            <h5>Downloadable Guides</h5>
+            <ul class="resource-list">
+              <li>Daily Care Plan Template</li>
+              <li>Home Safety Checklist</li>
+              <li>Communication Strategies Guide</li>
+              <li>Legal and Financial Planning</li>
+            </ul>
+            <button class="btn btn-sm btn-outline-info">Download Guides</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 mb-3">
+        <div class="resource-card">
+          <div class="resource-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <div class="resource-content">
+            <h5>Support Groups</h5>
+            <ul class="resource-list">
+              <li>Online Caregiver Forums</li>
+              <li>Local Support Meetings</li>
+              <li>Memory Cafés</li>
+              <li>Family Support Programs</li>
+            </ul>
+            <button class="btn btn-sm btn-outline-info">Find Support</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Expert Insights Section -->
+  <section id="expert-insights" class="mb-5">
+    <div class="section-header">
+      <h2>Expert Insights</h2>
+      <p class="text-muted">Knowledge from healthcare professionals and researchers</p>
+    </div>
+    
+    <div class="expert-insight-container">
+      <div class="expert-profile">
+        <img src="{{ url_for('static', filename='img/expert-placeholder.jpg') }}" alt="Expert" class="expert-image">
+        <div class="expert-info">
+          <h5>Dr. Eleanor Bennett</h5>
+          <span class="expert-title">Neurologist & Dementia Specialist</span>
+        </div>
+      </div>
+      <div class="expert-quote">
+        <p>"One of the most important aspects of dementia care is maintaining social connections. Regular meaningful interactions help preserve cognitive function and emotional well-being. Even brief daily conversations or video calls with loved ones can make a significant difference."</p>
+      </div>
+      <div class="insight-topic-tags">
+        <span class="insight-tag">Social Engagement</span>
+        <span class="insight-tag">Cognitive Health</span>
+        <span class="insight-tag">Well-being</span>
+      </div>
+    </div>
+    
+    <div class="text-center mt-3">
+      <button class="btn btn-outline-info" id="more-insights">More Expert Insights</button>
+    </div>
+  </section>
+  
+  <!-- Learning Activities -->
+  <section id="learning-activities" class="mb-5">
+    <div class="section-header">
+      <h2>Learning Activities</h2>
+      <p class="text-muted">Interactive educational content for patients and caregivers</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <i class="fas fa-puzzle-piece activity-icon"></i>
+          </div>
+          <div class="activity-card-body">
+            <h5>Understanding Dementia</h5>
+            <p>An interactive module explaining the basics of dementia, symptoms, and progression.</p>
+            <button class="btn btn-outline-primary">Start Activity</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <i class="fas fa-comments activity-icon"></i>
+          </div>
+          <div class="activity-card-body">
+            <h5>Communication Strategies</h5>
+            <p>Learn effective ways to communicate with someone experiencing memory and language difficulties.</p>
+            <button class="btn btn-outline-primary">Start Activity</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <i class="fas fa-home activity-icon"></i>
+          </div>
+          <div class="activity-card-body">
+            <h5>Creating a Safe Environment</h5>
+            <p>Interactive guide to making home environments safer for people with dementia.</p>
+            <button class="btn btn-outline-primary">Start Activity</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get elements
+    const getNewTipBtn = document.getElementById('get-new-tip');
+    const usefulTipBtn = document.getElementById('useful-tip');
+    const loadMoreResearchBtn = document.getElementById('load-more-research');
+    const moreInsightsBtn = document.getElementById('more-insights');
+    
+    // Tip interactions
+    getNewTipBtn.addEventListener('click', function() {
+      // In a real implementation, this would fetch a new tip from the API
+      alert('This would load a new daily tip from the server.');
+    });
+    
+    usefulTipBtn.addEventListener('click', function() {
+      this.classList.remove('btn-success');
+      this.classList.add('btn-secondary');
+      this.textContent = 'Marked as Useful';
+      // In a real implementation, this would send data to the server
+    });
+    
+    // Research loading
+    loadMoreResearchBtn.addEventListener('click', function() {
+      // In a real implementation, this would load more research articles
+      alert('This would load more research articles from the server.');
+    });
+    
+    // Expert insights
+    moreInsightsBtn.addEventListener('click', function() {
+      // In a real implementation, this would load more expert insights
+      alert('This would load more expert insights from the server.');
+    });
+    
+    // Read more buttons
+    document.querySelectorAll('[id^="read-more-"]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        // In a real implementation, this would open the full article
+        alert('This would open the full research article.');
+      });
+    });
+  });
+</script>
+{% endblock %}

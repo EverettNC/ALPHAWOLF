@@ -1,0 +1,456 @@
+/* Memory Lane Styles */
+
+/* Section styling */
+.section-header {
+  border-bottom: 2px solid #9C27B0;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.section-header h2 {
+  color: #6A1B9A;
+  font-size: 1.8rem;
+}
+
+/* Memory Albums */
+.album-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  overflow: hidden;
+  height: 100%;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.album-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.album-cover {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.album-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.album-card:hover .album-cover img {
+  transform: scale(1.05);
+}
+
+.album-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.album-info {
+  padding: 15px;
+}
+
+.album-time {
+  color: #757575;
+  font-size: 0.8rem;
+}
+
+.album-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-memory-card {
+  background-color: #f5f5f5;
+  border: 2px dashed #9C27B0;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.add-memory-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add-icon {
+  font-size: 3rem;
+  color: #9C27B0;
+  margin-bottom: 15px;
+}
+
+.upload-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Timeline */
+.timeline-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.timeline-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timeline-container {
+  position: relative;
+  padding-left: 60px;
+  margin-top: 30px;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: #9C27B0;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -43px;
+  top: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #9C27B0;
+  z-index: 1;
+}
+
+.timeline-date {
+  position: absolute;
+  left: -150px;
+  top: 0;
+  width: 90px;
+  text-align: right;
+}
+
+.timeline-date .year {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #6A1B9A;
+}
+
+.timeline-date .month-day {
+  font-size: 0.9rem;
+  color: #757575;
+}
+
+.timeline-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  max-width: 800px;
+}
+
+.timeline-image {
+  width: 200px;
+  min-height: 150px;
+  overflow: hidden;
+}
+
+.timeline-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.timeline-details {
+  flex: 1;
+  padding: 15px;
+}
+
+.timeline-tags {
+  margin-top: 10px;
+}
+
+/* Reminiscence Activities */
+.activity-card {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 20px;
+  height: 100%;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.activity-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.activity-icon {
+  font-size: 2.5rem;
+  color: #9C27B0;
+  margin-right: 20px;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-description {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f3e5f5;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.stat-item {
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  min-width: 120px;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #9C27B0;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #757575;
+}
+
+/* Music Memories */
+.music-playlists {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+.playlist-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.playlist-item:last-child {
+  border-bottom: none;
+}
+
+.playlist-icon {
+  font-size: 1.5rem;
+  color: #673AB7;
+  margin-right: 15px;
+}
+
+.playlist-details {
+  flex: 1;
+}
+
+.playlist-controls {
+  margin-left: 10px;
+}
+
+.song-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.song-item:last-child {
+  border-bottom: none;
+}
+
+.era-selector {
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 5px;
+}
+
+.music-therapy .card-header {
+  background-color: #673AB7;
+  color: white;
+}
+
+.session-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Story Capture */
+.story-stats {
+  height: 100%;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stat-box {
+  background-color: #f3e5f5;
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+}
+
+.tool-card {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 20px;
+  height: 100%;
+}
+
+.tool-icon {
+  font-size: 2.5rem;
+  color: #9C27B0;
+  margin-right: 20px;
+}
+
+.tool-content {
+  flex: 1;
+}
+
+.story-filters {
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 5px;
+}
+
+.story-item {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.story-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.story-meta {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #757575;
+}
+
+.story-preview {
+  border-left: 3px solid #9C27B0;
+  padding-left: 15px;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.story-actions {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.story-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.legacy-book .card-header {
+  background-color: #9C27B0;
+  color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+  .timeline-date {
+    position: static;
+    text-align: left;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: baseline;
+  }
+  
+  .timeline-date .year {
+    margin-right: 10px;
+  }
+  
+  .timeline-card {
+    flex-direction: column;
+  }
+  
+  .timeline-image {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .activity-card,
+  .tool-card {
+    flex-direction: column;
+  }
+  
+  .activity-icon,
+  .tool-icon {
+    margin-right: 0;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .upload-options,
+  .session-options {
+    flex-direction: column;
+  }
+  
+  .progress-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .stat-item {
+    min-width: auto;
+  }
+}

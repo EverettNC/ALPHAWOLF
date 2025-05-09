@@ -1,0 +1,567 @@
+/* Caregivers Page Styles */
+
+/* Section styling */
+.section-header {
+  border-bottom: 2px solid #2196F3;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.section-header h2 {
+  color: #1565C0;
+  font-size: 1.8rem;
+}
+
+/* Status Cards */
+.status-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  height: 100%;
+  overflow: hidden;
+}
+
+.status-card-header {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.status-card-body {
+  padding: 15px;
+}
+
+.status-metric {
+  margin-bottom: 12px;
+}
+
+.metric-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.status-change {
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+/* Activities List */
+.activity-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.activity-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-time {
+  color: #757575;
+  font-size: 0.8rem;
+}
+
+.activity-name {
+  font-weight: 500;
+}
+
+.activity-score {
+  align-self: flex-end;
+  color: #4CAF50;
+  font-size: 0.9rem;
+}
+
+/* Location status */
+.location-status {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.location-icon {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+.location-icon.safe {
+  color: #4CAF50;
+}
+
+.location-icon.warning {
+  color: #FFC107;
+}
+
+.location-icon.danger {
+  color: #F44336;
+}
+
+.location-text {
+  font-weight: 500;
+}
+
+.location-last-updated {
+  color: #757575;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.zone-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.zone-list li {
+  padding: 3px 0;
+}
+
+/* Health Notes */
+.health-notes {
+  margin-bottom: 15px;
+}
+
+.health-note {
+  padding: 15px;
+  border-left: 3px solid #2196F3;
+  background-color: #f5f5f5;
+  margin-bottom: 15px;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: #757575;
+}
+
+.note-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.note-tag {
+  background-color: #e3f2fd;
+  color: #1565C0;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+/* Daily Care Plan - Timeline */
+.routine-timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.routine-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 10px;
+  width: 2px;
+  background-color: #e0e0e0;
+}
+
+.routine-item {
+  position: relative;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+}
+
+.routine-item::before {
+  content: '';
+  position: absolute;
+  left: -30px;
+  top: 5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  z-index: 1;
+}
+
+.routine-item.completed::before {
+  background-color: #4CAF50;
+}
+
+.routine-item.active::before {
+  background-color: #2196F3;
+}
+
+.routine-time {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.routine-content {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.routine-status {
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.routine-item.completed .routine-status {
+  color: #4CAF50;
+}
+
+.routine-item.active .routine-status {
+  color: #2196F3;
+}
+
+/* Medication */
+.medication-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.medication-info {
+  flex: 1;
+}
+
+.medication-schedule {
+  margin: 0 15px;
+  text-align: center;
+}
+
+.schedule-time {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.schedule-status {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: 3px;
+}
+
+.schedule-status.taken {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}
+
+.schedule-status.not-taken {
+  background-color: #FFEBEE;
+  color: #C62828;
+}
+
+.medication-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Appointments */
+.appointment-item {
+  display: flex;
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.appointment-date {
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  padding: 8px;
+  text-align: center;
+  min-width: 80px;
+  margin-right: 15px;
+}
+
+.date-month {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.date-day {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.date-year {
+  font-size: 0.8rem;
+}
+
+.appointment-details {
+  flex: 1;
+}
+
+.appointment-item.past {
+  opacity: 0.7;
+}
+
+/* Exercises */
+.exercise-item {
+  display: flex;
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  align-items: center;
+}
+
+.exercise-icon {
+  font-size: 1.8rem;
+  color: #4CAF50;
+  margin-right: 15px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.exercise-details {
+  flex: 1;
+}
+
+.exercise-difficulty {
+  margin-top: 5px;
+  font-size: 0.9rem;
+}
+
+.difficulty-level {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+}
+
+.difficulty-level.easy {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}
+
+.difficulty-level.medium {
+  background-color: #FFF3E0;
+  color: #E65100;
+}
+
+.difficulty-level.hard {
+  background-color: #FFEBEE;
+  color: #C62828;
+}
+
+.exercise-actions {
+  margin-left: 15px;
+}
+
+/* Resource cards */
+.resource-card {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 20px;
+  height: 100%;
+}
+
+.resource-icon {
+  font-size: 2rem;
+  color: #2196F3;
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.resource-content {
+  flex: 1;
+}
+
+.resource-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 15px;
+}
+
+.resource-list li {
+  padding: 5px 0;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.resource-list li:last-child {
+  border-bottom: none;
+}
+
+/* Self-care */
+.self-care-card {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.self-care-icon {
+  font-size: 2.5rem;
+  color: #9C27B0;
+  margin-bottom: 15px;
+}
+
+.self-care-list {
+  text-align: left;
+  list-style-type: none;
+  padding-left: 0;
+  margin: 15px 0;
+}
+
+.self-care-list li {
+  padding: 5px 0;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.mindfulness-card {
+  background-color: #E8F5E9;
+  border-radius: 8px;
+  padding: 15px;
+  height: 100%;
+}
+
+/* Support groups */
+.support-group-list {
+  margin-bottom: 15px;
+}
+
+.support-group-item {
+  display: flex;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  align-items: flex-start;
+}
+
+.group-date {
+  display: flex;
+  flex-direction: column;
+  min-width: 80px;
+  text-align: center;
+  margin-right: 15px;
+}
+
+.group-date .date {
+  font-weight: bold;
+}
+
+.group-date .time {
+  font-size: 0.8rem;
+  color: #757575;
+}
+
+.group-details {
+  flex: 1;
+}
+
+.group-format {
+  font-size: 0.9rem;
+  color: #757575;
+  margin-top: 5px;
+}
+
+.topic-item {
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.topic-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.topic-stats {
+  font-size: 0.8rem;
+  color: #757575;
+}
+
+.topic-preview {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.topic-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.topic-tag {
+  background-color: #e3f2fd;
+  color: #1565C0;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.story-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 15px;
+  height: 100%;
+}
+
+.story-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.story-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.story-excerpt {
+  font-style: italic;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .medication-item, 
+  .appointment-item,
+  .exercise-item,
+  .support-group-item {
+    flex-direction: column;
+  }
+  
+  .medication-schedule, 
+  .appointment-date,
+  .group-date {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  
+  .medication-actions,
+  .appointment-actions,
+  .exercise-actions,
+  .group-actions {
+    margin-top: 10px;
+  }
+  
+  .resource-card {
+    flex-direction: column;
+  }
+  
+  .resource-icon {
+    margin-right: 0;
+    margin-bottom: 15px;
+    justify-content: center;
+  }
+  
+  .timeline-filter .btn-group {
+    flex-wrap: wrap;
+  }
+}

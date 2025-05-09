@@ -1,0 +1,754 @@
+{% extends "base.html" %}
+
+{% block title %}Memory Lane{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/memory_lane.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">Memory Lane</h1>
+  
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Welcome to Memory Lane</h4>
+        <p>Memory Lane is a special space dedicated to preserving and celebrating cherished memories. Here, you can create, organize, and revisit meaningful moments to help maintain connections with the past and strengthen cognitive function through reminiscence therapy.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Quick Navigation</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="#memory-albums">Memory Albums</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#timeline">Life Timeline</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#reminiscence">Reminiscence Activities</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#music-memories">Music Memories</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#story-capture">Story Capture</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Memory Albums Section -->
+  <section id="memory-albums" class="mb-5">
+    <div class="section-header">
+      <h2>Memory Albums</h2>
+      <p class="text-muted">Curated collections of photos and memories</p>
+    </div>
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="album-filter">
+        <select class="form-select">
+          <option selected>All Albums</option>
+          <option>Family</option>
+          <option>Travel</option>
+          <option>Celebrations</option>
+          <option>Career</option>
+          <option>Hobbies</option>
+        </select>
+      </div>
+      <button class="btn btn-primary"><i class="fas fa-plus"></i> Create New Album</button>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="album-card">
+          <div class="album-cover">
+            <img src="{{ url_for('static', filename='img/album-placeholder.jpg') }}" alt="Family Gatherings" class="img-fluid">
+            <div class="album-badge">25 items</div>
+          </div>
+          <div class="album-info">
+            <h5>Family Gatherings</h5>
+            <p class="text-muted">Special moments with loved ones over the years</p>
+            <div class="album-time">Last updated: April 28, 2025</div>
+            <div class="album-actions mt-2">
+              <button class="btn btn-sm btn-outline-primary"><i class="fas fa-play"></i> Slideshow</button>
+              <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-pencil-alt"></i> Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="album-card">
+          <div class="album-cover">
+            <img src="{{ url_for('static', filename='img/album-placeholder.jpg') }}" alt="Vacation Memories" class="img-fluid">
+            <div class="album-badge">18 items</div>
+          </div>
+          <div class="album-info">
+            <h5>Vacation Memories</h5>
+            <p class="text-muted">Travels and adventures across the world</p>
+            <div class="album-time">Last updated: March 15, 2025</div>
+            <div class="album-actions mt-2">
+              <button class="btn btn-sm btn-outline-primary"><i class="fas fa-play"></i> Slideshow</button>
+              <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-pencil-alt"></i> Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="album-card">
+          <div class="album-cover">
+            <img src="{{ url_for('static', filename='img/album-placeholder.jpg') }}" alt="Career Highlights" class="img-fluid">
+            <div class="album-badge">12 items</div>
+          </div>
+          <div class="album-info">
+            <h5>Career Highlights</h5>
+            <p class="text-muted">Professional accomplishments and milestones</p>
+            <div class="album-time">Last updated: May 2, 2025</div>
+            <div class="album-actions mt-2">
+              <button class="btn btn-sm btn-outline-primary"><i class="fas fa-play"></i> Slideshow</button>
+              <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-pencil-alt"></i> Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="add-memory-card mt-3">
+      <div class="add-memory-content">
+        <div class="add-icon">
+          <i class="fas fa-plus-circle"></i>
+        </div>
+        <h5>Add New Memory</h5>
+        <p>Upload photos, videos, or write descriptions of cherished moments</p>
+        <div class="upload-options">
+          <button class="btn btn-outline-primary"><i class="fas fa-images"></i> Upload Photos</button>
+          <button class="btn btn-outline-primary"><i class="fas fa-video"></i> Upload Video</button>
+          <button class="btn btn-outline-primary"><i class="fas fa-microphone"></i> Voice Recording</button>
+          <button class="btn btn-outline-primary"><i class="fas fa-pencil-alt"></i> Write Memory</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Life Timeline Section -->
+  <section id="timeline" class="mb-5">
+    <div class="section-header">
+      <h2>Life Timeline</h2>
+      <p class="text-muted">A chronological journey through important life moments</p>
+    </div>
+    
+    <div class="timeline-controls mb-3">
+      <button class="btn btn-outline-primary"><i class="fas fa-plus"></i> Add Event</button>
+      <div class="timeline-filter">
+        <label>Filter by:</label>
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-outline-secondary active">All</button>
+          <button type="button" class="btn btn-outline-secondary">Family</button>
+          <button type="button" class="btn btn-outline-secondary">Career</button>
+          <button type="button" class="btn btn-outline-secondary">Travel</button>
+          <button type="button" class="btn btn-outline-secondary">Milestones</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="timeline-container">
+      <div class="timeline-line"></div>
+      
+      <!-- Timeline Items -->
+      <div class="timeline-item">
+        <div class="timeline-date">
+          <div class="year">1960</div>
+          <div class="month-day">June 15</div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-card">
+            <div class="timeline-image">
+              <img src="{{ url_for('static', filename='img/timeline-placeholder.jpg') }}" alt="Wedding Day" class="img-fluid">
+            </div>
+            <div class="timeline-details">
+              <h5>Wedding Day</h5>
+              <p>Married Elizabeth Johnson at St. Mary's Church. Reception held at Green Valley Country Club with 120 guests.</p>
+              <div class="timeline-tags">
+                <span class="badge bg-primary">Family</span>
+                <span class="badge bg-info">Milestone</span>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary mt-2">View Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-date">
+          <div class="year">1965</div>
+          <div class="month-day">March 10</div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-card">
+            <div class="timeline-image">
+              <img src="{{ url_for('static', filename='img/timeline-placeholder.jpg') }}" alt="Birth of First Child" class="img-fluid">
+            </div>
+            <div class="timeline-details">
+              <h5>Birth of First Child</h5>
+              <p>Welcomed our daughter, Sarah Elizabeth, at Memorial Hospital. She weighed 7lbs 6oz.</p>
+              <div class="timeline-tags">
+                <span class="badge bg-primary">Family</span>
+                <span class="badge bg-info">Milestone</span>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary mt-2">View Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-date">
+          <div class="year">1972</div>
+          <div class="month-day">September 5</div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-card">
+            <div class="timeline-image">
+              <img src="{{ url_for('static', filename='img/timeline-placeholder.jpg') }}" alt="New Home" class="img-fluid">
+            </div>
+            <div class="timeline-details">
+              <h5>First Home Purchase</h5>
+              <p>Purchased our first house on 123 Maple Street. Three bedrooms, two bathrooms with a beautiful backyard.</p>
+              <div class="timeline-tags">
+                <span class="badge bg-primary">Family</span>
+                <span class="badge bg-success">Home</span>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary mt-2">View Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-date">
+          <div class="year">1980</div>
+          <div class="month-day">July 20</div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-card">
+            <div class="timeline-image">
+              <img src="{{ url_for('static', filename='img/timeline-placeholder.jpg') }}" alt="Career Promotion" class="img-fluid">
+            </div>
+            <div class="timeline-details">
+              <h5>Career Promotion</h5>
+              <p>Promoted to Senior Engineer at Global Technologies. Celebration dinner at Harbor View Restaurant with colleagues.</p>
+              <div class="timeline-tags">
+                <span class="badge bg-warning">Career</span>
+                <span class="badge bg-info">Milestone</span>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary mt-2">View Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-3">
+      <button class="btn btn-outline-primary">Load More Events</button>
+    </div>
+  </section>
+  
+  <!-- Reminiscence Activities Section -->
+  <section id="reminiscence" class="mb-5">
+    <div class="section-header">
+      <h2>Reminiscence Activities</h2>
+      <p class="text-muted">Engaging exercises to stimulate memories and cognitive function</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div class="activity-card">
+          <div class="activity-icon">
+            <i class="fas fa-map-marked-alt"></i>
+          </div>
+          <div class="activity-content">
+            <h5>Memory Map</h5>
+            <p>Explore a map of significant places from your life. Add photos, stories, and details about each location.</p>
+            <div class="activity-description">
+              <strong>Benefits:</strong> Spatial memory, autobiographical recall, emotional connection
+            </div>
+            <button class="btn btn-primary mt-3">Start Activity</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 mb-4">
+        <div class="activity-card">
+          <div class="activity-icon">
+            <i class="fas fa-puzzle-piece"></i>
+          </div>
+          <div class="activity-content">
+            <h5>Memory Box Builder</h5>
+            <p>Create a virtual memory box by collecting objects, photos, and descriptions of items that hold special meaning.</p>
+            <div class="activity-description">
+              <strong>Benefits:</strong> Object recognition, storytelling, sensory memory
+            </div>
+            <button class="btn btn-primary mt-3">Start Activity</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 mb-4">
+        <div class="activity-card">
+          <div class="activity-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="activity-content">
+            <h5>This Day in History</h5>
+            <p>Explore significant events that happened on this day throughout your life, alongside major historical events.</p>
+            <div class="activity-description">
+              <strong>Benefits:</strong> Temporal awareness, contextual memory, general knowledge
+            </div>
+            <button class="btn btn-primary mt-3">Start Activity</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 mb-4">
+        <div class="activity-card">
+          <div class="activity-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="activity-content">
+            <h5>Family Tree Interactive</h5>
+            <p>Build and explore your family tree with photos, stories, and connections between family members.</p>
+            <div class="activity-description">
+              <strong>Benefits:</strong> Name recall, relationship recognition, sequential memory
+            </div>
+            <button class="btn btn-primary mt-3">Start Activity</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="reminiscence-progress">
+      <h5>Your Reminiscence Progress</h5>
+      <div class="progress-stats">
+        <div class="stat-item">
+          <div class="stat-value">32</div>
+          <div class="stat-label">Activities Completed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">145</div>
+          <div class="stat-label">Memories Reinforced</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">18</div>
+          <div class="stat-label">Days Active</div>
+        </div>
+      </div>
+      <div class="progress-chart mt-3">
+        <p class="text-center">Activity frequency chart will appear here</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Music Memories Section -->
+  <section id="music-memories" class="mb-5">
+    <div class="section-header">
+      <h2>Music Memories</h2>
+      <p class="text-muted">Using music to evoke powerful memories and emotions</p>
+    </div>
+    
+    <div class="music-intro mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5>The Power of Musical Memory</h5>
+          <p>Music often remains accessible even when other memories fade. The emotional connections to songs from your past can help stimulate recall and provide comfort. Build your personal soundtrack to revisit meaningful moments.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="music-playlists">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5>Your Memory Playlists</h5>
+            <button class="btn btn-sm btn-outline-primary">Create Playlist</button>
+          </div>
+          
+          <div class="playlist-item">
+            <div class="playlist-icon">
+              <i class="fas fa-music"></i>
+            </div>
+            <div class="playlist-details">
+              <h6>1950s Favorites</h6>
+              <p>15 songs from your teenage years</p>
+            </div>
+            <div class="playlist-controls">
+              <button class="btn btn-sm btn-success"><i class="fas fa-play"></i></button>
+            </div>
+          </div>
+          
+          <div class="playlist-item">
+            <div class="playlist-icon">
+              <i class="fas fa-music"></i>
+            </div>
+            <div class="playlist-details">
+              <h6>Wedding Songs</h6>
+              <p>7 songs from your wedding day</p>
+            </div>
+            <div class="playlist-controls">
+              <button class="btn btn-sm btn-success"><i class="fas fa-play"></i></button>
+            </div>
+          </div>
+          
+          <div class="playlist-item">
+            <div class="playlist-icon">
+              <i class="fas fa-music"></i>
+            </div>
+            <div class="playlist-details">
+              <h6>Family Road Trips</h6>
+              <p>23 songs from family vacations</p>
+            </div>
+            <div class="playlist-controls">
+              <button class="btn btn-sm btn-success"><i class="fas fa-play"></i></button>
+            </div>
+          </div>
+          
+          <div class="playlist-item">
+            <div class="playlist-icon">
+              <i class="fas fa-music"></i>
+            </div>
+            <div class="playlist-details">
+              <h6>Dancing Favorites</h6>
+              <p>18 dance songs from throughout life</p>
+            </div>
+            <div class="playlist-controls">
+              <button class="btn btn-sm btn-success"><i class="fas fa-play"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="music-discovery">
+          <h5>Music Memory Discovery</h5>
+          <p>Explore songs from different eras of your life. Each song includes space to record your memories and associations.</p>
+          
+          <div class="era-selector mb-3">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-outline-secondary">1950s</button>
+              <button type="button" class="btn btn-outline-secondary active">1960s</button>
+              <button type="button" class="btn btn-outline-secondary">1970s</button>
+              <button type="button" class="btn btn-outline-secondary">1980s</button>
+              <button type="button" class="btn btn-outline-secondary">1990s</button>
+            </div>
+          </div>
+          
+          <div class="song-discovery-list">
+            <div class="song-item">
+              <div class="song-details">
+                <h6>"My Girl" - The Temptations</h6>
+                <p class="text-muted">1964</p>
+              </div>
+              <div class="song-memory">
+                <button class="btn btn-sm btn-outline-primary"><i class="fas fa-pencil-alt"></i> Add Memory</button>
+                <button class="btn btn-sm btn-outline-success"><i class="fas fa-play"></i> Play</button>
+              </div>
+            </div>
+            
+            <div class="song-item">
+              <div class="song-details">
+                <h6>"I Want to Hold Your Hand" - The Beatles</h6>
+                <p class="text-muted">1963</p>
+              </div>
+              <div class="song-memory">
+                <button class="btn btn-sm btn-outline-primary"><i class="fas fa-pencil-alt"></i> Add Memory</button>
+                <button class="btn btn-sm btn-outline-success"><i class="fas fa-play"></i> Play</button>
+              </div>
+            </div>
+            
+            <div class="song-item">
+              <div class="song-details">
+                <h6>"Stand By Me" - Ben E. King</h6>
+                <p class="text-muted">1961</p>
+              </div>
+              <div class="song-memory">
+                <button class="btn btn-sm btn-outline-primary"><i class="fas fa-pencil-alt"></i> Add Memory</button>
+                <button class="btn btn-sm btn-outline-success"><i class="fas fa-play"></i> Play</button>
+              </div>
+            </div>
+            
+            <div class="song-item">
+              <div class="song-details">
+                <h6>"Can't Help Falling in Love" - Elvis Presley</h6>
+                <p class="text-muted">1961</p>
+              </div>
+              <div class="song-memory">
+                <button class="btn btn-sm btn-outline-primary"><i class="fas fa-pencil-alt"></i> Add Memory</button>
+                <button class="btn btn-sm btn-outline-success"><i class="fas fa-play"></i> Play</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="music-therapy mt-4">
+      <div class="card">
+        <div class="card-header">
+          <h5>Guided Music Therapy Session</h5>
+        </div>
+        <div class="card-body">
+          <p>Experience a guided reminiscence session with music specially selected to evoke memories from different parts of your life.</p>
+          <div class="session-options">
+            <button class="btn btn-primary"><i class="fas fa-headphones"></i> Start 15-Minute Session</button>
+            <button class="btn btn-outline-primary"><i class="fas fa-calendar-alt"></i> Schedule Weekly Session</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Story Capture Section -->
+  <section id="story-capture" class="mb-5">
+    <div class="section-header">
+      <h2>Story Capture</h2>
+      <p class="text-muted">Preserve personal stories and wisdom for future generations</p>
+    </div>
+    
+    <div class="story-intro mb-4">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="alert alert-info">
+            <h5 class="alert-heading">Why Stories Matter</h5>
+            <p>Your life stories and wisdom are precious treasures. This section helps you record, organize, and share these memories with loved ones, creating a lasting legacy while strengthening your own recall.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="story-stats card">
+            <div class="card-body">
+              <h6>Your Collection</h6>
+              <div class="stats-grid">
+                <div class="stat-box">
+                  <div class="stat-value">12</div>
+                  <div class="stat-label">Stories</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-value">5</div>
+                  <div class="stat-label">Wisdom Pieces</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-value">3</div>
+                  <div class="stat-label">Traditions</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-value">8</div>
+                  <div class="stat-label">Recipes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="story-capture-tools mb-4">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="tool-card">
+            <div class="tool-icon">
+              <i class="fas fa-microphone"></i>
+            </div>
+            <div class="tool-content">
+              <h5>Voice Recording</h5>
+              <p>Record your stories in your own voice. Our system will automatically transcribe and organize them.</p>
+              <button class="btn btn-primary mt-2">Start Recording</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <div class="tool-card">
+            <div class="tool-icon">
+              <i class="fas fa-keyboard"></i>
+            </div>
+            <div class="tool-content">
+              <h5>Guided Writing</h5>
+              <p>Use our prompts to help structure and write your stories, one memory at a time.</p>
+              <button class="btn btn-primary mt-2">Start Writing</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <div class="tool-card">
+            <div class="tool-icon">
+              <i class="fas fa-video"></i>
+            </div>
+            <div class="tool-content">
+              <h5>Video Stories</h5>
+              <p>Record video messages to share facial expressions and emotions along with your stories.</p>
+              <button class="btn btn-primary mt-2">Start Video</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <div class="tool-card">
+            <div class="tool-icon">
+              <i class="fas fa-question-circle"></i>
+            </div>
+            <div class="tool-content">
+              <h5>Story Prompts</h5>
+              <p>Get personalized questions and prompts to help you recall and share important memories.</p>
+              <button class="btn btn-primary mt-2">Get Prompts</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="story-collection">
+      <h5>Your Story Collection</h5>
+      <div class="story-filters mb-3">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-outline-secondary active">All Stories</button>
+          <button type="button" class="btn btn-outline-secondary">Childhood</button>
+          <button type="button" class="btn btn-outline-secondary">Young Adult</button>
+          <button type="button" class="btn btn-outline-secondary">Family</button>
+          <button type="button" class="btn btn-outline-secondary">Career</button>
+          <button type="button" class="btn btn-outline-secondary">Wisdom</button>
+        </div>
+      </div>
+      
+      <div class="story-list">
+        <div class="story-item">
+          <div class="story-header">
+            <h6>My First Day of School</h6>
+            <div class="story-meta">
+              <span class="story-date">Recorded: April 15, 2025</span>
+              <span class="story-type"><i class="fas fa-microphone"></i> Audio</span>
+            </div>
+          </div>
+          <div class="story-preview">
+            <p>I remember my first day of school so clearly. My mother had made me a new dress, blue with white polka dots...</p>
+          </div>
+          <div class="story-actions">
+            <button class="btn btn-sm btn-outline-success"><i class="fas fa-play"></i> Listen</button>
+            <button class="btn btn-sm btn-outline-primary"><i class="fas fa-share"></i> Share</button>
+            <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-pencil-alt"></i> Edit</button>
+          </div>
+          <div class="story-tags">
+            <span class="badge bg-secondary">Childhood</span>
+            <span class="badge bg-secondary">1940s</span>
+            <span class="badge bg-secondary">School</span>
+          </div>
+        </div>
+        
+        <div class="story-item">
+          <div class="story-header">
+            <h6>Meeting Your Father</h6>
+            <div class="story-meta">
+              <span class="story-date">Recorded: May 2, 2025</span>
+              <span class="story-type"><i class="fas fa-video"></i> Video</span>
+            </div>
+          </div>
+          <div class="story-preview">
+            <p>It was at the Spring Dance of 1958. I was wearing my favorite yellow dress, and your father asked me to dance...</p>
+          </div>
+          <div class="story-actions">
+            <button class="btn btn-sm btn-outline-success"><i class="fas fa-play"></i> Watch</button>
+            <button class="btn btn-sm btn-outline-primary"><i class="fas fa-share"></i> Share</button>
+            <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-pencil-alt"></i> Edit</button>
+          </div>
+          <div class="story-tags">
+            <span class="badge bg-secondary">Young Adult</span>
+            <span class="badge bg-secondary">1950s</span>
+            <span class="badge bg-secondary">Romance</span>
+          </div>
+        </div>
+        
+        <div class="story-item">
+          <div class="story-header">
+            <h6>Grandmother's Secret Apple Pie Recipe</h6>
+            <div class="story-meta">
+              <span class="story-date">Recorded: March 28, 2025</span>
+              <span class="story-type"><i class="fas fa-keyboard"></i> Written</span>
+            </div>
+          </div>
+          <div class="story-preview">
+            <p>My grandmother taught me this recipe when I was just 12 years old. The secret is in the cinnamon and how you slice the apples...</p>
+          </div>
+          <div class="story-actions">
+            <button class="btn btn-sm btn-outline-success"><i class="fas fa-book-open"></i> Read</button>
+            <button class="btn btn-sm btn-outline-primary"><i class="fas fa-share"></i> Share</button>
+            <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-pencil-alt"></i> Edit</button>
+          </div>
+          <div class="story-tags">
+            <span class="badge bg-secondary">Family</span>
+            <span class="badge bg-secondary">Traditions</span>
+            <span class="badge bg-secondary">Recipes</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-3">
+        <button class="btn btn-outline-primary">Load More Stories</button>
+      </div>
+    </div>
+    
+    <div class="legacy-book mt-4">
+      <div class="card">
+        <div class="card-header">
+          <h5>Create Your Legacy Book</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-8">
+              <p>Compile your stories, photos, and wisdom into a beautifully designed digital or printed book to share with family members.</p>
+              <div class="book-options">
+                <button class="btn btn-primary">Start Legacy Book</button>
+                <button class="btn btn-outline-primary">View Sample</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <img src="{{ url_for('static', filename='img/book-placeholder.jpg') }}" alt="Legacy Book" class="img-fluid">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all buttons to show alerts for demo purposes
+    document.querySelectorAll('.btn').forEach(function(button) {
+      button.addEventListener('click', function(event) {
+        if (!this.classList.contains('nav-link')) {
+          event.preventDefault();
+          console.log('Button clicked: ' + this.textContent.trim());
+          alert('This button would perform an action in the full implementation.');
+        }
+      });
+    });
+    
+    // Filter buttons toggling
+    document.querySelectorAll('.btn-group .btn').forEach(function(button) {
+      button.addEventListener('click', function() {
+        this.closest('.btn-group').querySelectorAll('.btn').forEach(function(btn) {
+          btn.classList.remove('active');
+        });
+        this.classList.add('active');
+      });
+    });
+  });
+</script>
+{% endblock %}

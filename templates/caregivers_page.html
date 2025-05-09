@@ -1,0 +1,847 @@
+{% extends "base.html" %}
+
+{% block title %}Caregivers Page{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/caregivers_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">Caregivers Support Hub</h1>
+  
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Caregivers Corner</h4>
+        <p>Welcome to the Caregivers Support Hub. This space is dedicated to those providing care for loved ones with dementia or Alzheimer's. Here you'll find tools, resources, and a community to support your caregiving journey.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Quick Links</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="#patient-overview">Patient Overview</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#daily-care-plan">Daily Care Plan</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#caregiver-resources">Resources</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#self-care">Self-Care</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#community">Community Support</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Patient Overview Section -->
+  <section id="patient-overview" class="mb-5">
+    <div class="section-header">
+      <h2>Patient Overview</h2>
+      <p class="text-muted">Comprehensive view of your loved one's status and needs</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <div class="status-card">
+          <div class="status-card-header">
+            <h5>Cognitive Status</h5>
+          </div>
+          <div class="status-card-body">
+            <div class="status-metric">
+              <span class="metric-label">Memory Score:</span>
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
+              </div>
+            </div>
+            <div class="status-metric">
+              <span class="metric-label">Attention Score:</span>
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 72%;" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100">72%</div>
+              </div>
+            </div>
+            <div class="status-metric">
+              <span class="metric-label">Language Score:</span>
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 58%;" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100">58%</div>
+              </div>
+            </div>
+            <div class="status-change">
+              <i class="fas fa-arrow-up text-success"></i> 
+              <span>3% improvement in attention over last month</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <div class="status-card">
+          <div class="status-card-header">
+            <h5>Recent Activities</h5>
+          </div>
+          <div class="status-card-body">
+            <ul class="activity-list">
+              <li class="activity-item">
+                <span class="activity-time">Today, 10:15 AM</span>
+                <span class="activity-name">Memory Match Exercise</span>
+                <span class="activity-score">Score: 8/10</span>
+              </li>
+              <li class="activity-item">
+                <span class="activity-time">Yesterday, 3:30 PM</span>
+                <span class="activity-name">Word Association</span>
+                <span class="activity-score">Score: 7/10</span>
+              </li>
+              <li class="activity-item">
+                <span class="activity-time">Yesterday, 11:45 AM</span>
+                <span class="activity-name">Picture Recall</span>
+                <span class="activity-score">Score: 6/10</span>
+              </li>
+              <li class="activity-item">
+                <span class="activity-time">May 8, 2:00 PM</span>
+                <span class="activity-name">Pattern Recognition</span>
+                <span class="activity-score">Score: 9/10</span>
+              </li>
+            </ul>
+            <button class="btn btn-sm btn-outline-primary mt-2 w-100">View All Activities</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <div class="status-card">
+          <div class="status-card-header">
+            <h5>Location & Safety</h5>
+          </div>
+          <div class="status-card-body">
+            <div class="location-status">
+              <i class="fas fa-map-marker-alt location-icon safe"></i>
+              <span class="location-text">Currently at Home (Safe Zone)</span>
+            </div>
+            <div class="location-last-updated">
+              <small>Last updated: Today, 11:30 AM</small>
+            </div>
+            <div class="safety-zones mt-3">
+              <h6>Active Safety Zones:</h6>
+              <ul class="zone-list">
+                <li>Home</li>
+                <li>Neighborhood Park</li>
+                <li>Community Center</li>
+              </ul>
+            </div>
+            <button class="btn btn-sm btn-outline-primary mt-2 w-100">Manage Safety Zones</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row mt-3">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Health Notes & Observations</h5>
+            <button class="btn btn-sm btn-success">Add Note</button>
+          </div>
+          <div class="card-body">
+            <div class="health-notes">
+              <div class="health-note">
+                <div class="note-header">
+                  <span class="note-date">May 9, 2025</span>
+                  <span class="note-author">By: Sarah (Caregiver)</span>
+                </div>
+                <div class="note-content">
+                  <p>Mom seemed more responsive today during our morning routine. She remembered my name without prompting and was able to choose her outfit with minimal assistance. Appetite was good at breakfast, but she did forget to take her morning medication until reminded.</p>
+                </div>
+                <div class="note-tags">
+                  <span class="note-tag">Morning Routine</span>
+                  <span class="note-tag">Memory</span>
+                  <span class="note-tag">Medication</span>
+                </div>
+              </div>
+              
+              <div class="health-note">
+                <div class="note-header">
+                  <span class="note-date">May 8, 2025</span>
+                  <span class="note-author">By: Michael (Caregiver)</span>
+                </div>
+                <div class="note-content">
+                  <p>Dad was restless in the evening and had difficulty recognizing the bathroom in our house. I added a picture sign on the door which seemed to help. Sleep was interrupted, woke up twice during the night confused about the time.</p>
+                </div>
+                <div class="note-tags">
+                  <span class="note-tag">Evening Issues</span>
+                  <span class="note-tag">Wayfinding</span>
+                  <span class="note-tag">Sleep</span>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-outline-primary mt-3">View All Notes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Daily Care Plan Section -->
+  <section id="daily-care-plan" class="mb-5">
+    <div class="section-header">
+      <h2>Daily Care Plan</h2>
+      <p class="text-muted">Organize and manage daily care activities</p>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="care-plan-tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="routines-tab" data-bs-toggle="tab" href="#routines" role="tab">Daily Routines</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="medications-tab" data-bs-toggle="tab" href="#medications" role="tab">Medications</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="appointments-tab" data-bs-toggle="tab" href="#appointments" role="tab">Appointments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="exercises-tab" data-bs-toggle="tab" href="#exercises" role="tab">Cognitive Exercises</a>
+          </li>
+        </ul>
+      </div>
+      <div class="card-body">
+        <div class="tab-content" id="care-plan-content">
+          <!-- Daily Routines Tab -->
+          <div class="tab-pane fade show active" id="routines" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5>Today's Routine</h5>
+              <button class="btn btn-sm btn-outline-primary">Edit Routine</button>
+            </div>
+            
+            <div class="routine-timeline">
+              <div class="routine-item completed">
+                <div class="routine-time">7:00 AM</div>
+                <div class="routine-content">
+                  <h6>Morning Wake-up</h6>
+                  <p>Help with bathroom, washing face, brushing teeth</p>
+                  <div class="routine-status">Completed</div>
+                </div>
+              </div>
+              
+              <div class="routine-item completed">
+                <div class="routine-time">7:30 AM</div>
+                <div class="routine-content">
+                  <h6>Breakfast & Medication</h6>
+                  <p>Prepare breakfast, ensure morning medication is taken</p>
+                  <div class="routine-status">Completed</div>
+                </div>
+              </div>
+              
+              <div class="routine-item active">
+                <div class="routine-time">9:00 AM</div>
+                <div class="routine-content">
+                  <h6>Morning Activity</h6>
+                  <p>Light stretching exercises, reading newspaper together</p>
+                  <div class="routine-status">In Progress</div>
+                </div>
+              </div>
+              
+              <div class="routine-item">
+                <div class="routine-time">11:00 AM</div>
+                <div class="routine-content">
+                  <h6>Cognitive Exercise Session</h6>
+                  <p>Complete today's assigned memory and problem-solving exercises</p>
+                  <div class="routine-actions">
+                    <button class="btn btn-sm btn-outline-success">Start</button>
+                    <button class="btn btn-sm btn-outline-secondary">Reschedule</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="routine-item">
+                <div class="routine-time">12:30 PM</div>
+                <div class="routine-content">
+                  <h6>Lunch & Midday Medication</h6>
+                  <p>Prepare lunch, ensure midday medication is taken</p>
+                </div>
+              </div>
+              
+              <div class="routine-item">
+                <div class="routine-time">2:00 PM</div>
+                <div class="routine-content">
+                  <h6>Afternoon Rest</h6>
+                  <p>Quiet time or nap if needed</p>
+                </div>
+              </div>
+            </div>
+            
+            <button class="btn btn-outline-primary mt-3">View Full Schedule</button>
+          </div>
+          
+          <!-- Medications Tab -->
+          <div class="tab-pane fade" id="medications" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5>Medication Schedule</h5>
+              <button class="btn btn-sm btn-outline-primary">Manage Medications</button>
+            </div>
+            
+            <div class="medication-list">
+              <div class="medication-item">
+                <div class="medication-info">
+                  <h6>Donepezil (Aricept)</h6>
+                  <p>5mg - Once daily in the evening</p>
+                </div>
+                <div class="medication-schedule">
+                  <div class="schedule-time">8:00 PM</div>
+                  <div class="schedule-status not-taken">Not Yet</div>
+                </div>
+                <div class="medication-actions">
+                  <button class="btn btn-sm btn-success">Mark as Taken</button>
+                  <button class="btn btn-sm btn-outline-info">Details</button>
+                </div>
+              </div>
+              
+              <div class="medication-item">
+                <div class="medication-info">
+                  <h6>Memantine (Namenda)</h6>
+                  <p>10mg - Twice daily, morning and evening</p>
+                </div>
+                <div class="medication-schedule">
+                  <div class="schedule-time">8:00 AM</div>
+                  <div class="schedule-status taken">Taken</div>
+                  <div class="schedule-time">8:00 PM</div>
+                  <div class="schedule-status not-taken">Not Yet</div>
+                </div>
+                <div class="medication-actions">
+                  <button class="btn btn-sm btn-success">Mark Evening as Taken</button>
+                  <button class="btn btn-sm btn-outline-info">Details</button>
+                </div>
+              </div>
+              
+              <div class="medication-item">
+                <div class="medication-info">
+                  <h6>Vitamin D3</h6>
+                  <p>2000 IU - Once daily with breakfast</p>
+                </div>
+                <div class="medication-schedule">
+                  <div class="schedule-time">8:00 AM</div>
+                  <div class="schedule-status taken">Taken</div>
+                </div>
+                <div class="medication-actions">
+                  <button class="btn btn-sm btn-outline-info">Details</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="medication-history mt-4">
+              <h6>Medication History</h6>
+              <div class="history-chart">
+                <p class="text-center">Compliance chart will appear here</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Appointments Tab -->
+          <div class="tab-pane fade" id="appointments" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5>Upcoming Appointments</h5>
+              <button class="btn btn-sm btn-outline-primary">Add Appointment</button>
+            </div>
+            
+            <div class="appointment-list">
+              <div class="appointment-item upcoming">
+                <div class="appointment-date">
+                  <div class="date-month">May</div>
+                  <div class="date-day">15</div>
+                  <div class="date-year">2025</div>
+                </div>
+                <div class="appointment-details">
+                  <h6>Neurologist Checkup</h6>
+                  <p>Dr. Patricia Wilson - Memorial Hospital</p>
+                  <p><i class="far fa-clock"></i> 10:30 AM</p>
+                </div>
+                <div class="appointment-actions">
+                  <button class="btn btn-sm btn-outline-secondary">Reschedule</button>
+                  <button class="btn btn-sm btn-outline-info">Details</button>
+                </div>
+              </div>
+              
+              <div class="appointment-item upcoming">
+                <div class="appointment-date">
+                  <div class="date-month">May</div>
+                  <div class="date-day">22</div>
+                  <div class="date-year">2025</div>
+                </div>
+                <div class="appointment-details">
+                  <h6>Cognitive Assessment</h6>
+                  <p>Memory Care Center</p>
+                  <p><i class="far fa-clock"></i> 2:00 PM</p>
+                </div>
+                <div class="appointment-actions">
+                  <button class="btn btn-sm btn-outline-secondary">Reschedule</button>
+                  <button class="btn btn-sm btn-outline-info">Details</button>
+                </div>
+              </div>
+              
+              <div class="appointment-item past">
+                <div class="appointment-date">
+                  <div class="date-month">Apr</div>
+                  <div class="date-day">30</div>
+                  <div class="date-year">2025</div>
+                </div>
+                <div class="appointment-details">
+                  <h6>General Practitioner</h6>
+                  <p>Dr. James Morris - Cityview Medical</p>
+                  <p><i class="far fa-clock"></i> 9:15 AM</p>
+                  <span class="badge bg-success">Completed</span>
+                </div>
+                <div class="appointment-actions">
+                  <button class="btn btn-sm btn-outline-info">View Notes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Cognitive Exercises Tab -->
+          <div class="tab-pane fade" id="exercises" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5>Recommended Exercises</h5>
+              <button class="btn btn-sm btn-outline-primary">Customize Plan</button>
+            </div>
+            
+            <div class="exercise-list">
+              <div class="exercise-item">
+                <div class="exercise-icon">
+                  <i class="fas fa-brain"></i>
+                </div>
+                <div class="exercise-details">
+                  <h6>Memory Match</h6>
+                  <p>Card matching exercise to strengthen short-term memory</p>
+                  <div class="exercise-difficulty">
+                    <span class="difficulty-label">Difficulty:</span>
+                    <span class="difficulty-level easy">Easy</span>
+                  </div>
+                </div>
+                <div class="exercise-actions">
+                  <button class="btn btn-primary">Start Exercise</button>
+                </div>
+              </div>
+              
+              <div class="exercise-item">
+                <div class="exercise-icon">
+                  <i class="fas fa-puzzle-piece"></i>
+                </div>
+                <div class="exercise-details">
+                  <h6>Pattern Recognition</h6>
+                  <p>Identify patterns in sequences to improve cognitive processing</p>
+                  <div class="exercise-difficulty">
+                    <span class="difficulty-label">Difficulty:</span>
+                    <span class="difficulty-level medium">Medium</span>
+                  </div>
+                </div>
+                <div class="exercise-actions">
+                  <button class="btn btn-primary">Start Exercise</button>
+                </div>
+              </div>
+              
+              <div class="exercise-item">
+                <div class="exercise-icon">
+                  <i class="fas fa-comments"></i>
+                </div>
+                <div class="exercise-details">
+                  <h6>Word Association</h6>
+                  <p>Connect related words to maintain language function</p>
+                  <div class="exercise-difficulty">
+                    <span class="difficulty-label">Difficulty:</span>
+                    <span class="difficulty-level medium">Medium</span>
+                  </div>
+                </div>
+                <div class="exercise-actions">
+                  <button class="btn btn-primary">Start Exercise</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="exercise-progress mt-4">
+              <h6>Progress Overview</h6>
+              <div class="progress-chart">
+                <p class="text-center">Progress chart will appear here</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Caregiver Resources Section -->
+  <section id="caregiver-resources" class="mb-5">
+    <div class="section-header">
+      <h2>Caregiver Resources</h2>
+      <p class="text-muted">Tools and information to support your caregiving journey</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <div class="resource-card">
+          <div class="resource-icon">
+            <i class="fas fa-book-reader"></i>
+          </div>
+          <div class="resource-content">
+            <h5>Caregiver Education</h5>
+            <ul class="resource-list">
+              <li>Understanding Dementia Stages</li>
+              <li>Communication Techniques</li>
+              <li>Managing Challenging Behaviors</li>
+              <li>Adapting Your Home</li>
+            </ul>
+            <button class="btn btn-outline-primary mt-2">Access Library</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <div class="resource-card">
+          <div class="resource-icon">
+            <i class="fas fa-download"></i>
+          </div>
+          <div class="resource-content">
+            <h5>Printable Tools</h5>
+            <ul class="resource-list">
+              <li>Daily Care Checklist</li>
+              <li>Medication Tracker</li>
+              <li>Behavior Log</li>
+              <li>Emergency Information Sheet</li>
+            </ul>
+            <button class="btn btn-outline-primary mt-2">Download Tools</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <div class="resource-card">
+          <div class="resource-icon">
+            <i class="fas fa-video"></i>
+          </div>
+          <div class="resource-content">
+            <h5>Training Videos</h5>
+            <ul class="resource-list">
+              <li>Safe Transferring Techniques</li>
+              <li>Bathing and Hygiene Tips</li>
+              <li>Redirection Strategies</li>
+              <li>Emotion-Focused Care</li>
+            </ul>
+            <button class="btn btn-outline-primary mt-2">Watch Videos</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="local-services mt-4">
+      <h5>Local Services Directory</h5>
+      <div class="service-search mb-3">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Enter your zip code">
+          <select class="form-select" style="max-width: 200px;">
+            <option selected>All Services</option>
+            <option>Adult Day Care</option>
+            <option>Home Health Aides</option>
+            <option>Respite Care</option>
+            <option>Support Groups</option>
+          </select>
+          <button class="btn btn-primary">Search</button>
+        </div>
+      </div>
+      <div class="service-results">
+        <p class="text-center text-muted">Enter your location to find services near you</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Self-Care Section -->
+  <section id="self-care" class="mb-5">
+    <div class="section-header">
+      <h2>Caregiver Self-Care</h2>
+      <p class="text-muted">Resources to help you maintain your well-being</p>
+    </div>
+    
+    <div class="self-care-intro mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Why Self-Care Matters</h5>
+          <p>As a caregiver, your well-being is essential. Self-care isn't selfish—it's necessary to sustain your ability to provide care. Taking time for yourself helps prevent burnout, reduces stress, and improves your physical and emotional health.</p>
+          <div class="stress-check">
+            <h6>Caregiver Stress Check</h6>
+            <button class="btn btn-outline-primary">Take Quick Assessment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <div class="self-care-card">
+          <div class="self-care-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h5>Emotional Well-being</h5>
+          <ul class="self-care-list">
+            <li>Recognizing caregiver grief</li>
+            <li>Managing guilt and frustration</li>
+            <li>Finding moments of joy</li>
+            <li>Practicing gratitude</li>
+          </ul>
+          <button class="btn btn-outline-info mt-2">Learn More</button>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <div class="self-care-card">
+          <div class="self-care-icon">
+            <i class="fas fa-user-friends"></i>
+          </div>
+          <h5>Building Support</h5>
+          <ul class="self-care-list">
+            <li>Asking for and accepting help</li>
+            <li>Joining caregiver support groups</li>
+            <li>Family care meetings</li>
+            <li>Working with professionals</li>
+          </ul>
+          <button class="btn btn-outline-info mt-2">Learn More</button>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <div class="self-care-card">
+          <div class="self-care-icon">
+            <i class="fas fa-bed"></i>
+          </div>
+          <h5>Physical Health</h5>
+          <ul class="self-care-list">
+            <li>Quick & easy healthy meals</li>
+            <li>Sleep improvement strategies</li>
+            <li>5-minute exercise breaks</li>
+            <li>Scheduling medical checkups</li>
+          </ul>
+          <button class="btn btn-outline-info mt-2">Learn More</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mindfulness-exercises mt-4">
+      <h5>Quick Mindfulness Exercises</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="mindfulness-card">
+            <h6>2-Minute Breathing Exercise</h6>
+            <p>A simple breathing technique to calm your mind and reduce stress in just two minutes.</p>
+            <button class="btn btn-sm btn-outline-success">Start Exercise</button>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="mindfulness-card">
+            <h6>5-Minute Guided Meditation</h6>
+            <p>A short guided meditation focused on gratitude and stress relief for caregivers.</p>
+            <button class="btn btn-sm btn-outline-success">Start Exercise</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Community Support Section -->
+  <section id="community" class="mb-5">
+    <div class="section-header">
+      <h2>Community Support</h2>
+      <p class="text-muted">Connect with other caregivers for shared experiences and support</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>Upcoming Support Groups</h5>
+          </div>
+          <div class="card-body">
+            <div class="support-group-list">
+              <div class="support-group-item">
+                <div class="group-date">
+                  <span class="date">May 12</span>
+                  <span class="time">7:00 PM</span>
+                </div>
+                <div class="group-details">
+                  <h6>Virtual Caregiver Circle</h6>
+                  <p>Online meeting for caregivers to share experiences and support</p>
+                  <div class="group-format"><i class="fas fa-video"></i> Online - Zoom</div>
+                </div>
+                <div class="group-actions">
+                  <button class="btn btn-sm btn-primary">Join</button>
+                </div>
+              </div>
+              
+              <div class="support-group-item">
+                <div class="group-date">
+                  <span class="date">May 17</span>
+                  <span class="time">10:00 AM</span>
+                </div>
+                <div class="group-details">
+                  <h6>Early-Stage Caregivers Group</h6>
+                  <p>Support specific to caring for those in early stages of dementia</p>
+                  <div class="group-format"><i class="fas fa-map-marker-alt"></i> Memory Care Center</div>
+                </div>
+                <div class="group-actions">
+                  <button class="btn btn-sm btn-primary">RSVP</button>
+                </div>
+              </div>
+              
+              <div class="support-group-item">
+                <div class="group-date">
+                  <span class="date">May 20</span>
+                  <span class="time">6:30 PM</span>
+                </div>
+                <div class="group-details">
+                  <h6>Caregiver Self-Care Workshop</h6>
+                  <p>Interactive workshop focusing on caregiver well-being strategies</p>
+                  <div class="group-format"><i class="fas fa-video"></i> Online - Zoom</div>
+                </div>
+                <div class="group-actions">
+                  <button class="btn btn-sm btn-primary">Join</button>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-outline-primary mt-3 w-100">View All Groups</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>Community Discussion</h5>
+          </div>
+          <div class="card-body">
+            <div class="discussion-topics">
+              <div class="topic-item">
+                <div class="topic-header">
+                  <h6>How to handle sundowning?</h6>
+                  <span class="topic-stats">14 replies • Active 2 hours ago</span>
+                </div>
+                <p class="topic-preview">My mom gets very agitated in the evenings. I've tried keeping lights on but it doesn't always help. Any suggestions for calming techniques?</p>
+                <div class="topic-tags">
+                  <span class="topic-tag">Behavior Management</span>
+                  <span class="topic-tag">Evening Care</span>
+                </div>
+                <button class="btn btn-sm btn-outline-primary">Join Discussion</button>
+              </div>
+              
+              <div class="topic-item">
+                <div class="topic-header">
+                  <h6>Balancing work and caregiving</h6>
+                  <span class="topic-stats">23 replies • Active 1 day ago</span>
+                </div>
+                <p class="topic-preview">I'm struggling to balance my full-time job with caring for my father. Has anyone found flexible work arrangements that help?</p>
+                <div class="topic-tags">
+                  <span class="topic-tag">Work-Life Balance</span>
+                  <span class="topic-tag">Time Management</span>
+                </div>
+                <button class="btn btn-sm btn-outline-primary">Join Discussion</button>
+              </div>
+              
+              <div class="topic-item">
+                <div class="topic-header">
+                  <h6>Success with reminiscence therapy</h6>
+                  <span class="topic-stats">9 replies • Active 3 days ago</span>
+                </div>
+                <p class="topic-preview">I've been using old photos and music from my husband's youth, and it's really helping with his mood and engagement. Sharing some tips!</p>
+                <div class="topic-tags">
+                  <span class="topic-tag">Reminiscence</span>
+                  <span class="topic-tag">Success Stories</span>
+                </div>
+                <button class="btn btn-sm btn-outline-primary">Join Discussion</button>
+              </div>
+            </div>
+            <div class="mt-3">
+              <button class="btn btn-outline-primary">View All Discussions</button>
+              <button class="btn btn-success">Start New Topic</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="caregiver-stories">
+      <h5>Caregiver Stories</h5>
+      <div class="stories-carousel">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <div class="story-card">
+              <div class="story-header">
+                <img src="{{ url_for('static', filename='img/caregiver-placeholder.jpg') }}" alt="Caregiver" class="story-avatar">
+                <h6>Marie's Journey</h6>
+              </div>
+              <p class="story-excerpt">"After mom's diagnosis, I felt completely overwhelmed. Finding this community changed everything. The support and practical advice from people who truly understand has been a lifeline..."</p>
+              <button class="btn btn-sm btn-outline-primary">Read Full Story</button>
+            </div>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <div class="story-card">
+              <div class="story-header">
+                <img src="{{ url_for('static', filename='img/caregiver-placeholder.jpg') }}" alt="Caregiver" class="story-avatar">
+                <h6>David's Experience</h6>
+              </div>
+              <p class="story-excerpt">"As a husband and caregiver, I've learned so much about patience and finding joy in small moments. The cognitive exercises have helped both of us maintain connection..."</p>
+              <button class="btn btn-sm btn-outline-primary">Read Full Story</button>
+            </div>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <div class="story-card">
+              <div class="story-header">
+                <img src="{{ url_for('static', filename='img/caregiver-placeholder.jpg') }}" alt="Caregiver" class="story-avatar">
+                <h6>Sarah's Path</h6>
+              </div>
+              <p class="story-excerpt">"Balancing work, children, and caring for dad seemed impossible at first. Learning to accept help and use technology tools has made such a difference in our daily routine..."</p>
+              <button class="btn btn-sm btn-outline-primary">Read Full Story</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-2">
+        <button class="btn btn-outline-primary">Share Your Story</button>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap tabs
+    var triggerTabList = [].slice.call(document.querySelectorAll('#care-plan-tabs a'))
+    triggerTabList.forEach(function (triggerEl) {
+      var tabTrigger = new bootstrap.Tab(triggerEl)
+      triggerEl.addEventListener('click', function (event) {
+        event.preventDefault()
+        tabTrigger.show()
+      })
+    })
+    
+    // Add event listeners for buttons (for a real implementation, these would do more)
+    document.querySelectorAll('.btn').forEach(function(button) {
+      button.addEventListener('click', function(event) {
+        if (!this.classList.contains('nav-link')) {
+          event.preventDefault();
+          console.log('Button clicked: ' + this.textContent.trim());
+          alert('This button would perform an action in the full implementation.');
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

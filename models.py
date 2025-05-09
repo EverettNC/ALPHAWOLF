@@ -17,6 +17,9 @@ class Patient(UserMixin, db.Model):
     last_latitude = Column(Float)
     last_longitude = Column(Float)
     last_location_update = Column(DateTime)
+    points = Column(Integer, default=0)  # Total points earned from exercises
+    level = Column(Integer, default=1)  # Current level in the gamification system
+    streak_days = Column(Integer, default=0)  # Consecutive days with exercises
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # Relationships
@@ -24,6 +27,9 @@ class Patient(UserMixin, db.Model):
     cognitive_profile = relationship("CognitiveProfile", backref="patient", uselist=False, lazy=True)
     exercise_results = relationship("ExerciseResult", backref="patient", lazy=True)
     alerts = relationship("Alert", backref="patient", lazy=True)
+    point_transactions = relationship("PointTransaction", backref="patient", lazy=True)
+    achievements_earned = relationship("PatientAchievement", backref="patient", lazy=True)
+    rewards_redeemed = relationship("PatientReward", backref="patient", lazy=True)
     
     def __repr__(self):
         return f'<Patient {self.name}>'
@@ -140,3 +146,95 @@ class GestureLog(db.Model):
     
     def __repr__(self):
         return f'<GestureLog {self.gesture_type}>'
+
+class Achievement(db.Model):
+    """Achievements that patients can earn through various activities"""
+    __tablename__ = 'achievements'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    icon = Column(String(100))  # Path or class name for the icon
+    category = Column(String(50))  # Exercise completion, streak, level, etc.
+    requirement = Column(Integer, nullable=False)  # Numeric requirement to earn it
+    points_reward = Column(Integer, default=0)  # Points awarded when earned
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    patient_achievements = relationship("PatientAchievement", backref="achievement", lazy=True)
+    
+    def __repr__(self):
+        return f'<Achievement {self.name}>'
+
+class PatientAchievement(db.Model):
+    """Record of achievements earned by patients"""
+    __tablename__ = 'patient_achievements'
+    
+    id = Column(Integer, primary_key=True)
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    achievement_id = Column(Integer, ForeignKey('achievements.id'), nullable=False)
+    earned_at = Column(DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<PatientAchievement {self.patient_id} {self.achievement_id}>'
+
+class Reward(db.Model):
+    """Rewards that can be redeemed with points"""
+    __tablename__ = 'rewards'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    icon = Column(String(100))
+    points_cost = Column(Integer, nullable=False)
+    is_virtual = Column(Boolean, default=True)  # Virtual vs physical reward
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    patient_rewards = relationship("PatientReward", backref="reward", lazy=True)
+    
+    def __repr__(self):
+        return f'<Reward {self.name}>'
+
+class PatientReward(db.Model):
+    """Record of rewards redeemed by patients"""
+    __tablename__ = 'patient_rewards'
+    
+    id = Column(Integer, primary_key=True)
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    reward_id = Column(Integer, ForeignKey('rewards.id'), nullable=False)
+    redeemed_at = Column(DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<PatientReward {self.patient_id} {self.reward_id}>'
+
+class PointTransaction(db.Model):
+    """Record of point transactions for patients"""
+    __tablename__ = 'point_transactions'
+    
+    id = Column(Integer, primary_key=True)
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    points = Column(Integer, nullable=False)  # Positive for earned, negative for spent
+    transaction_type = Column(String(50), nullable=False)  # exercise_completion, achievement, reward_redemption
+    reference_id = Column(Integer)  # ID of the related entity (exercise result, achievement, etc.)
+    description = Column(String(200))
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<PointTransaction {self.patient_id} {self.points} {self.transaction_type}>'
+
+class ExerciseStreak(db.Model):
+    """Tracks consecutive days of exercise activity"""
+    __tablename__ = 'exercise_streaks'
+    
+    id = Column(Integer, primary_key=True)
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False, unique=True)
+    current_streak = Column(Integer, default=0)
+    longest_streak = Column(Integer, default=0)
+    last_exercise_date = Column(DateTime)
+    
+    # Relationships
+    patient = relationship("Patient", backref="exercise_streak", uselist=False, lazy=True)
+    
+    def __repr__(self):
+        return f'<ExerciseStreak {self.patient_id} {self.current_streak}>'

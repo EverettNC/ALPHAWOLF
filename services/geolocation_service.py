@@ -472,13 +472,12 @@ class GeolocationService:
             else:
                 alert_message = f"{patient.name} is {int(distance)}m outside of safe zones"
             
-            new_alert = Alert(
-                patient_id=patient_id,
-                alert_type='wandering',
-                message=alert_message,
-                latitude=latitude,
-                longitude=longitude
-            )
+            new_alert = Alert()
+            new_alert.patient_id = patient_id
+            new_alert.alert_type = 'wandering'
+            new_alert.message = alert_message
+            new_alert.latitude = latitude
+            new_alert.longitude = longitude
             
             # Save to database
             db.session.add(new_alert)

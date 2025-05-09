@@ -1,0 +1,61 @@
+🏗️ AlphaWolf Infrastructure Overview
+✅ 1. Core Architecture
+Layer	Component	Purpose
+Frontend	React (Next.js or standard), HTML5/CSS3	Responsive dashboard for caregivers & family
+Backend	Flask (Python)	API layer for voice commands, GPS, mood tracking, games
+Database	PostgreSQL (via NeonDB or Supabase)	Store routines, user history, profiles, emotional trends
+AI Services	Modular Python microservices	Mood detection, adaptive game engine, AI reminders
+Geofencing	GPS + Geocoding API (Google or OpenStreetMap)	Monitors boundaries and triggers alerts
+Realtime Alerts	Firebase or Socket.IO	Push alerts to caregivers (wander alerts, mood spikes)
+Wearable Sync	REST / BLE integration	Biometric sync (heart rate, steps, stress, etc.)
+Voice & Audio	ElevenLabs / Whisper / local fallback	Interactive spoken responses, reminders, commands
+
+📦 2. Deployment Stack
+* Dev Environment: Replit or GitHub Codespaces (Flask + Python 3.11)
+* Staging & Production: Railway / Render / Fly.io (auto deploy from main)
+* Containerization: Docker (optional, for clinics or devices)
+* CI/CD: GitHub Actions + CodeQL + Pytest
+* Monitoring: Sentry for errors + UptimeRobot or Grafana for performance
+
+🛠️ AlphaWolf Development Plan
+📅 Phase 1: MVP (4–6 Weeks)
+Feature	Description
+✅ Voice Reminder Engine	AI triggers for meds, water, breaks
+✅ Cognitive Game Set #1	Memory recall, basic puzzle set
+✅ Geofencing Module (basic)	Safe zone + GPS simulation alerts
+✅ Caregiver Dashboard	React web app with live user view
+✅ TTS / Voice Feedback	gTTS fallback, ElevenLabs optional
+✅ Emotion Logging (manual)	Caregiver logs emotion manually for now
+✅ Secure User Profiles	Auth + role-based access for caregivers/users
+
+📅 Phase 2: Smart Expansion (6–10 Weeks)
+Feature	Description
+🔄 Mood Tracking AI	Passive mood detection from patterns & interaction
+🧠 Adaptive Games	AI auto-adjusts difficulty in real time
+📍 Real GPS Integration	Mobile/web location from actual devices
+🩺 Wearable Sync	Add HR, temp, steps, and stress data via smartwatch API
+📤 Data Sharing	PDF + CSV export for doctors, family
+🧑‍⚕️ Emergency Contact Auto-Call	One-click or auto-trigger emergency alerts
+
+📅 Phase 3: Community & Scale (10–16 Weeks)
+Feature	Description
+🫂 Support Group Access	Virtual support meetups, chat, and peer logs
+🧩 Integration Marketplace	Plug-in modules: Alexa, Notion, calendars
+💬 Multi-language Support	Start with English + Spanish
+📱 Mobile Companion App	PWA or native (React Native/Flutter)
+🔒 HIPAA-Ready Audit Trail	Full access logging, audit export features
+
+🧪 Team & Tech Roles
+Role	Focus
+Derek (COO)	Infrastructure, AI model architecture, deployment CI/CD
+Everett (CEO)	Vision, partner relations, accessibility alignment
+Frontend Dev	Dashboard UI/UX, mobile responsive views
+Backend Dev	Flask routes, GPS/mood sync, database ops
+AI Dev	Mood engine, cognitive modeling, voice training
+QA/Support	Testing across real user devices (elder + caregiver profiles)
+
+🗂️ Repos to Create
+* alphawolf-core → Flask API, DB models, service logic
+* alphawolf-dashboard → Caregiver interface (React)
+* alphawolf-games → Standalone or embedded games
+* alphawolf-devops → Infra, CI/CD, Docker, deploy configs

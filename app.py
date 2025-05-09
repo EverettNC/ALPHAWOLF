@@ -562,6 +562,31 @@ def user_profile():
         user = models.Caregiver.query.get(session['user_id'])
         return render_template('user_profile.html', user=user)
 
+@app.route('/cognitive_features')
+def cognitive_features():
+    if 'user_id' not in session:
+        flash('Please log in to access cognitive features', 'error')
+        return redirect(url_for('index'))
+    
+    if session.get('user_type') == 'patient':
+        patient = models.Patient.query.get(session['user_id'])
+    else:
+        # For caregivers, get the first patient (in a real app, this would be a selected patient)
+        patient = models.Patient.query.first()
+        if not patient:
+            flash('No patients found in the system', 'error')
+            return redirect(url_for('caregiver_dashboard'))
+    
+    # Initialize cognitive model for the patient if needed
+    cognitive_enhancement.initialize_patient_model(patient.id, {
+        'demographics': {
+            'gender': patient.gender if hasattr(patient, 'gender') else None,
+            'age': patient.age if hasattr(patient, 'age') else None
+        }
+    })
+    
+    return render_template('cognitive_features.html', patient=patient)
+
 @app.route('/api/chart/cognitive/progress/<int:patient_id>')
 def cognitive_progress_chart(patient_id):
     if 'user_id' not in session:

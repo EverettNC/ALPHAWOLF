@@ -1,0 +1,920 @@
+{% extends "base.html" %}
+
+{% block title %}Cognitive Enhancement Features{% endblock %}
+
+{% block styles %}
+<style>
+  .feature-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #4CAF50;
+  }
+  
+  .feature-icon.adaptive {
+    color: #2196F3;
+  }
+  
+  .feature-icon.voice {
+    color: #F44336;
+  }
+  
+  .feature-icon.symbol {
+    color: #9C27B0;
+  }
+  
+  .feature-icon.ar {
+    color: #FF9800;
+  }
+  
+  .status-badge {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+  }
+  
+  .badge-active {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+  }
+  
+  .badge-inactive {
+    background-color: #FFEBEE;
+    color: #C62828;
+  }
+  
+  .recording-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #f44336;
+    margin-right: 5px;
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  .symbol-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .symbol-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .symbol-item:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .symbol-item img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 5px;
+  }
+  
+  .map-container {
+    height: 300px;
+    margin-top: 15px;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .instruction-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .instruction-list li {
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .instruction-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .timestamp {
+    font-size: 0.8rem;
+    color: #757575;
+    margin-left: 10px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">Cognitive Enhancement Features</h1>
+  
+  <!-- Hidden patient ID for JS -->
+  <input type="hidden" id="current-patient-id" value="{{ patient.id }}">
+  
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">AlphaVox Cognitive Enhancement</h4>
+        <p>These features use advanced AI to adapt and provide personalized support for dementia and Alzheimer's patients. The system learns from interactions and improves over time.</p>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Cognitive Status</h5>
+          <div id="cognitive-status-loading">Loading cognitive status...</div>
+          <div id="cognitive-status-content" style="display: none;">
+            <div class="row">
+              <div class="col-6">
+                <p><strong>Personalization Level:</strong> <span id="personalization-level"></span></p>
+                <p><strong>Voice Adaptation:</strong> <span id="voice-adaptation"></span></p>
+              </div>
+              <div class="col-6">
+                <p><strong>Symbol Familiarity:</strong> <span id="symbol-familiarity"></span></p>
+                <p><strong>Navigation Familiarity:</strong> <span id="navigation-familiarity"></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <!-- Adaptive Learning System -->
+    <div class="col-md-6 mb-4">
+      <div class="feature-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <i class="fas fa-brain feature-icon adaptive"></i>
+            <h3>Adaptive Learning System</h3>
+          </div>
+          <span class="status-badge badge-active" id="adaptive-learning-badge">Active</span>
+        </div>
+        <p>This system learns from your interactions and adapts to provide personalized support. It gathers information about dementia and Alzheimer's to provide better care.</p>
+        
+        <div class="form-group mt-4">
+          <label for="adaptive-input"><strong>Interact with the system:</strong></label>
+          <textarea class="form-control" id="adaptive-input" rows="3" placeholder="Type a message to interact with the adaptive system..."></textarea>
+        </div>
+        <button class="btn btn-primary mt-2" id="adaptive-submit">Submit</button>
+        
+        <div class="mt-3" id="adaptive-response" style="display: none;">
+          <div class="card">
+            <div class="card-header">Response</div>
+            <div class="card-body">
+              <p id="adaptive-response-text"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Voice Mimicry System -->
+    <div class="col-md-6 mb-4">
+      <div class="feature-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <i class="fas fa-microphone-alt feature-icon voice"></i>
+            <h3>Voice Mimicry System</h3>
+          </div>
+          <span class="status-badge badge-active" id="voice-mimicry-badge">Active</span>
+        </div>
+        <p>This system learns from your voice and can generate speech that sounds similar to yours, making interactions more natural and personal.</p>
+        
+        <div class="mt-4">
+          <button class="btn btn-outline-danger mb-3" id="voice-record-btn">
+            <i class="fas fa-microphone"></i> Record Voice Sample
+          </button>
+          <button class="btn btn-outline-secondary mb-3" id="voice-stop-btn" style="display: none;">
+            <span class="recording-indicator"></span> Stop Recording
+          </button>
+          
+          <div class="form-group mt-3" id="voice-transcript-container" style="display: none;">
+            <label for="voice-transcript"><strong>Voice Transcript:</strong></label>
+            <textarea class="form-control" id="voice-transcript" rows="2" placeholder="Enter what you said in the recording..."></textarea>
+            <button class="btn btn-primary mt-2" id="voice-submit">Submit Voice Sample</button>
+          </div>
+        </div>
+        
+        <div class="mt-4">
+          <div class="form-group">
+            <label for="speech-text"><strong>Generate Speech:</strong></label>
+            <textarea class="form-control" id="speech-text" rows="2" placeholder="Enter text to convert to speech..."></textarea>
+          </div>
+          <button class="btn btn-primary mt-2" id="generate-speech-btn">Generate Speech</button>
+          
+          <div class="mt-3" id="speech-output" style="display: none;">
+            <audio id="speech-audio" controls style="width: 100%;"></audio>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Symbol Communication System -->
+    <div class="col-md-6 mb-4">
+      <div class="feature-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <i class="fas fa-icons feature-icon symbol"></i>
+            <h3>Symbol Communication</h3>
+          </div>
+          <span class="status-badge badge-active" id="symbol-communication-badge">Active</span>
+        </div>
+        <p>This system provides symbol-based communication for non-verbal users, with customizable symbol boards to express needs, emotions, and requests.</p>
+        
+        <div class="card mt-3">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="symbol-tabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="symbols-tab" data-toggle="tab" href="#symbols-content" role="tab">My Symbols</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="suggestions-tab" data-toggle="tab" href="#suggestions-content" role="tab">Suggestions</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="add-symbol-tab" data-toggle="tab" href="#add-symbol-content" role="tab">Add Symbol</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="tab-content" id="symbol-tabContent">
+              <!-- My Symbols Tab -->
+              <div class="tab-pane fade show active" id="symbols-content" role="tabpanel">
+                <div id="symbol-categories">
+                  <p>Loading symbol board...</p>
+                </div>
+                <div id="symbol-grid" class="symbol-grid">
+                  <!-- Symbol items will be populated here -->
+                </div>
+              </div>
+              
+              <!-- Suggestions Tab -->
+              <div class="tab-pane fade" id="suggestions-content" role="tabpanel">
+                <p>Contextual symbol suggestions based on time of day and recent activities.</p>
+                <button class="btn btn-sm btn-outline-primary mb-3" id="get-suggestions-btn">
+                  <i class="fas fa-sync"></i> Get Suggestions
+                </button>
+                <div id="suggestions-grid" class="symbol-grid">
+                  <!-- Suggested symbols will be populated here -->
+                </div>
+              </div>
+              
+              <!-- Add Symbol Tab -->
+              <div class="tab-pane fade" id="add-symbol-content" role="tabpanel">
+                <form id="add-symbol-form">
+                  <div class="form-group">
+                    <label for="symbol-category">Category:</label>
+                    <select class="form-control" id="symbol-category" required>
+                      <option value="">Select a Category</option>
+                      <option value="basic_needs">Basic Needs</option>
+                      <option value="emotions">Emotions</option>
+                      <option value="health">Health</option>
+                      <option value="activities">Activities</option>
+                      <option value="people">People</option>
+                      <option value="locations">Locations</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="symbol-name">Name:</label>
+                    <input type="text" class="form-control" id="symbol-name" placeholder="Enter symbol name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="symbol-description">Description:</label>
+                    <input type="text" class="form-control" id="symbol-description" placeholder="What does this symbol mean?">
+                  </div>
+                  <div class="form-group">
+                    <label for="symbol-image">Image:</label>
+                    <input type="file" class="form-control-file" id="symbol-image" accept="image/*">
+                  </div>
+                  <button type="submit" class="btn btn-primary">Add Symbol</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- AR Navigation System -->
+    <div class="col-md-6 mb-4">
+      <div class="feature-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <i class="fas fa-map-marked-alt feature-icon ar"></i>
+            <h3>AR Navigation System</h3>
+          </div>
+          <span class="status-badge badge-active" id="ar-navigation-badge">Active</span>
+        </div>
+        <p>This system provides indoor navigation assistance, object recognition, and contextual reminders to help with orientation and daily tasks.</p>
+        
+        <div class="card mt-3">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="navigation-tabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="layouts-tab" data-toggle="tab" href="#layouts-content" role="tab">Floor Plans</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="navigation-tab" data-toggle="tab" href="#navigation-content" role="tab">Navigation</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="add-layout-tab" data-toggle="tab" href="#add-layout-content" role="tab">Add Floor Plan</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="tab-content" id="navigation-tabContent">
+              <!-- Floor Plans Tab -->
+              <div class="tab-pane fade show active" id="layouts-content" role="tabpanel">
+                <div id="layout-list">
+                  <p>Loading floor plans...</p>
+                </div>
+                <div id="layout-details" style="display: none;">
+                  <div class="map-container" id="layout-map"></div>
+                </div>
+              </div>
+              
+              <!-- Navigation Tab -->
+              <div class="tab-pane fade" id="navigation-content" role="tabpanel">
+                <form id="navigation-form">
+                  <div class="form-group">
+                    <label for="navigation-layout">Floor Plan:</label>
+                    <select class="form-control" id="navigation-layout" required>
+                      <option value="">Select a Floor Plan</option>
+                    </select>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="navigation-start">Starting Point:</label>
+                        <input type="text" class="form-control" id="navigation-start" placeholder="Where are you starting?">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="navigation-end">Destination:</label>
+                        <input type="text" class="form-control" id="navigation-end" placeholder="Where do you want to go?">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="navigation-complexity">Detail Level:</label>
+                    <select class="form-control" id="navigation-complexity">
+                      <option value="simple">Simple (few steps)</option>
+                      <option value="moderate">Moderate (more details)</option>
+                      <option value="detailed">Detailed (step-by-step)</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Get Directions</button>
+                </form>
+                
+                <div id="navigation-instructions" style="display: none;" class="mt-3">
+                  <h5>Directions:</h5>
+                  <ol class="instruction-list" id="instruction-steps">
+                  </ol>
+                </div>
+              </div>
+              
+              <!-- Add Floor Plan Tab -->
+              <div class="tab-pane fade" id="add-layout-content" role="tabpanel">
+                <form id="add-layout-form">
+                  <div class="form-group">
+                    <label for="layout-name">Name:</label>
+                    <input type="text" class="form-control" id="layout-name" placeholder="e.g., Home, Nursing Facility, etc." required>
+                  </div>
+                  <div class="form-group">
+                    <label for="layout-image">Floor Plan Image:</label>
+                    <input type="file" class="form-control-file" id="layout-image" accept="image/*">
+                  </div>
+                  <button type="submit" class="btn btn-primary">Add Floor Plan</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/cognitive_enhancement.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Adaptive Learning Section
+    const adaptiveInput = document.getElementById('adaptive-input');
+    const adaptiveSubmit = document.getElementById('adaptive-submit');
+    const adaptiveResponse = document.getElementById('adaptive-response');
+    const adaptiveResponseText = document.getElementById('adaptive-response-text');
+    
+    adaptiveSubmit.addEventListener('click', function() {
+      const inputText = adaptiveInput.value.trim();
+      if (!inputText) return;
+      
+      // Process input through cognitive system
+      CognitiveEnhancement.generateContent('response', {
+        input: inputText,
+        context: {
+          time_of_day: getCurrentTimeOfDay()
+        }
+      }).then(response => {
+        if (response) {
+          adaptiveResponseText.textContent = response.text;
+          adaptiveResponse.style.display = 'block';
+          
+          // If there's speech output, use the voice system to speak it
+          if (response.speech) {
+            VoiceMimicry.playAudio(response.speech.url);
+          }
+        }
+      });
+    });
+    
+    // Voice Mimicry Section
+    const voiceRecordBtn = document.getElementById('voice-record-btn');
+    const voiceStopBtn = document.getElementById('voice-stop-btn');
+    const voiceTranscriptContainer = document.getElementById('voice-transcript-container');
+    const voiceTranscript = document.getElementById('voice-transcript');
+    const voiceSubmit = document.getElementById('voice-submit');
+    const speechText = document.getElementById('speech-text');
+    const generateSpeechBtn = document.getElementById('generate-speech-btn');
+    const speechOutput = document.getElementById('speech-output');
+    const speechAudio = document.getElementById('speech-audio');
+    
+    voiceRecordBtn.addEventListener('click', function() {
+      VoiceMimicry.startRecording().then(success => {
+        if (success) {
+          voiceRecordBtn.style.display = 'none';
+          voiceStopBtn.style.display = 'inline-block';
+        }
+      });
+    });
+    
+    voiceStopBtn.addEventListener('click', function() {
+      VoiceMimicry.stopRecording().then(audioData => {
+        voiceStopBtn.style.display = 'none';
+        voiceRecordBtn.style.display = 'inline-block';
+        voiceTranscriptContainer.style.display = 'block';
+        // Store audio data for later submission
+        voiceStopBtn.dataset.audioData = audioData;
+      });
+    });
+    
+    voiceSubmit.addEventListener('click', function() {
+      const audioData = voiceStopBtn.dataset.audioData;
+      const transcript = voiceTranscript.value.trim();
+      
+      if (audioData) {
+        VoiceMimicry.addVoiceSample(audioData, transcript).then(success => {
+          if (success) {
+            voiceTranscriptContainer.style.display = 'none';
+            voiceTranscript.value = '';
+            delete voiceStopBtn.dataset.audioData;
+            showToast('Voice sample added successfully');
+          }
+        });
+      }
+    });
+    
+    generateSpeechBtn.addEventListener('click', function() {
+      const text = speechText.value.trim();
+      if (!text) return;
+      
+      VoiceMimicry.generateSpeech(text).then(result => {
+        if (result && result.url) {
+          speechAudio.src = result.url;
+          speechOutput.style.display = 'block';
+        }
+      });
+    });
+    
+    // Symbol Communication Section
+    document.getElementById('get-suggestions-btn').addEventListener('click', function() {
+      SymbolCommunication.getSymbolSuggestions(getCurrentTimeOfDay());
+    });
+    
+    document.getElementById('add-symbol-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const category = document.getElementById('symbol-category').value;
+      const name = document.getElementById('symbol-name').value;
+      const description = document.getElementById('symbol-description').value;
+      const imageFile = document.getElementById('symbol-image').files[0];
+      
+      if (!category || !name) {
+        showToast('Please fill out required fields');
+        return;
+      }
+      
+      // Process image file to base64 if available
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          const base64data = reader.result;
+          addSymbol(category, name, description, base64data);
+        };
+        reader.readAsDataURL(imageFile);
+      } else {
+        addSymbol(category, name, description, null);
+      }
+    });
+    
+    function addSymbol(category, name, description, imageData) {
+      SymbolCommunication.addCustomSymbol(category, name, description, imageData)
+        .then(symbol => {
+          if (symbol) {
+            document.getElementById('add-symbol-form').reset();
+            document.getElementById('symbols-tab').click();
+            showToast('Symbol added successfully');
+          }
+        });
+    }
+    
+    // AR Navigation System
+    document.getElementById('navigation-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const layoutId = document.getElementById('navigation-layout').value;
+      const startName = document.getElementById('navigation-start').value;
+      const endName = document.getElementById('navigation-end').value;
+      const complexity = document.getElementById('navigation-complexity').value;
+      
+      if (!layoutId || !startName || !endName) {
+        showToast('Please fill out all fields');
+        return;
+      }
+      
+      ARNavigation.getNavigationInstructions(layoutId, startName, endName, complexity)
+        .then(instructions => {
+          if (instructions) {
+            const instructionSteps = document.getElementById('instruction-steps');
+            instructionSteps.innerHTML = '';
+            
+            instructions.instructions.forEach(instruction => {
+              const li = document.createElement('li');
+              li.textContent = instruction;
+              instructionSteps.appendChild(li);
+            });
+            
+            document.getElementById('navigation-instructions').style.display = 'block';
+          }
+        });
+    });
+    
+    document.getElementById('add-layout-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('layout-name').value;
+      const imageFile = document.getElementById('layout-image').files[0];
+      
+      if (!name) {
+        showToast('Please provide a name for the floor plan');
+        return;
+      }
+      
+      // Create basic layout data
+      const layoutData = {
+        rooms: [],
+        areas: [],
+        landmarks: []
+      };
+      
+      // Process image file to base64 if available
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          const base64data = reader.result;
+          addLayout(name, layoutData, base64data);
+        };
+        reader.readAsDataURL(imageFile);
+      } else {
+        addLayout(name, layoutData, null);
+      }
+    });
+    
+    function addLayout(name, layoutData, floorPlanImage) {
+      ARNavigation.addLayout(name, layoutData, floorPlanImage)
+        .then(layout => {
+          if (layout) {
+            document.getElementById('add-layout-form').reset();
+            document.getElementById('layouts-tab').click();
+            showToast('Floor plan added successfully');
+          }
+        });
+    }
+    
+    // Cognitive Status Updates
+    document.addEventListener('cognitive-status-updated', function(e) {
+      const status = e.detail.status;
+      const progress = status.learning_progress;
+      
+      // Update progress displays
+      document.getElementById('personalization-level').textContent = formatPercentage(progress.personalization_level);
+      document.getElementById('voice-adaptation').textContent = formatPercentage(progress.voice_adaptation);
+      document.getElementById('symbol-familiarity').textContent = formatPercentage(progress.symbol_familiarity);
+      document.getElementById('navigation-familiarity').textContent = formatPercentage(progress.navigation_familiarity);
+      
+      // Update component status badges
+      updateComponentBadge('adaptive-learning-badge', status.active_components.adaptive_learning);
+      updateComponentBadge('voice-mimicry-badge', status.active_components.voice_mimicry);
+      updateComponentBadge('symbol-communication-badge', status.active_components.symbol_communication);
+      updateComponentBadge('ar-navigation-badge', status.active_components.ar_navigation);
+      
+      // Show status content
+      document.getElementById('cognitive-status-loading').style.display = 'none';
+      document.getElementById('cognitive-status-content').style.display = 'block';
+    });
+    
+    document.addEventListener('symbol-board-loaded', function(e) {
+      renderSymbolBoard(e.detail.board);
+    });
+    
+    document.addEventListener('symbol-suggestions-loaded', function(e) {
+      renderSymbolSuggestions(e.detail.suggestions);
+    });
+    
+    document.addEventListener('navigation-layouts-loaded', function(e) {
+      renderLayoutList(e.detail.layouts);
+    });
+    
+    // Helper Functions
+    function updateComponentBadge(badgeId, isActive) {
+      const badge = document.getElementById(badgeId);
+      if (isActive) {
+        badge.className = 'status-badge badge-active';
+        badge.textContent = 'Active';
+      } else {
+        badge.className = 'status-badge badge-inactive';
+        badge.textContent = 'Inactive';
+      }
+    }
+    
+    function formatPercentage(value) {
+      return `${Math.round(value * 100)}%`;
+    }
+    
+    function getCurrentTimeOfDay() {
+      const hour = new Date().getHours();
+      if (hour >= 5 && hour < 12) return 'morning';
+      if (hour >= 12 && hour < 17) return 'afternoon';
+      if (hour >= 17 && hour < 22) return 'evening';
+      return 'night';
+    }
+    
+    function renderSymbolBoard(board) {
+      if (!board) return;
+      
+      const categoriesContainer = document.getElementById('symbol-categories');
+      const symbolGrid = document.getElementById('symbol-grid');
+      
+      categoriesContainer.innerHTML = '';
+      symbolGrid.innerHTML = '';
+      
+      if (board.categories && Object.keys(board.categories).length > 0) {
+        // Create category selector
+        const categorySelect = document.createElement('select');
+        categorySelect.className = 'form-control mb-3';
+        categorySelect.id = 'category-selector';
+        
+        Object.keys(board.categories).forEach(categoryKey => {
+          const category = board.categories[categoryKey];
+          const option = document.createElement('option');
+          option.value = categoryKey;
+          option.textContent = category.name;
+          categorySelect.appendChild(option);
+        });
+        
+        categoriesContainer.appendChild(categorySelect);
+        
+        // Show symbols for first category
+        const firstCategory = Object.keys(board.categories)[0];
+        renderCategorySymbols(board.categories[firstCategory].symbols, symbolGrid);
+        
+        // Handle category changes
+        categorySelect.addEventListener('change', function() {
+          const selectedCategory = this.value;
+          renderCategorySymbols(board.categories[selectedCategory].symbols, symbolGrid);
+        });
+      } else {
+        categoriesContainer.innerHTML = '<p>No symbol categories found. Add some symbols to get started.</p>';
+      }
+    }
+    
+    function renderCategorySymbols(symbols, container) {
+      container.innerHTML = '';
+      
+      if (symbols && symbols.length > 0) {
+        symbols.forEach(symbol => {
+          const symbolItem = document.createElement('div');
+          symbolItem.className = 'symbol-item';
+          symbolItem.dataset.id = symbol.id;
+          symbolItem.dataset.category = symbol.category || 'unknown';
+          
+          if (symbol.path) {
+            const img = document.createElement('img');
+            img.src = `/static/symbols/${symbol.path}`;
+            img.alt = symbol.name;
+            img.onerror = function() {
+              this.onerror = null;
+              this.src = '/static/images/symbol-placeholder.png';
+            };
+            symbolItem.appendChild(img);
+          } else {
+            const iconPlaceholder = document.createElement('div');
+            iconPlaceholder.className = 'symbol-icon-placeholder';
+            iconPlaceholder.innerHTML = '<i class="fas fa-image"></i>';
+            symbolItem.appendChild(iconPlaceholder);
+          }
+          
+          const name = document.createElement('div');
+          name.className = 'symbol-name';
+          name.textContent = symbol.name;
+          symbolItem.appendChild(name);
+          
+          // Add click handler
+          symbolItem.addEventListener('click', function() {
+            SymbolCommunication.recordSymbolUsage(symbol.id, this.dataset.category);
+            showToast(`Selected: ${symbol.name}`);
+          });
+          
+          container.appendChild(symbolItem);
+        });
+      } else {
+        container.innerHTML = '<p>No symbols found in this category.</p>';
+      }
+    }
+    
+    function renderSymbolSuggestions(suggestions) {
+      const suggestionsGrid = document.getElementById('suggestions-grid');
+      suggestionsGrid.innerHTML = '';
+      
+      if (suggestions && Object.keys(suggestions).length > 0) {
+        let hasSymbols = false;
+        
+        Object.keys(suggestions).forEach(category => {
+          const categorySymbols = suggestions[category];
+          if (categorySymbols && categorySymbols.length > 0) {
+            hasSymbols = true;
+            
+            // Add category header
+            const categoryHeader = document.createElement('div');
+            categoryHeader.className = 'w-100 mb-2 mt-3';
+            categoryHeader.innerHTML = `<h6>${getCategoryName(category)}</h6>`;
+            suggestionsGrid.appendChild(categoryHeader);
+            
+            // Add symbols
+            categorySymbols.forEach(symbol => {
+              const symbolItem = document.createElement('div');
+              symbolItem.className = 'symbol-item';
+              symbolItem.dataset.id = symbol.id;
+              symbolItem.dataset.category = category;
+              
+              if (symbol.path) {
+                const img = document.createElement('img');
+                img.src = `/static/symbols/${symbol.path}`;
+                img.alt = symbol.name;
+                img.onerror = function() {
+                  this.onerror = null;
+                  this.src = '/static/images/symbol-placeholder.png';
+                };
+                symbolItem.appendChild(img);
+              } else {
+                const iconPlaceholder = document.createElement('div');
+                iconPlaceholder.className = 'symbol-icon-placeholder';
+                iconPlaceholder.innerHTML = '<i class="fas fa-image"></i>';
+                symbolItem.appendChild(iconPlaceholder);
+              }
+              
+              const name = document.createElement('div');
+              name.className = 'symbol-name';
+              name.textContent = symbol.name;
+              symbolItem.appendChild(name);
+              
+              // Add click handler
+              symbolItem.addEventListener('click', function() {
+                SymbolCommunication.recordSymbolUsage(symbol.id, this.dataset.category);
+                showToast(`Selected: ${symbol.name}`);
+              });
+              
+              suggestionsGrid.appendChild(symbolItem);
+            });
+          }
+        });
+        
+        if (!hasSymbols) {
+          suggestionsGrid.innerHTML = '<p>No suggestions available for the current context.</p>';
+        }
+      } else {
+        suggestionsGrid.innerHTML = '<p>No suggestions available.</p>';
+      }
+    }
+    
+    function getCategoryName(category) {
+      const categoryNames = {
+        'basic_needs': 'Basic Needs',
+        'emotions': 'Emotions',
+        'health': 'Health',
+        'activities': 'Activities',
+        'people': 'People',
+        'locations': 'Locations',
+        'time': 'Time',
+        'help': 'Help'
+      };
+      
+      return categoryNames[category] || category;
+    }
+    
+    function renderLayoutList(layouts) {
+      const layoutList = document.getElementById('layout-list');
+      const navigationLayoutSelect = document.getElementById('navigation-layout');
+      
+      layoutList.innerHTML = '';
+      navigationLayoutSelect.innerHTML = '<option value="">Select a Floor Plan</option>';
+      
+      if (layouts && layouts.length > 0) {
+        const listGroup = document.createElement('div');
+        listGroup.className = 'list-group';
+        
+        layouts.forEach(layout => {
+          // Add to layout list
+          const layoutItem = document.createElement('a');
+          layoutItem.className = 'list-group-item list-group-item-action';
+          layoutItem.href = '#';
+          layoutItem.dataset.id = layout.id;
+          layoutItem.textContent = layout.name;
+          
+          layoutItem.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Show layout details
+            document.getElementById('layout-details').style.display = 'block';
+            // In a real implementation, would display the floor plan image here
+          });
+          
+          listGroup.appendChild(layoutItem);
+          
+          // Add to navigation select
+          const option = document.createElement('option');
+          option.value = layout.id;
+          option.textContent = layout.name;
+          navigationLayoutSelect.appendChild(option);
+        });
+        
+        layoutList.appendChild(listGroup);
+      } else {
+        layoutList.innerHTML = '<p>No floor plans found. Add a floor plan to get started with navigation.</p>';
+      }
+    }
+    
+    function showToast(message) {
+      // Simple toast implementation
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.right = '20px';
+      toast.style.backgroundColor = '#333';
+      toast.style.color = 'white';
+      toast.style.padding = '10px 20px';
+      toast.style.borderRadius = '4px';
+      toast.style.zIndex = '1000';
+      toast.textContent = message;
+      
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+  });
+</script>
+{% endblock %}

@@ -37,6 +37,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('reminders') }}">Reminders</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('cognitive_features') }}">
+                                    <span class="badge bg-success">New</span> AlphaVox Features
+                                </a>
+                            </li>
                         {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('caregiver_dashboard') }}">Dashboard</a>
@@ -46,6 +51,11 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('alerts') }}">Alerts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('cognitive_features') }}">
+                                    <span class="badge bg-success">New</span> AlphaVox Features
+                                </a>
                             </li>
                         {% endif %}
                     {% endif %}

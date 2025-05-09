@@ -1,0 +1,110 @@
+{
+  "basic_needs": [
+    {
+      "id": "food",
+      "name": "Food",
+      "description": "I am hungry",
+      "path": "food.png"
+    },
+    {
+      "id": "water",
+      "name": "Water",
+      "description": "I am thirsty",
+      "path": "water.png"
+    },
+    {
+      "id": "bathroom",
+      "name": "Bathroom",
+      "description": "I need to use the bathroom",
+      "path": "bathroom.png"
+    },
+    {
+      "id": "sleep",
+      "name": "Sleep",
+      "description": "I am tired/want to sleep",
+      "path": "sleep.png"
+    }
+  ],
+  "emotions": [
+    {
+      "id": "happy",
+      "name": "Happy",
+      "description": "I feel happy",
+      "path": "happy.png"
+    },
+    {
+      "id": "sad",
+      "name": "Sad",
+      "description": "I feel sad",
+      "path": "sad.png"
+    },
+    {
+      "id": "afraid",
+      "name": "Afraid",
+      "description": "I feel scared",
+      "path": "afraid.png"
+    },
+    {
+      "id": "confused",
+      "name": "Confused",
+      "description": "I feel confused",
+      "path": "confused.png"
+    }
+  ],
+  "health": [
+    {
+      "id": "pain",
+      "name": "Pain",
+      "description": "I am in pain",
+      "path": "pain.png"
+    },
+    {
+      "id": "medication",
+      "name": "Medication",
+      "description": "I need my medication",
+      "path": "medication.png"
+    },
+    {
+      "id": "cold",
+      "name": "Cold",
+      "description": "I feel cold",
+      "path": "cold.png"
+    },
+    {
+      "id": "hot",
+      "name": "Hot",
+      "description": "I feel hot",
+      "path": "hot.png"
+    }
+  ],
+  "activities": [
+    {
+      "id": "tv",
+      "name": "Television",
+      "description": "I want to watch TV",
+      "path": "tv.png"
+    },
+    {
+      "id": "music",
+      "name": "Music",
+      "description": "I want to listen to music",
+      "path": "music.png"
+    },
+    {
+      "id": "walk",
+      "name": "Walk",
+      "description": "I want to go for a walk",
+      "path": "walk.png"
+    },
+    {
+      "id": "read",
+      "name": "Read",
+      "description": "I want to read",
+      "path": "read.png"
+    }
+  ],
+  "people": [],
+  "locations": [],
+  "time": [],
+  "help": []
+}

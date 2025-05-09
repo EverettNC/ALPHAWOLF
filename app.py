@@ -70,6 +70,24 @@ learning_journey = LearningJourney()
 research_module = ResearchModule()
 tts_engine = TTSEngine()
 
+# Initialize AlphaVox-specific cognitive enhancement services
+from services.adaptive_learning_system import AdaptiveLearningSystem
+from services.voice_mimicry import VoiceMimicryEngine
+from services.symbol_communication import SymbolCommunication
+from services.ar_navigation import ARNavigationSystem
+from services.cognitive_enhancement_module import CognitiveEnhancementModule
+
+adaptive_learning = AdaptiveLearningSystem()
+voice_mimicry = VoiceMimicryEngine()
+symbol_communication = SymbolCommunication()
+ar_navigation = ARNavigationSystem()
+cognitive_enhancement = CognitiveEnhancementModule(
+    adaptive_learning=adaptive_learning,
+    voice_mimicry=voice_mimicry,
+    symbol_communication=symbol_communication,
+    ar_navigation=ar_navigation
+)
+
 with app.app_context():
     # Import models
     import models
@@ -559,6 +577,347 @@ def cognitive_progress_chart(patient_id):
     }
     
     return jsonify(chart_data)
+
+# New AlphaVox Cognitive Enhancement Routes
+
+@app.route('/api/cognitive/initialize/<int:patient_id>', methods=['POST'])
+def cognitive_initialize(patient_id):
+    """Initialize or update cognitive services for a patient."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get patient data from request body
+    patient_data = request.json or {}
+    
+    # Initialize the cognitive model for the patient
+    result = cognitive_enhancement.initialize_patient_model(patient_id, patient_data)
+    
+    if result:
+        return jsonify({
+            'success': True,
+            'message': 'Cognitive services initialized',
+            'model': result
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': 'Failed to initialize cognitive services'
+        }), 500
+
+@app.route('/api/cognitive/status/<int:patient_id>', methods=['GET'])
+def cognitive_status(patient_id):
+    """Get cognitive status and learning progress for a patient."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get the patient's cognitive status
+    result = cognitive_enhancement.get_patient_cognitive_status(patient_id)
+    
+    if result.get('success'):
+        return jsonify(result)
+    else:
+        return jsonify(result), 500
+
+@app.route('/api/cognitive/interact/<int:patient_id>', methods=['POST'])
+def cognitive_interact(patient_id):
+    """Process a patient interaction and update models."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get interaction data from request body
+    interaction_data = request.json or {}
+    
+    # Process the interaction
+    result = cognitive_enhancement.process_interaction(patient_id, interaction_data)
+    
+    if result.get('success'):
+        return jsonify(result)
+    else:
+        return jsonify(result), 500
+
+@app.route('/api/cognitive/generate/<int:patient_id>/<content_type>', methods=['POST'])
+def cognitive_generate(patient_id, content_type):
+    """Generate personalized content for a patient."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get generation parameters from request body
+    parameters = request.json or {}
+    
+    # Generate personalized content
+    result = cognitive_enhancement.generate_personalized_content(patient_id, content_type, parameters)
+    
+    if result.get('success'):
+        return jsonify(result)
+    else:
+        return jsonify(result), 500
+
+@app.route('/api/cognitive/preferences/<int:patient_id>', methods=['PUT'])
+def cognitive_update_preferences(patient_id):
+    """Update preferences for a patient."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get preference updates from request body
+    preferences = request.json or {}
+    
+    # Update preferences
+    result = cognitive_enhancement.update_patient_preferences(patient_id, preferences)
+    
+    if result.get('success'):
+        return jsonify(result)
+    else:
+        return jsonify(result), 500
+
+@app.route('/api/cognitive/component/<int:patient_id>/<component_name>', methods=['PUT'])
+def cognitive_toggle_component(patient_id, component_name):
+    """Enable or disable a cognitive component for a patient."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get active state from request body
+    data = request.json or {}
+    active = data.get('active', True)
+    
+    # Toggle component
+    result = cognitive_enhancement.toggle_component(patient_id, component_name, active)
+    
+    if result.get('success'):
+        return jsonify(result)
+    else:
+        return jsonify(result), 500
+
+@app.route('/api/symbols/<int:patient_id>', methods=['GET'])
+def get_symbol_board(patient_id):
+    """Get a patient's symbol communication board."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get the patient's symbol board
+    board = symbol_communication.get_user_board(patient_id)
+    
+    if board:
+        return jsonify({
+            'success': True,
+            'board': board
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': 'Symbol board not found'
+        }), 404
+
+@app.route('/api/symbols/<int:patient_id>', methods=['POST'])
+def create_symbol_board(patient_id):
+    """Create a new symbol board for a patient."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get board data from request body
+    data = request.json or {}
+    
+    # Create a new symbol board
+    board = symbol_communication.create_symbol_board(
+        patient_id,
+        data.get('name', 'My Symbol Board'),
+        data.get('categories')
+    )
+    
+    if board:
+        return jsonify({
+            'success': True,
+            'board': board
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': 'Failed to create symbol board'
+        }), 500
+
+@app.route('/api/symbols/<int:patient_id>/symbol', methods=['POST'])
+def add_custom_symbol(patient_id):
+    """Add a custom symbol to a patient's board."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get symbol data from request body
+    data = request.json or {}
+    
+    # Add custom symbol
+    symbol = symbol_communication.add_custom_symbol(
+        patient_id,
+        data.get('category'),
+        data.get('name'),
+        data.get('description'),
+        data.get('image_data')
+    )
+    
+    if symbol:
+        return jsonify({
+            'success': True,
+            'symbol': symbol
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': 'Failed to add custom symbol'
+        }), 500
+
+@app.route('/api/symbols/<int:patient_id>/suggestions', methods=['GET'])
+def get_symbol_suggestions(patient_id):
+    """Get contextual symbol suggestions for a patient."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get context parameters from query string
+    time_of_day = request.args.get('time_of_day')
+    location = request.args.get('location')
+    
+    # Get contextual suggestions
+    suggestions = symbol_communication.get_contextual_suggestions(
+        patient_id,
+        time_of_day,
+        location
+    )
+    
+    return jsonify({
+        'success': True,
+        'suggestions': suggestions
+    })
+
+@app.route('/api/voice/<int:patient_id>/generate', methods=['POST'])
+def generate_voice(patient_id):
+    """Generate speech that mimics the patient's voice."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get text to convert to speech
+    data = request.json or {}
+    text = data.get('text', '')
+    
+    if not text:
+        return jsonify({
+            'success': False,
+            'message': 'No text provided'
+        }), 400
+    
+    # Generate speech
+    result = voice_mimicry.generate_mimicked_speech(
+        patient_id,
+        text,
+        data.get('context')
+    )
+    
+    if result.get('success'):
+        return jsonify({
+            'success': True,
+            'speech': result
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': result.get('error', 'Failed to generate speech'),
+            'text': text
+        }), 500
+
+@app.route('/api/voice/<int:patient_id>/sample', methods=['POST'])
+def add_voice_sample(patient_id):
+    """Add a voice sample to train the voice mimicry system."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get voice sample data
+    data = request.json or {}
+    
+    # Add voice sample
+    result = voice_mimicry.add_voice_sample(
+        patient_id,
+        data.get('audio_data'),
+        None,  # audio_path
+        data.get('transcript')
+    )
+    
+    if result:
+        return jsonify({
+            'success': True,
+            'message': 'Voice sample added successfully'
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': 'Failed to add voice sample'
+        }), 500
+
+@app.route('/api/navigation/<int:patient_id>/layouts', methods=['GET'])
+def get_navigation_layouts(patient_id):
+    """Get all AR navigation layouts for a patient."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get patient layouts
+    layouts = ar_navigation.get_patient_layouts(patient_id)
+    
+    return jsonify({
+        'success': True,
+        'layouts': layouts
+    })
+
+@app.route('/api/navigation/<int:patient_id>/layout', methods=['POST'])
+def add_navigation_layout(patient_id):
+    """Add a new AR navigation layout for a patient."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get layout data
+    data = request.json or {}
+    
+    # Add layout
+    layout = ar_navigation.add_location_layout(
+        patient_id,
+        data.get('name', 'New Layout'),
+        data,
+        data.get('floor_plan_image')
+    )
+    
+    if layout:
+        return jsonify({
+            'success': True,
+            'layout': layout
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': 'Failed to add layout'
+        }), 500
+
+@app.route('/api/navigation/<int:patient_id>/instructions', methods=['POST'])
+def get_navigation_instructions(patient_id):
+    """Generate navigation instructions for a patient."""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    # Get navigation parameters
+    data = request.json or {}
+    
+    # Generate instructions
+    instructions = ar_navigation.generate_navigation_instructions(
+        patient_id,
+        data.get('layout_id'),
+        data.get('start_name'),
+        data.get('end_name'),
+        data.get('complexity', 'simple')
+    )
+    
+    if instructions:
+        return jsonify({
+            'success': True,
+            'instructions': instructions
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': 'Failed to generate navigation instructions'
+        }), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

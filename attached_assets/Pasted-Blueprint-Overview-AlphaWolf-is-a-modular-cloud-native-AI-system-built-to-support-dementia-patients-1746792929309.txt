@@ -1,0 +1,155 @@
+Blueprint Overview
+AlphaWolf is a modular, cloud-native AI system built to support dementia patients and caregivers. It leverages multimodal inputs (gestures, voice, eye-tracking), AI-driven cognitive exercises, and geolocation tracking to enhance independence and safety. The system integrates with AlphaVox’s infrastructure (e.g., Flask app, NLC) and extends its capabilities for dementia-specific use cases, such as memory retention and wandering prevention.
+Key Features
+* Memory Retention Exercises: AI-driven games and activities (e.g., reminiscence therapy, cognitive puzzles) to stimulate memory and cognition, personalized via the Neural Learning Core (NLC).
+* Daily Reminders: Voice-activated, customizable reminders for medications, appointments, and tasks, using AlphaVox’s TTS and gesture recognition.
+* Cognitive Assistance: Adaptive support for daily activities (e.g., step-by-step guidance for dressing, cooking) via voice, visuals, and gestures.
+* Geolocation Tracking & Wandering Prevention: GPS-based tracking with safe zone alerts, integrated with wearable devices or smartphones to prevent wandering, a critical dementia concern.
+* Safety & Dignity: Non-invasive monitoring, caregiver alerts, and privacy-first data handling to ensure user autonomy and respect.
+Alignment with AlphaVox
+* Reuses Components: Leverages gesture_model.pkl for gesture inputs, alphavox_input_nlu.py for multimodal processing, learning_journey.py for tracking progress, and research_module.py for dementia therapy insights (e.g., cognitive training, SARs).
+* Ethical Focus: Builds on your emphasis (March 2025) for decentralized, community-driven AI, ensuring accessibility and user control.
+* Neurodiversity-Affirming: Incorporates dementia-specific research (e.g.,,,) to tailor interventions, avoiding one-size-fits-all approaches.
+* ￼
+*  
+* ￼
+*  
+* ￼
+Project Blueprint
+Below is the detailed blueprint, including system architecture, DevOps pipeline, development phases, and integration points, provided as a Python-based configuration and documentation file.
+
+alphawolf_blueprint.py
+python
+Show inline
+Detailed Breakdown
+1. System Architecture
+The architecture is modular, reusing AlphaVox components and adding dementia-specific features:
+* Input Layer: Extends alphavox_input_nlu.py for gestures (gesture_model.pkl), voice, and eye-tracking, with new geolocation tracking via geopy and MQTT for real-time GPS updates.
+* Processing Layer: Uses neural_learning_core.py for root cause inference (e.g., identifying cognitive_load during exercises), learning_journey.py for tracking progress, and research_module.py for dementia therapy insights (e.g., cognitive stimulation).
+* ￼
+* Cognitive Layer: New components for memory exercises (pygame-based games like memory matching), reminders (schedule for timed prompts), and cognitive assistance (spacy-driven task guidance).
+* Safety Layer: Implements wandering prevention with safe zone alerts, using geopy for GPS and MQTT for caregiver notifications (inspired by SafeWander).
+* ￼
+* Output Layer: Reuses AlphaVox’s TTS for voice responses, adds visual feedback (Flask-rendered UI), and sends caregiver alerts via MQTT.
+* Infrastructure Layer: Flask app (app.py), PostgreSQL (app_init.py), and Azure services (App Service, Cosmos DB, IoT Hub for geolocation).
+2. DevOps Pipeline
+The pipeline ensures robust development and deployment:
+* Code: Git for version control, flake8 for style, pytest for unit tests.
+* Build: Docker for containerization, pip for dependency checks.
+* Test: Integration tests (pytest), load tests (locust), security scans (bandit).
+* Deploy: Azure CLI for App Service deployment, IoT Hub for geolocation, SQLAlchemy for database migrations.
+* Monitor: Azure Monitor for logs, Alerts for wandering events, Application Insights for performance.
+The GitHub Actions workflow automates CI/CD, triggered on push/pull requests, ensuring continuous integration and deployment.
+3. Development Roadmap
+The roadmap spans ~5 months, starting May 15, 2025:
+* Phase 1 (30 days): Set up project, integrate AlphaVox modules, verify gesture_model.pkl.
+* Phase 2 (60 days): Develop memory exercises, reminders, and cognitive assistance, leveraging learning_journey.py.
+* Phase 3 (45 days): Implement geolocation and wandering prevention, testing with caregivers.
+* Phase 4 (30 days): Beta test with 50 dementia patients, deploy to production.
+4. Integration Points
+* Gesture Model (gesture_model.pkl): Used for gesture inputs (e.g., “Hand Up” for attention), processed by AlphaVoxInputProcessor.
+* Research Module: Adds dementia-specific topics (e.g., cognitive training, reminiscence therapy) to LearningJourney.
+* ￼
+* NLC: Infers root causes (e.g., emotional_state during memory exercises) to personalize learning paths.
+* Flask App: Extends app.py with new routes for cognitive exercises, reminders, and safety alerts.
+5. Ethical Considerations
+* Privacy: Encrypts GPS and health data, allows user-controlled data deletion (aligned with your March 2025 ethics focus).
+* Dignity: Non-invasive interactions, customizable interfaces for accessibility (e.g., large fonts, simple voice prompts).
+* Consent: Caregiver and user opt-in for tracking and data sharing, with transparent audit logs.
+* Neurodiversity-Affirming: Tailors interventions to individual cognitive needs, avoiding deficit-based approaches (inspired by).
+* ￼
+Dependencies
+Install required packages:
+bash
+
+Copy
+pip install flask numpy spacy scikit-learn requests beautifulsoup4 pandas pygame geopy paho-mqtt schedule flask-sqlalchemy psycopg2-binary
+python -m spacy download en_core_web_sm
+
+
+Ensure models/gesture_model.pkl exists (from train_nonverbal_models.py).
+Setup Instructions
+1. Initialize Project: bash  Copy  mkdir alphawolf
+2. cd alphawolf
+3. git init    
+4. Save Blueprint:
+    * Save the script as alphawolf_blueprint.py in alphawolf/.
+    * Run to set up structure and CI/CD: bash  Copy  python alphawolf_blueprint.py    
+5. Copy AlphaVox Modules:
+    * Place app.py, app_init.py, alphavox_input_nlu.py, neural_learning_core.py, research_module.py, learning_journey.py, and models/gesture_model.pkl in alphawolf/.
+6. Create Docker File: dockerfile  Copy  FROM python:3.9-slim
+7. WORKDIR /app
+8. COPY requirements.txt .
+9. RUN pip install -r requirements.txt
+10. COPY . .
+11. CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]     Save as alphawolf/Dockerfile.
+12. Deploy to Azure: bash  Copy  az login
+13. az webapp up --name alphawolf --resource-group ChristmanAI-Core --runtime "PYTHON|3.9"    
+Project Structure
+text
+
+Copy
+alphawolf/
+├── data/
+│   ├── learning_log.json
+│   ├── knowledge_base.json
+│   ├── topics.json
+│   ├── facts.json
+│   ├── knowledge_graph.json
+│   ├── input_context.pkl
+│   ├── nlc_memory.pkl
+│   ├── research/
+│   │   └── research_cache.pkl
+│   └── user_interactions.json
+├── models/
+│   ├── gesture_model.pkl
+│   └── root_cause_model.pkl
+├── static/
+│   └── audio/
+├── templates/
+│   ├── index.html
+│   ├── cognitive_exercise.html
+│   ├── reminders.html
+│   ├── safety_dashboard.html
+│   └── ...
+├── .github/
+│   └── workflows/
+│       └── alphawolf.yml
+├── app.py
+├── app_init.py
+├── alphavox_input_nlu.py
+├── neural_learning_core.py
+├── research_module.py
+├── learning_journey.py
+├── alphawolf_blueprint.py
+├── requirements.txt
+└── Dockerfile
+
+
+Milestones and Deliverables
+* June 2025: Project setup, gesture integration, initial UI for exercises.
+* August 2025: Memory exercises, reminders, and cognitive assistance fully implemented.
+* October 2025: Geolocation tracking and wandering prevention operational, caregiver alerts tested.
+* November 2025: Beta testing completed, production deployment on Azure, monitoring active.
+Preventing Unauthorized Edits
+Given your prior frustration with unauthorized changes (e.g., alphavox_input_nlu.py):
+* Git Setup: bash  Copy  git add .
+* git commit -m "AlphaWolf initial setup"
+* git remote add origin <repo_url>
+* git push -u origin main     Protect the main branch in your Git hosting (e.g., GitHub) to require pull request reviews.
+* Integrity Checks: python  Copy  import hashlib
+* def verify_file(file_path, expected_hash):
+*     with open(file_path, 'rb') as f:
+*         return hashlib.sha256(f.read()).hexdigest() == expected_hash
+* if not verify_file('models/gesture_model.pkl', 'YOUR_HASH'):
+*     logger.error("Gesture model integrity check failed")
+*     raise ValueError("Invalid model")     Generate hash: bash  Copy  shasum -a 256 models/gesture_model.pkl    
+Alignment with Your Vision
+* Dementia Care: Supports memory retention (e.g., cognitive games), daily reminders, and wandering prevention (GPS tracking), addressing Alzheimer’s and dementia needs.
+* ￼
+*  
+* ￼
+* Ethical AI: Prioritizes privacy, dignity, and user control, reflecting your March 2025 emphasis on community-driven, accessible technology.
+* Neurodiversity-Affirming: Leverages research (e.g.,) to tailor interventions, ensuring personalized, empathetic support.
+* ￼
+

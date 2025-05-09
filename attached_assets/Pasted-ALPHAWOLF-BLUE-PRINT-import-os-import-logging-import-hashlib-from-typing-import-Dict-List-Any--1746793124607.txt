@@ -1,0 +1,623 @@
+ALPHAWOLF BLUE PRINT 
+
+
+
+import os
+import logging
+import hashlib
+from typing import Dict, List, Any
+from datetime import datetime, timedelta
+import json
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, 
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# Project directories
+BASE_DIR = 'christman-ai/alphawolf'
+DATA_DIR = os.path.join(BASE_DIR, 'data')
+MODEL_DIR = os.path.join(BASE_DIR, 'models')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+TESTS_DIR = os.path.join(BASE_DIR, 'tests')
+SHARED_DIR = os.path.join('christman-ai', 'shared')
+
+# System Architecture
+class AlphaWolfArchitecture:
+    """Defines the architecture for AlphaWolf AI system."""
+    
+    def __init__(self):
+        self.layers = {
+            'input_layer': {
+                'components': [
+                    {'name': 'GestureEngine', 'source': 'shared/alphavox_input_nlu.py', 'model': 'shared/models/gesture_model.pkl'},
+                    {'name': 'VoiceEngine', 'source': 'shared/alphavox_input_nlu.py', 'dependencies': ['gTTS']},
+                    {'name': 'EyeTracking', 'source': 'shared/eye_tracking_service.py'},
+                    {'name': 'Geolocation', 'new': True, 'source': 'geolocation_service.py', 'dependencies': ['geopy', 'paho-mqtt']}
+                ],
+                'description': 'Captures gestures (e.g., pointing, repetitive movements), voice, eye-tracking, and GPS for dementia support.'
+            },
+            'processing_layer': {
+                'components': [
+                    {'name': 'InputProcessor', 'source': 'shared/alphavox_input_nlu.py'},
+                    {'name': 'NeuralLearningCore', 'source': 'shared/neural_learning_core.py'},
+                    {'name': 'LearningJourney', 'source': 'shared/learning_journey.py'},
+                    {'name': 'ResearchModule', 'source': 'shared/research_module.py'}
+                ],
+                'description': 'Processes inputs, infers cognitive needs, tracks learning, and integrates dementia therapies.'
+            },
+            'cognitive_layer': {
+                'components': [
+                    {'name': 'MemoryExercises', 'new': True, 'source': 'memory_exercises.py', 'dependencies': ['pygame']},
+                    {'name': 'ReminderSystem', 'new': True, 'source': 'reminder_system.py', 'dependencies': ['schedule']},
+                    {'name': 'CognitiveAssistant', 'new': True, 'source': 'cognitive_assistant.py', 'dependencies': ['spacy']}
+                ],
+                'description': 'Delivers memory games, reminders, and task guidance for cognitive support.'
+            },
+            'safety_layer': {
+                'components': [
+                    {'name': 'WanderingPrevention', 'new': True, 'source': 'wandering_prevention.py', 'dependencies': ['geopy', 'paho-mqtt']}
+                ],
+                'description': 'Implements GPS-based safe zone alerts and caregiver notifications.'
+            },
+            'output_layer': {
+                'components': [
+                    {'name': 'TTSEngine', 'source': 'app.py', 'dependencies': ['gTTS']},
+                    {'name': 'VisualFeedback', 'new': True, 'source': 'visual_feedback.py', 'dependencies': ['flask']},
+                    {'name': 'CaregiverAlerts', 'new': True, 'source': 'caregiver_alerts.py', 'dependencies': ['paho-mqtt']}
+                ],
+                'description': 'Provides voice responses, visual cues, and caregiver notifications.'
+            },
+            'infrastructure_layer': {
+                'components': [
+                    {'name': 'FlaskApp', 'source': 'app.py'},
+                    {'name': 'Database', 'source': 'app_init.py', 'type': 'PostgreSQL'},
+                    {'name': 'Cloud', 'config': 'Azure', 'services': ['App Service', 'Cosmos DB', 'IoT Hub']}
+                ],
+                'description': 'Manages web app, database, and cloud deployment.'
+            }
+        }
+        self.dependencies = [
+            'flask', 'numpy', 'spacy', 'scikit-learn', 'requests', 'beautifulsoup4',
+            'pandas', 'pygame', 'geopy', 'paho-mqtt', 'schedule', 'flask-sqlalchemy',
+            'psycopg2-binary', 'gunicorn', 'pytest', 'pytest-cov', 'flake8', 'locust',
+            'bandit', 'pipdeptree'
+        ]
+        self.file_hashes = {
+            'shared/models/gesture_model.pkl': None,  # Replace with actual hash
+            'shared/alphavox_input_nlu.py': None,
+            'shared/learning_journey.py': None,
+            'shared/research_module.py': None
+        }
+        logger.info("AlphaWolf architecture initialized")
+
+    def validate(self) -> bool:
+        """Validate architecture components and file integrity."""
+        for layer, config in self.layers.items():
+            for component in config['components']:
+                if 'source' in component:
+                    source_path = os.path.join(BASE_DIR, component['source']) if not component['source'].startswith('shared/') else os.path.join('christman-ai', component['source'])
+                    if os.path.exists(source_path):
+                        if 'model' in component:
+                            model_path = os.path.join(BASE_DIR, component['model']) if not component['model'].startswith('shared/') else os.path.join('christman-ai', component['model'])
+                            if not os.path.exists(model_path):
+                                logger.error(f"Model {component['model']} for {component['name']} not found")
+                                return False
+                        if component['source'] in self.file_hashes and self.file_hashes[component['source']]:
+                            if not self.verify_file_integrity(source_path, self.file_hashes[component['source']]):
+                                return False
+                    elif 'new' not in component:
+                        logger.error(f"Component {component['name']} source {component['source']} not found")
+                        return False
+        return True
+
+    def verify_file_integrity(self, file_path: str, expected_hash: str) -> bool:
+        """Verify file integrity using SHA256 hash."""
+        try:
+            with open(file_path, 'rb') as f:
+                file_hash = hashlib.sha256(f.read()).hexdigest()
+            if file_hash != expected_hash:
+                logger.error(f"Integrity check failed for {file_path}: expected {expected_hash}, got {file_hash}")
+                return False
+            logger.info(f"Integrity check passed for {file_path}")
+            return True
+        except Exception as e:
+            logger.error(f"Error verifying {file_path}: {str(e)}")
+            return False
+
+# DevOps Pipeline
+class DevOpsPipeline:
+    """Defines the DevOps pipeline for AlphaWolf."""
+    
+    def __init__(self):
+        self.stages = [
+            {
+                'name': 'Code',
+                'tasks': [
+                    {'name': 'SetupRepo', 'tool': 'Git', 'action': 'Initialize repository with .gitignore, CODEOWNERS, and branch protection'},
+                    {'name': 'CodeStyle', 'tool': 'flake8', 'action': 'Enforce PEP8 standards with max-line-length=120'},
+                    {'name': 'UnitTests', 'tool': 'pytest', 'action': 'Run unit tests with coverage >90%'}
+                ]
+            },
+            {
+                'name': 'Build',
+                'tasks': [
+                    {'name': 'DockerBuild', 'tool': 'Docker', 'action': 'Build container image with gunicorn'},
+                    {'name': 'DependencyCheck', 'tool': 'pipdeptree', 'action': 'Verify dependency tree and vulnerabilities'}
+                ]
+            },
+            {
+                'name': 'Test',
+                'tasks': [
+                    {'name': 'IntegrationTests', 'tool': 'pytest', 'action': 'Run integration tests with mock IoT devices'},
+                    {'name': 'LoadTests', 'tool': 'locust', 'action': 'Simulate 100 concurrent users for 5 minutes'},
+                    {'name': 'SecurityScan', 'tool': 'bandit', 'action': 'Scan for high-severity vulnerabilities'}
+                ]
+            },
+            {
+                'name': 'Deploy',
+                'tasks': [
+                    {'name': 'AzureDeploy', 'tool': 'Azure CLI', 'action': 'Deploy to Azure App Service with auto-scaling'},
+                    {'name': 'IoTSetup', 'tool': 'Azure IoT Hub', 'action': 'Configure geolocation tracking for wearables'},
+                    {'name': 'DatabaseMigration', 'tool': 'Alembic', 'action': 'Apply schema updates'}
+                ]
+            },
+            {
+                'name': 'Monitor',
+                'tasks': [
+                    {'name': 'Logging', 'tool': 'Azure Monitor', 'action': 'Track application and IoT logs'},
+                    {'name': 'Alerts', 'tool': 'Azure Alerts', 'action': 'Set up wandering and system health alerts'},
+                    {'name': 'Performance', 'tool': 'Application Insights', 'action': 'Monitor latency <500ms, error rate <1%'}
+                ]
+            }
+        ]
+        self.ci_cd_config = {
+            'tool': 'GitHub Actions',
+            'workflow': '.github/workflows/alphawolf.yml',
+            'triggers': ['push', 'pull_request'],
+            'environment': {
+                'python': '3.9',
+                'docker': 'latest',
+                'azure_credentials': 'secrets.AZURE_CREDENTIALS',
+                'flask_secret_key': 'secrets.FLASK_SECRET_KEY',
+                'mqtt_broker': 'secrets.MQTT_BROKER'
+            }
+        }
+        logger.info("DevOps pipeline defined")
+
+    def generate_workflow(self) -> str:
+        """Generate GitHub Actions workflow YAML."""
+        workflow = """
+name: AlphaWolf CI/CD
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest pytest-cov flake8 locust bandit pipdeptree
+    - name: Run linting
+      run: |
+        flake8 . --max-line-length=120
+    - name: Run tests
+      run: |
+        pytest tests/ --cov=. --cov-report=xml --cov-fail-under=90
+    - name: Security scan
+      run: |
+        bandit -r . -ll
+    - name: Dependency check
+      run: |
+        pipdeptree
+    - name: Build Docker image
+      run: |
+        docker build -t alphawolf .
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Deploy to Azure
+      run: |
+        az webapp up --name alphawolf --resource-group ChristmanAI-Core
+    - name: Configure IoT Hub
+      run: |
+        az iot hub device-identity create --hub-name AlphaWolfIoTHub --device-id alphawolf-device
+"""
+        workflow_path = os.path.join(BASE_DIR, self.ci_cd_config['workflow'])
+        os.makedirs(os.path.dirname(workflow_path), exist_ok=True)
+        with open(workflow_path, 'w') as f:
+            f.write(workflow)
+        logger.info(f"Generated GitHub Actions workflow at {workflow_path}")
+        return workflow_path
+
+# Development Roadmap
+class DevelopmentRoadmap:
+    """Defines the development roadmap for AlphaWolf."""
+    
+    def __init__(self, start_date: str = '2025-05-15'):
+        self.start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        self.phases = [
+            {
+                'name': 'Phase 1: Foundation (May 15 - June 14, 2025)',
+                'duration': timedelta(days=30),
+                'milestones': [
+                    {
+                        'name': 'Project Setup',
+                        'tasks': [
+                            'Initialize Git repo with .gitignore, CODEOWNERS, and branch protection requiring @your-github-username approval',
+                            'Set up Flask app with Azure PostgreSQL via app_init.py',
+                            'Integrate shared AlphaVox modules: alphavox_input_nlu.py, learning_journey.py, research_module.py, neural_learning_core.py',
+                            'Verify gesture_model.pkl integrity with SHA256 hash, ensure compatibility with dementia gestures'
+                        ],
+                        'deliverables': [
+                            'Git repo with protected main branch',
+                            'Flask app with PostgreSQL integration',
+                            'Integrated AlphaVox components in shared/',
+                            'Verified gesture_model.pkl with hash'
+                        ]
+                    },
+                    {
+                        'name': 'Input Layer Enhancement',
+                        'tasks': [
+                            'Extend alphavox_input_nlu.py for dementia-specific gestures (e.g., repetitive hand movements, pointing)',
+                            'Develop geolocation_service.py with geopy for GPS tracking',
+                            'Add paho-mqtt support in geolocation_service.py for wearable integration (e.g., smartwatches)'
+                        ],
+                        'deliverables': [
+                            'Enhanced input processor for dementia gestures',
+                           -z 'Geolocation prototype with MQTT',
+                            'Wearable integration tested with mock devices'
+                        ]
+                    }
+                ]
+            },
+            {
+                'name': 'Phase 2: Core Cognitive Features (June 15 - August 14, 2025)',
+                'duration': timedelta(days=60),
+                'milestones': [
+                    {
+                        'name': 'Memory Retention Exercises',
+                        'tasks': [
+                            'Develop memory_exercises.py with pygame for games (e.g., photo matching, reminiscence therapy)',
+                            'Integrate with learning_journey.py for progress tracking and NLC for personalization based on cognitive_load',
+                            'Test with dementia-specific scenarios (e.g., family photo recognition, memory recall exercises)',
+                            'Validate with dementia specialist for therapeutic efficacy'
+                        ],
+                        'deliverables': [
+                            'Memory game suite with 3+ games',
+                            'Progress tracking UI integrated with learning_journey.py',
+                            'Personalization logic using NLC insights'
+                        ]
+                    },
+                    {
+                        'name': 'Daily Reminders',
+                        'tasks': [
+                            'Develop reminder_system.py with schedule for medication/task prompts',
+                            'Add voice (gTTS) and visual (Flask via visual_feedback.py) outputs with large fonts/high contrast',
+                            'Test with scenarios like medication reminders and appointment alerts',
+                            'Ensure accessibility for low-vision users'
+                        ],
+                        'deliverables': [
+                            'Reminder system supporting daily tasks',
+                            'Accessible UI with voice and visual outputs'
+                        ]
+                    },
+                    {
+                        'name': 'Cognitive Assistance',
+                        'tasks': [
+                            'Develop cognitive_assistant.py with spacy for task guidance (e.g., dressing, eating steps)',
+                            'Support gesture (gesture_model.pkl) and voice inputs via alphavox_input_nlu.py',
+                            'Test with daily activities (e.g., cooking, hygiene) for accessibility and simplicity',
+                            'Incorporate research_module.py insights for dementia-specific guidance'
+                        ],
+                        'deliverables': [
+                            'Task guidance module for 5+ daily activities',
+                            'Accessibility-tested UI with gesture/voice support'
+                        ]
+                    }
+                ]
+            },
+            {
+                'name': 'Phase 3: Safety Features (August 15 - September 29, 2025)',
+                'duration': timedelta(days=45),
+                'milestones': [
+                    {
+                        'name': 'Geolocation Tracking',
+                        'tasks': [
+                            'Enhance geolocation_service.py for real-time GPS tracking with geopy (accuracy <10m)',
+                            'Integrate paho-mqtt for communication with wearables (e.g., smartwatches, GPS pendants)',
+                            'Test with simulated GPS data and real device integration'
+                        ],
+                        'deliverables': [
+                            'Real-time GPS tracking system',
+                            'Wearable integration with 2+ device types'
+                        ]
+                    },
+                    {
+                        'name': 'Wandering Prevention',
+                        'tasks': [
+                            'Develop wandering_prevention.py with geofencing for safe zone alerts (radius configurable)',
+                            'Implement caregiver_alerts.py for MQTT-based notifications (delivery <5s)',
+                            'Test with simulated wandering scenarios and caregiver feedback in 2 care facilities'
+                        ],
+                        'deliverables': [
+                            'Safe zone alert system with geofencing',
+                            'Caregiver dashboard with real-time alerts'
+                        ]
+                    }
+                ]
+            },
+            {
+                'name': 'Phase 4: Testing & Deployment (September 30 - October 29, 2025)',
+                'duration': timedelta(days=30),
+                'milestones': [
+                    {
+                        'name': 'Beta Testing',
+                        'tasks': [
+                            'Conduct user testing with 50 dementia patients and caregivers across 3 care facilities',
+                            'Collect feedback on usability, accessibility, and effectiveness, prioritizing dignity',
+                            'Iterate based on feedback, ensuring user autonomy and ease of use',
+                            'Engage community liaison for feedback from dementia care communities'
+                        ],
+                        'deliverables': [
+                            'Beta test report with usability metrics',
+                            'Updated system incorporating feedback'
+                        ]
+                    },
+                    {
+                        'name': 'Production Deployment',
+                        'tasks': [
+                            'Deploy to Azure App Service with Docker and gunicorn (4 workers, auto-scaling)',
+                            'Configure Azure IoT Hub for geolocation tracking with 99.9% uptime',
+                            'Set up Azure Monitor, Alerts, and Application Insights (latency <500ms, error rate <1%)',
+                            'Document deployment and user guides for caregivers'
+                        ],
+                        'deliverables': [
+                            'Production system accessible globally',
+                            'Monitoring dashboards with real-time metrics',
+                            'User guides for patients and caregivers'
+                        ]
+                    }
+                ]
+            },
+            {
+                'name': 'Phase 5: Ecosystem Integration (October 30 - November 29, 2025)',
+                'duration': timedelta(days=30),
+                'milestones': [
+                    {
+                        'name': 'AlphaVox Integration',
+                        'tasks': [
+                            'Finalize AlphaVox nonverbal communication features',
+                            'Share gesture_model.pkl and alphavox_input_nlu.py logic for AlphaWolf compatibility',
+                            'Test cross-initiative interactions (e.g., AlphaVox gestures triggering AlphaWolf reminders)'
+                        ],
+                        'deliverables': [
+                            'Integrated AlphaVox-AlphaWolf input processing',
+                            'Cross-initiative test report'
+                        ]
+                    },
+                    {
+                        'name': 'Foundation for Other Initiatives',
+                        'tasks': [
+                            'Document shared module APIs for AlphaDen, OmegaAlpha, Omega, Aegis AI',
+                            'Prototype AlphaDen adaptive learning integration with learning_journey.py',
+                            'Plan Aegis AI child safety integration with geolocation_service.py'
+                        ],
+                        'deliverables': [
+                            'API documentation for shared modules',
+                            'AlphaDen prototype',
+                            'Aegis AI integration plan'
+                        ]
+                    }
+                ]
+            }
+        ]
+        logger.info("Development roadmap initialized")
+
+    def get_timeline(self) -> List[Dict[str, Any]]:
+        """Generate project timeline."""
+        timeline = []
+        current_date = self.start_date
+        for phase in self.phases:
+            phase_end = current_date + phase['duration']
+            timeline.append({
+                'phase': phase['name'],
+                'start': current_date.strftime('%Y-%m-%d'),
+                'end': phase_end.strftime('%Y-%m-%d'),
+                'milestones': phase['milestones']
+            })
+            current_date = phase_end + timedelta(days=1)
+        return timeline
+
+# Project Configuration
+class AlphaWolfProject:
+    """Manages the AlphaWolf project configuration."""
+    
+    def __init__(self):
+        self.architecture = AlphaWolfArchitecture()
+        self.pipeline = DevOpsPipeline()
+        self.roadmap = DevelopmentRoadmap()
+        self.config = {
+            'name': 'AlphaWolf',
+            'version': '1.0.0',
+            'description': 'AI for cognitive support and dementia care, preserving memories and dignity under Christman AI Project',
+            'parent_project': 'Christman AI Project',
+            'organization': 'LumaCognify AI',
+            'team': [
+                {'role': 'DevOps Engineer', 'tasks': ['CI/CD setup', 'Azure deployment', 'Monitoring', 'Security audits']},
+                {'role': 'AI Developer', 'tasks': ['Model training', 'NLC integration', 'Cognitive exercises', 'Gesture processing']},
+                {'role': 'UX Designer', 'tasks': ['UI for exercises', 'Caregiver dashboard', 'Accessibility design']},
+                {'role': 'Dementia Specialist', 'tasks': ['Validate therapy content', 'User testing', 'Research integration']},
+                {'role': 'Community Liaison', 'tasks': ['Engage dementia care communities', 'Gather feedback', 'Ensure ethical alignment']}
+            ],
+            'tech_stack': {
+                'backend': ['Python', 'Flask', 'SQLAlchemy', 'PostgreSQL'],
+                'ai': ['scikit-learn', 'spacy', 'pygame'],
+                'safety': ['geopy', 'paho-mqtt'],
+                'cloud': ['Azure App Service', 'Cosmos DB', 'IoT Hub'],
+                'devops': ['GitHub Actions', 'Docker', 'Azure CLI', 'pytest', 'flake8', 'locust', 'bandit']
+            },
+            'ethical_guidelines': {
+                'privacy': 'AES-256 encryption for GPS/health data, user-controlled deletion via /api/delete_data',
+                'dignity': 'Accessible UI with large fonts, simple voice prompts, non-invasive interactions',
+                'consent': 'User/caregiver opt-in for tracking/sharing, configurable in /profile with 2FA',
+                'transparency': 'Audit logs at /api/audit_logs, open-source components on GitHub',
+                'community': 'Engage dementia care communities for co-design, prioritize neurodiversity-affirming principles'
+            },
+            'research_basis': [
+                'AI-enhanced cognitive training for dementia (2023 study)',
+                'Socially assistive robots for dementia care (2024 review)',
+                'SafeWander geolocation system for wandering prevention (2022 implementation)',
+                'Reminiscence therapy for memory retention in Alzheimer’s (2021 study)'
+            ],
+            'integration_points': {
+                'AlphaVox': 'Share gesture_model.pkl, alphavox_input_nlu.py for nonverbal communication',
+                'AlphaDen': 'Extend learning_journey.py for adaptive learning models',
+                'OmegaAlpha': 'Reuse reminder_system.py and geolocation_service.py for elderly care',
+                'Omega': 'Adapt geolocation_service.py for mobility support',
+                'Aegis AI': 'Leverage geolocation_service.py and caregiver_alerts.py for child safety tracking'
+            }
+        }
+        logger.info("AlphaWolf project initialized")
+
+    def setup_project(self):
+        """Set up project structure and validate components."""
+        directories = [BASE_DIR, DATA_DIR, MODEL_DIR, STATIC_DIR, TEMPLATES_DIR, TESTS_DIR, SHARED_DIR]
+        for directory in directories:
+            os.makedirs(directory, exist_ok=True)
+        
+        # Create requirements.txt
+        requirements = '\n'.join(self.architecture.dependencies)
+        with open(os.path.join(BASE_DIR, 'requirements.txt'), 'w') as f:
+            f.write(requirements)
+        
+        # Create .gitignore
+        gitignore = """
+*.pyc
+__pycache__/
+data/*.pkl
+data/*.json
+static/audio/*
+.env
+*.log
+.vscode/
+.idea/
+coverage.xml
+"""
+        with open(os.path.join(BASE_DIR, '.gitignore'), 'w') as f:
+            f.write(gitignore)
+        
+        # Create CODEOWNERS
+        codeowners = """
+# Core team owns all critical files
+*.py @your-github-username
+models/* @your-github-username
+shared/* @your-github-username
+"""
+        os.makedirs(os.path.join(BASE_DIR, '.github'), exist_ok=True)
+        with open(os.path.join(BASE_DIR, '.github/CODEOWNERS'), 'w') as f:
+            f.write(codeowners)
+        
+        # Create Dockerfile
+        dockerfile = """
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+COPY ../shared ./shared
+ENV FLASK_ENV=production
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120", "app:app"]
+"""
+        with open(os.path.join(BASE_DIR, 'Dockerfile'), 'w') as f:
+            f.write(dockerfile)
+        
+        # Create basic test file
+        test_file = """
+import pytest
+from app import app
+from shared.alphavox_input_nlu import AlphaVoxInputProcessor
+
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+    with app.test_client() as client:
+        yield client
+
+def test_index(client):
+    rv = client.get('/')
+    assert rv.status_code == 200
+
+def test_gesture_processing():
+    processor = AlphaVoxInputProcessor()
+    interaction = {"type": "gesture", "input": [0.5, 0.8, 160, 45]}
+    result = processor.process_interaction(interaction, "test_user")
+    assert result["intent"] == "request_attention"
+
+def test_reminder_endpoint(client):
+    rv = client.post('/api/set_reminder', json={"user_id": "test_user", "task": "Take pills", "time": "08:00"})
+    assert rv.status_code == 200
+    assert rv.json["status"] == "success"
+"""
+        os.makedirs(TESTS_DIR, exist_ok=True)
+        with open(os.path.join(TESTS_DIR, 'test_app.py'), 'w') as f:
+            f.write(test_file)
+        
+        # Generate CI/CD workflow
+        self.pipeline.generate_workflow()
+        
+        # Validate architecture and file integrity
+        if not self.architecture.validate():
+            logger.error("Architecture validation failed")
+            raise ValueError("Invalid project configuration")
+        
+        # Initialize Git repo
+        os.system(f"cd {BASE_DIR} && git init && git add . && git commit -m 'Initial AlphaWolf setup' || echo 'Git setup failed, please check permissions'")
+        logger.info("Project setup completed")
+
+    def get_project_plan(self) -> Dict[str, Any]:
+        """Generate the full project plan."""
+        return {
+            'config': self.config,
+            'architecture': self.architecture.layers,
+            'pipeline': self.pipeline.stages,
+            'timeline': self.roadmap.get_timeline()
+        }
+
+def main():
+    """Generate and validate the AlphaWolf project blueprint."""
+    project = AlphaWolfProject()
+    project.setup_project()
+    plan = project.get_project_plan()
+    
+    # Log project plan summary
+    logger.info(f"Project: {plan['config']['name']} v{plan['config']['version']}")
+    logger.info(f"Parent: {plan['config']['parent_project']} by {plan['config']['organization']}")
+    logger.info(f"Team: {len(plan['config']['team'])} members")
+    logger.info(f"Phases: {len(plan['timeline'])}")
+    logger.info(f"CI/CD: {plan['pipeline'][0]['name']} -> {plan['pipeline'][-1]['name']}")
+    
+    # Save project plan
+    plan_path = os.path.join(DATA_DIR, 'alphawolf_plan.json')
+    with open(plan_path, 'w') as f:
+        json.dump(plan, f, indent=2)
+    logger.info(f"Project plan saved to {plan_path}")
+
+if __name__ == "__main__":
+    main()

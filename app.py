@@ -967,5 +967,10 @@ def memory_lane():
     """Memory preservation and reminiscence tools."""
     return render_template('memory_lane.html')
 
+@app.route('/voice-control-help')
+def voice_control_help():
+    """Documentation and help for voice control features."""
+    return render_template('voice_control_help.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

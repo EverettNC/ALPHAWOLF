@@ -10,8 +10,12 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <!-- Leaflet CSS for maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Voice Control CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/voice_control.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -28,6 +32,21 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('learning_corner') }}">
+                            <i class="fas fa-book-open"></i> Learning Corner
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('memory_lane') }}">
+                            <i class="fas fa-images"></i> Memory Lane
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('caregivers_page') }}">
+                            <i class="fas fa-hands-helping"></i> Caregivers
+                        </a>
                     </li>
                     {% if session.get('user_id') %}
                         {% if session.get('user_type') == 'patient' %}
@@ -189,6 +208,11 @@
     <footer class="mt-5 py-3 bg-light">
         <div class="container text-center">
             <p>&copy; 2025 AlphaWolf - A Comprehensive AI Solution for Alzheimer's and Dementia Care</p>
+            <p class="mt-2">
+                <a href="{{ url_for('voice_control_help') }}" class="text-decoration-none">
+                    <i class="fas fa-microphone"></i> Voice Control Help
+                </a>
+            </p>
         </div>
     </footer>
 
@@ -206,6 +230,11 @@
     </script>
     <!-- Main JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- Voice Control -->
+    <script src="{{ url_for('static', filename='js/voice_control.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/alphawolf_voice_commands.js') }}"></script>
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>

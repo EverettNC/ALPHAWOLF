@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block title %}Voice Control Help{% endblock %}
+
+{% block styles %}
+<style>
+    .voice-demo-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .voice-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+    }
+    
+    .command-example {
+        background-color: #e3f2fd;
+        border-left: 3px solid #2196F3;
+        padding: 10px 15px;
+        margin: 10px 0;
+        border-radius: 0 5px 5px 0;
+    }
+    
+    .command-keyword {
+        font-weight: bold;
+        color: #1565C0;
+    }
+    
+    .command-description {
+        font-style: italic;
+        color: #666;
+        margin-left: 15px;
+        display: block;
+    }
+    
+    .practice-area {
+        background-color: #fff3e0;
+        border: 1px dashed #ff9800;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .practice-btn {
+        margin-top: 15px;
+    }
+    
+    .feedback-area {
+        background-color: #e8f5e9;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+        min-height: 60px;
+    }
+    
+    .demo-video {
+        margin: 20px 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .quick-commands {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .command-chip {
+        background-color: #e3f2fd;
+        color: #1565C0;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .command-chip:hover {
+        background-color: #bbdefb;
+    }
+    
+    .benefits-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    
+    .benefits-list li {
+        margin-bottom: 10px;
+        padding-left: 30px;
+        position: relative;
+    }
+    
+    .benefits-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #4CAF50;
+        font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+        .quick-commands {
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .command-chip {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="voice-demo-container">
+    <h1 class="mb-4">Voice Control Help</h1>
+    
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Hands-Free Interaction</h4>
+        <p>AlphaWolf now supports voice commands for hands-free navigation and control. This feature is especially helpful for users with reduced mobility or dexterity issues.</p>
+    </div>
+    
+    <div class="voice-section">
+        <h2>Getting Started</h2>
+        <p>To activate voice control, click the microphone button <i class="fas fa-microphone"></i> in the bottom right corner of the screen. When active, the button will turn red.</p>
+        
+        <p>All voice commands begin with the wake word <strong>"Alpha"</strong> followed by your specific command. For example:</p>
+        
+        <div class="command-example">
+            <span class="command-keyword">"Alpha go home"</span>
+            <span class="command-description">This command will navigate to the home page</span>
+        </div>
+        
+        <div class="command-example">
+            <span class="command-keyword">"Alpha help"</span>
+            <span class="command-description">Shows a list of available commands</span>
+        </div>
+        
+        <div class="practice-area">
+            <h5>Practice Area</h5>
+            <p>Click the button below to activate voice control and try saying: <strong>"Alpha help"</strong></p>
+            <button class="btn btn-primary practice-btn" id="activate-voice">
+                <i class="fas fa-microphone"></i> Activate Voice Control
+            </button>
+            <div class="feedback-area mt-3" id="voice-feedback">
+                <p class="text-muted">Feedback will appear here when you speak...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="voice-section">
+        <h2>Command Categories</h2>
+        
+        <h4 class="mt-4">Navigation Commands</h4>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha go to learning corner"</span>
+            <span class="command-description">Navigate to the Learning Corner page</span>
+        </div>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha go to memory lane"</span>
+            <span class="command-description">Navigate to the Memory Lane page</span>
+        </div>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha go to caregivers"</span>
+            <span class="command-description">Navigate to the Caregivers page</span>
+        </div>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha go back"</span>
+            <span class="command-description">Go back to the previous page</span>
+        </div>
+        
+        <h4 class="mt-4">Content Control</h4>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha scroll down"</span>
+            <span class="command-description">Scroll down the page</span>
+        </div>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha scroll up"</span>
+            <span class="command-description">Scroll up the page</span>
+        </div>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha scroll to top"</span>
+            <span class="command-description">Scroll to the top of the page</span>
+        </div>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha scroll to bottom"</span>
+            <span class="command-description">Scroll to the bottom of the page</span>
+        </div>
+        
+        <h4 class="mt-4">Page-Specific Commands</h4>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha show albums"</span>
+            <span class="command-description">On Memory Lane, shows the memory albums section</span>
+        </div>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha show research"</span>
+            <span class="command-description">On Learning Corner, shows the latest research</span>
+        </div>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha show patient status"</span>
+            <span class="command-description">On Caregivers page, shows patient overview</span>
+        </div>
+        
+        <h4 class="mt-4">Accessibility Commands</h4>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha read page"</span>
+            <span class="command-description">Reads the content of the current page</span>
+        </div>
+        
+        <h4 class="mt-4">Control Commands</h4>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha stop listening"</span>
+            <span class="command-description">Turns off voice control</span>
+        </div>
+        <div class="command-example">
+            <span class="command-keyword">"Alpha start listening"</span>
+            <span class="command-description">Turns on voice control</span>
+        </div>
+        
+        <div class="quick-commands mt-4">
+            <h5 class="w-100">Quick Command References:</h5>
+            <span class="command-chip">Alpha go home</span>
+            <span class="command-chip">Alpha go to learning corner</span>
+            <span class="command-chip">Alpha go to memory lane</span>
+            <span class="command-chip">Alpha go to caregivers</span>
+            <span class="command-chip">Alpha scroll down</span>
+            <span class="command-chip">Alpha read page</span>
+            <span class="command-chip">Alpha help</span>
+        </div>
+    </div>
+    
+    <div class="voice-section">
+        <h2>Benefits for Dementia and Alzheimer's Patients</h2>
+        
+        <ul class="benefits-list">
+            <li><strong>Reduces Cognitive Load:</strong> No need to remember complex navigation or where to click</li>
+            <li><strong>Supports Independence:</strong> Enables self-directed use of the system without caregiver assistance</li>
+            <li><strong>Accommodates Physical Limitations:</strong> Helpful for those with reduced dexterity or mobility issues</li>
+            <li><strong>Natural Interaction:</strong> Speaking is more intuitive than using a mouse and keyboard</li>
+            <li><strong>Multi-Modal Support:</strong> Combines with visual interfaces for better understanding and retention</li>
+            <li><strong>Reduces Frustration:</strong> Simple commands mean less confusion and frustration</li>
+        </ul>
+        
+        <div class="alert alert-warning mt-4" role="alert">
+            <h5 class="alert-heading">Important Notes</h5>
+            <p><i class="fas fa-info-circle"></i> Voice control requires microphone access on your device</p>
+            <p><i class="fas fa-info-circle"></i> Always begin commands with "Alpha" so the system knows you're giving a command</p>
+            <p><i class="fas fa-info-circle"></i> Speak clearly and at a normal pace for best results</p>
+        </div>
+    </div>
+    
+    <div class="voice-section">
+        <h2>Troubleshooting</h2>
+        
+        <h5>If voice control isn't working:</h5>
+        <ol>
+            <li>Make sure your microphone is connected and working</li>
+            <li>Check that you've allowed microphone access in your browser</li>
+            <li>Ensure you're using a compatible browser (Chrome, Edge, or Safari recommended)</li>
+            <li>Try refreshing the page</li>
+            <li>Make sure you're saying "Alpha" before each command</li>
+        </ol>
+        
+        <p class="mt-3">If you continue to have issues, you can always click the buttons and links directly.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const activateButton = document.getElementById('activate-voice');
+        const feedbackArea = document.getElementById('voice-feedback');
+        
+        activateButton.addEventListener('click', function() {
+            // Change button state
+            this.innerHTML = '<i class="fas fa-microphone-slash"></i> Deactivate Voice Control';
+            this.classList.remove('btn-primary');
+            this.classList.add('btn-danger');
+            
+            // Update feedback
+            feedbackArea.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> Voice control activated. Try saying "Alpha help"...</p>';
+            
+            // Start voice control
+            if (window.alphaVoiceControl) {
+                window.alphaVoiceControl.start();
+                
+                // Set up voice recognition feedback
+                const originalUpdateFeedback = window.alphaVoiceControl.updateFeedback;
+                window.alphaVoiceControl.updateFeedback = function(type, text) {
+                    // Call the original method
+                    originalUpdateFeedback.call(window.alphaVoiceControl, type, text);
+                    
+                    // Update our local feedback area too
+                    let icon = '';
+                    if (type === 'heard') icon = '<i class="fas fa-volume-up text-primary"></i>';
+                    if (type === 'command') icon = '<i class="fas fa-check-circle text-success"></i>';
+                    if (type === 'speaking') icon = '<i class="fas fa-comment-dots text-purple"></i>';
+                    if (type === 'error') icon = '<i class="fas fa-exclamation-circle text-danger"></i>';
+                    
+                    feedbackArea.innerHTML = `<p>${icon} ${text}</p>`;
+                };
+                
+                // Toggle button functionality
+                this.removeEventListener('click', arguments.callee);
+                this.addEventListener('click', function() {
+                    window.alphaVoiceControl.stop();
+                    feedbackArea.innerHTML = '<p><i class="fas fa-microphone-slash"></i> Voice control deactivated</p>';
+                    
+                    // Reset button
+                    this.innerHTML = '<i class="fas fa-microphone"></i> Activate Voice Control';
+                    this.classList.remove('btn-danger');
+                    this.classList.add('btn-primary');
+                    
+                    // Reset event listener
+                    this.removeEventListener('click', arguments.callee);
+                    this.addEventListener('click', arguments.callee.caller.arguments[0].callee);
+                });
+            } else {
+                feedbackArea.innerHTML = '<p><i class="fas fa-exclamation-circle text-danger"></i> Voice control not available. Make sure your browser supports speech recognition.</p>';
+            }
+        });
+        
+        // Make command chips clickable to show examples
+        document.querySelectorAll('.command-chip').forEach(function(chip) {
+            chip.addEventListener('click', function() {
+                feedbackArea.innerHTML = `<p><i class="fas fa-info-circle text-info"></i> Try saying: <strong>"${this.textContent}"</strong></p>`;
+            });
+        });
+    });
+</script>
+{% endblock %}

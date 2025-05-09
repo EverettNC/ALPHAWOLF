@@ -1,0 +1,202 @@
+/* Voice Control Styles */
+
+.voice-control-status {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(33, 150, 243, 0.9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.voice-control-status.listening {
+    background-color: rgba(244, 67, 54, 0.9);
+    box-shadow: 0 2px 15px rgba(244, 67, 54, 0.4);
+    animation: pulse-border 2s infinite;
+}
+
+.voice-control-status .pulse {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    border-radius: 50%;
+    margin-right: 10px;
+    animation: pulse 1.5s infinite;
+}
+
+.voice-control-feedback {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    max-width: 300px;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.voice-control-feedback.feedback-heard {
+    background-color: rgba(33, 150, 243, 0.8);
+}
+
+.voice-control-feedback.feedback-command {
+    background-color: rgba(76, 175, 80, 0.8);
+}
+
+.voice-control-feedback.feedback-speaking {
+    background-color: rgba(156, 39, 176, 0.8);
+}
+
+.voice-control-feedback.feedback-error {
+    background-color: rgba(244, 67, 54, 0.8);
+}
+
+.voice-commands-help {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+}
+
+.voice-commands-help h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    color: #333;
+}
+
+.voice-commands-help ul {
+    padding-left: 20px;
+}
+
+.voice-commands-help li {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.voice-commands-help .command-phrase {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.voice-commands-help .command-description {
+    color: #666;
+    font-style: italic;
+}
+
+.voice-commands-help .close-help {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+}
+
+/* Button to toggle voice control */
+.voice-control-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #2196F3;
+    color: white;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.voice-control-toggle:hover {
+    background-color: #1976D2;
+    transform: scale(1.05);
+}
+
+.voice-control-toggle.active {
+    background-color: #F44336;
+}
+
+.voice-control-toggle i {
+    font-size: 24px;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse-border {
+    0% {
+        box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .voice-control-status {
+        bottom: 70px;
+        right: 10px;
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    .voice-control-feedback {
+        bottom: 120px;
+        right: 10px;
+        max-width: 250px;
+        font-size: 13px;
+    }
+    
+    .voice-commands-help {
+        bottom: 120px;
+        right: 10px;
+        width: 280px;
+    }
+}

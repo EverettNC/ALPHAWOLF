@@ -1,0 +1,332 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Dashboard{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/patient_dashboard.css') }}">
+<style>
+  .dashboard-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+  }
+  
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard-card .card-header {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    font-weight: bold;
+    border: none;
+  }
+  
+  .visualization-container {
+    height: 200px;
+    position: relative;
+  }
+  
+  .feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: -webkit-linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .recognition-card {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+  }
+  
+  .recognition-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .recognition-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .recognition-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+  
+  .client-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 10px 0 5px;
+  }
+  
+  .client-relation {
+    color: #666;
+    font-style: italic;
+  }
+  
+  .recognition-details {
+    margin-top: 15px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row align-items-center mb-4">
+    <div class="col-md-8">
+      <h1 class="display-5 mb-0">Welcome back, {{ patient.name }}</h1>
+      <p class="lead text-muted">Here's your daily summary and activities</p>
+    </div>
+    <div class="col-md-4 text-end">
+      <div class="d-flex justify-content-end align-items-center">
+        <div class="me-3">
+          <span class="badge bg-primary p-2">Level {{ patient.level }}</span>
+          <div class="progress mt-1" style="height: 8px; width: 100px;">
+            <div class="progress-bar bg-info" role="progressbar" style="width: {{ (patient.points % 100) }}%"></div>
+          </div>
+        </div>
+        <div>
+          <p class="mb-0"><i class="fas fa-medal"></i> <strong>{{ patient.points }}</strong> points</p>
+          <p class="mb-0"><i class="fas fa-fire"></i> <strong>{{ patient.streak_days }}</strong> day streak</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visual Recognition Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="dashboard-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h2 class="h5 mb-0"><i class="fas fa-eye me-2"></i> Visual Recognition</h2>
+          <button class="btn btn-sm btn-light" id="refresh-recognition"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+        <div class="card-body">
+          <p class="text-muted mb-4">People you may recognize today. If you need help identifying someone, just ask "Alpha, who is this person?"</p>
+          
+          <div class="row" id="recognition-container">
+            <!-- Caregivers and family members will be displayed here -->
+            <div class="col-md-4 mb-3">
+              <div class="recognition-card position-relative">
+                <div class="text-center">
+                  <img src="https://randomuser.me/api/portraits/women/65.jpg" class="recognition-photo" alt="Susan Williams">
+                  <span class="recognition-badge">Caregiver</span>
+                </div>
+                <h3 class="client-name text-center">Susan Williams</h3>
+                <p class="client-relation text-center">Primary Nurse</p>
+                <div class="recognition-details">
+                  <p class="mb-1"><small><i class="fas fa-calendar-check me-2"></i> Today: Morning medication</small></p>
+                  <p class="mb-0"><small><i class="fas fa-clock me-2"></i> Last visit: 2 hours ago</small></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+              <div class="recognition-card position-relative">
+                <div class="text-center">
+                  <img src="https://randomuser.me/api/portraits/men/32.jpg" class="recognition-photo" alt="Robert Johnson">
+                  <span class="recognition-badge">Family</span>
+                </div>
+                <h3 class="client-name text-center">Robert Johnson</h3>
+                <p class="client-relation text-center">Son</p>
+                <div class="recognition-details">
+                  <p class="mb-1"><small><i class="fas fa-calendar-check me-2"></i> Expected visit: Today at 4 PM</small></p>
+                  <p class="mb-0"><small><i class="fas fa-clock me-2"></i> Last visit: 2 days ago</small></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+              <div class="recognition-card position-relative">
+                <div class="text-center">
+                  <img src="https://randomuser.me/api/portraits/women/38.jpg" class="recognition-photo" alt="Mary Thompson">
+                  <span class="recognition-badge">Family</span>
+                </div>
+                <h3 class="client-name text-center">Mary Thompson</h3>
+                <p class="client-relation text-center">Daughter</p>
+                <div class="recognition-details">
+                  <p class="mb-1"><small><i class="fas fa-calendar-check me-2"></i> Expected visit: Tomorrow at 2 PM</small></p>
+                  <p class="mb-0"><small><i class="fas fa-clock me-2"></i> Last visit: 1 week ago</small></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Cognitive Exercises Section -->
+    <div class="col-md-4">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <h2 class="h5 mb-0"><i class="fas fa-brain me-2"></i> Today's Exercises</h2>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <i class="fas fa-puzzle-piece feature-icon"></i>
+          </div>
+          {% if exercises %}
+            <ul class="list-group list-group-flush">
+              {% for exercise in exercises[:3] %}
+              <li class="list-group-item px-0">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h3 class="h6 mb-0">{{ exercise.name }}</h3>
+                    <p class="text-muted mb-0"><small>{{ exercise.type }} | {{ exercise.difficulty }}</small></p>
+                  </div>
+                  <a href="{{ url_for('exercise_detail', exercise_id=exercise.id) }}" class="btn btn-sm btn-primary">Start</a>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-center">No exercises found.</p>
+          {% endif %}
+          <div class="text-center mt-3">
+            <a href="{{ url_for('cognitive_exercises') }}" class="btn btn-outline-primary">View All Exercises</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Reminders Section -->
+    <div class="col-md-4">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <h2 class="h5 mb-0"><i class="fas fa-bell me-2"></i> Reminders</h2>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <i class="fas fa-calendar-check feature-icon"></i>
+          </div>
+          {% if reminders %}
+            <ul class="list-group list-group-flush">
+              {% for reminder in reminders[:3] %}
+              <li class="list-group-item px-0">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h3 class="h6 mb-0">{{ reminder.title }}</h3>
+                    <p class="text-muted mb-0"><small>{{ reminder.time }}</small></p>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" {% if reminder.completed %}checked{% endif %} onchange="markReminderComplete({{ reminder.id }}, this.checked)">
+                  </div>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-center">No reminders found.</p>
+          {% endif %}
+          <div class="text-center mt-3">
+            <a href="{{ url_for('reminders') }}" class="btn btn-outline-primary">View All Reminders</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Weather & Information Section -->
+    <div class="col-md-4">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <h2 class="h5 mb-0"><i class="fas fa-info-circle me-2"></i> Today's Information</h2>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <i class="fas fa-cloud-sun feature-icon"></i>
+          </div>
+          <div class="text-center mb-4">
+            <h3 class="h5">{{ today_date }}</h3>
+            <div class="d-flex justify-content-center align-items-center">
+              <i class="fas fa-sun fa-2x me-2 text-warning"></i>
+              <span class="h3 mb-0">72°F</span>
+            </div>
+            <p class="mb-0">Sunny, Clear Skies</p>
+          </div>
+          
+          <hr>
+          
+          <h4 class="h6">Daily Health Tip</h4>
+          <p>Drinking enough water helps keep your mind alert and your body functioning properly. Try to have at least 8 glasses today.</p>
+          
+          <hr>
+          
+          <h4 class="h6">Memory Corner</h4>
+          <p>Today in 1969: The Apollo 11 mission successfully landed humans on the moon for the first time.</p>
+          
+          <div class="text-center mt-3">
+            <a href="{{ url_for('learning_corner') }}" class="btn btn-outline-primary">Visit Learning Corner</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Function to mark reminder as complete
+  function markReminderComplete(reminderId, isComplete) {
+    fetch('/reminders/complete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        reminder_id: reminderId,
+        completed: isComplete
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        console.log('Reminder updated successfully');
+      } else {
+        console.error('Failed to update reminder');
+      }
+    });
+  }
+  
+  // Function to refresh the visual recognition section
+  document.getElementById('refresh-recognition').addEventListener('click', function() {
+    // Simulate loading with animation
+    const container = document.getElementById('recognition-container');
+    container.style.opacity = '0.5';
+    
+    setTimeout(() => {
+      // Simulated response - in reality, this would come from a backend API call
+      // that uses computer vision or a database of scheduled visits
+      updateRecognitionCards();
+      container.style.opacity = '1';
+    }, 1000);
+  });
+  
+  function updateRecognitionCards() {
+    // In a real implementation, this would receive data from the server
+    // but for now we're just demonstrating the UI
+    console.log('Recognition data refreshed');
+  }
+</script>
+{% endblock %}

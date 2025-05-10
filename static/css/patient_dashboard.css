@@ -1,0 +1,180 @@
+/* Patient Dashboard Styles */
+
+body {
+  background-color: #f9f9f9;
+}
+
+.container {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Animation for items appearing */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.row > div {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.row > div:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.row > div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.row > div:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Progress animations */
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+}
+
+.progress-bar {
+  animation: progressFill 1s ease-out forwards;
+}
+
+/* Cards with hover effects */
+.info-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  height: 100%;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Recognition section specific */
+.recognition-photo {
+  transition: all 0.3s ease;
+}
+
+.recognition-card:hover .recognition-photo {
+  transform: scale(1.05);
+}
+
+.recognition-badge {
+  transition: all 0.3s ease;
+}
+
+.recognition-card:hover .recognition-badge {
+  transform: scale(1.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .recognition-card {
+    margin-bottom: 1rem;
+  }
+  
+  .client-name {
+    font-size: 1rem;
+  }
+  
+  .recognition-photo {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Custom scrollbar for lists */
+.list-group {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #bbb #f5f5f5;
+}
+
+.list-group::-webkit-scrollbar {
+  width: 8px;
+}
+
+.list-group::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.list-group::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 10px;
+  border: 2px solid #f5f5f5;
+}
+
+/* Button styles */
+.btn-outline-primary {
+  border-width: 2px;
+  font-weight: 500;
+}
+
+.btn-sm {
+  font-size: 0.8rem;
+}
+
+/* Improve checkbox visibility */
+.form-check-input {
+  width: 1.2rem;
+  height: 1.2rem;
+  cursor: pointer;
+}
+
+/* Gradient text for headings */
+h1.display-5 {
+  background: linear-gradient(135deg, #2c3e50, #4CA1AF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+/* Weather icon styles */
+.weather-icon {
+  font-size: 2.5rem;
+}
+
+/* Memory corner animation */
+@keyframes highlight {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(106, 17, 203, 0.1);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.memory-corner {
+  border-radius: 8px;
+  padding: 10px;
+  animation: highlight 5s infinite;
+}

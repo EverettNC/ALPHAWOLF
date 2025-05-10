@@ -1,423 +1,538 @@
 /**
- * AlphaWolf Voice Commands
- * Implements specific voice commands for the AlphaWolf platform
+ * AlphaWolf Voice Commands System
+ * Handles the processing of voice commands for AlphaWolf
  */
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if voice control is available
-    if (!window.alphaVoiceControl) {
-        console.error('Voice control module not found');
-        return;
+// Command handler for voice input
+function handleVoiceCommand(transcript) {
+    // Strip out the wake word and normalize the command
+    const command = transcript.replace(/alpha|wolf|alphawolf/g, '').trim();
+    
+    console.log('Processing command:', command);
+    
+    // Display a notification that a command was recognized
+    showNotification(`Command recognized: "${command}"`, 'info');
+    
+    // Check for navigation commands
+    if (commandMatches(command, ['go to home', 'show home', 'home page'])) {
+        navigateTo('/home');
+    }
+    else if (commandMatches(command, ['exercises', 'cognitive exercises', 'brain exercises', 'show exercises'])) {
+        navigateTo('/cognitive_exercises');
+    }
+    else if (commandMatches(command, ['safety', 'safety zones', 'show safety', 'safe zones'])) {
+        navigateTo('/safety_zones');
+    }
+    else if (commandMatches(command, ['reminders', 'show reminders', 'my reminders'])) {
+        navigateTo('/reminders');
+    }
+    else if (commandMatches(command, ['memories', 'memory lane', 'show memories', 'photos'])) {
+        navigateTo('/memory_lane');
+    }
+    else if (commandMatches(command, ['learning', 'learning corner', 'show learning'])) {
+        navigateTo('/learning_corner');
+    }
+    else if (commandMatches(command, ['caregiver', 'caregiver tools', 'caregiver page'])) {
+        navigateTo('/caregivers_page');
     }
     
-    const voiceControl = window.alphaVoiceControl;
+    // Check for information commands
+    else if (commandMatches(command, ['tell me about today', "what's today", 'today information'])) {
+        fetchTodayInformation();
+    }
+    else if (commandMatches(command, ['schedule', "what's my schedule", 'my appointments', 'today events'])) {
+        fetchScheduleInformation();
+    }
     
-    // Create help panel for voice commands
-    createCommandsHelpPanel();
+    // Check for action commands
+    else if (commandMatches(command, ['add reminder', 'new reminder', 'create reminder'])) {
+        navigateTo('/add_reminder');
+    }
+    else if (commandMatches(command, ['start exercises', 'begin exercises', 'cognitive training'])) {
+        startCognitiveExercises();
+    }
+    else if (commandMatches(command, ['call caregiver', 'contact caregiver', 'help me'])) {
+        initiateCaregiver();
+    }
     
-    // Register navigation commands
-    registerNavigationCommands();
-    
-    // Register feature-specific commands
-    registerFeatureCommands();
-    
-    // Register accessibility commands
-    registerAccessibilityCommands();
-    
-    // Register global commands
-    registerGlobalCommands();
-    
-    // Create toggle button
-    createVoiceControlToggle();
-    
-    // Initialize with welcome message
-    setTimeout(() => {
-        voiceControl.speak("Voice control is ready. Say 'Alpha help' for available commands.");
-    }, 1000);
-});
-
-/**
- * Create commands help panel
- */
-function createCommandsHelpPanel() {
-    const helpPanel = document.createElement('div');
-    helpPanel.className = 'voice-commands-help';
-    helpPanel.id = 'voice-commands-help';
-    helpPanel.innerHTML = `
-        <button class="close-help" id="close-voice-help">&times;</button>
-        <h3>Voice Commands</h3>
-        <p>All commands start with "Alpha" followed by:</p>
-        <h4>Navigation</h4>
-        <ul>
-            <li><span class="command-phrase">go home</span> - <span class="command-description">Go to the home page</span></li>
-            <li><span class="command-phrase">go to [page name]</span> - <span class="command-description">Navigate to a specific page</span></li>
-            <li><span class="command-phrase">go back</span> - <span class="command-description">Go back to the previous page</span></li>
-        </ul>
-        
-        <h4>Content Control</h4>
-        <ul>
-            <li><span class="command-phrase">scroll down</span> - <span class="command-description">Scroll down the page</span></li>
-            <li><span class="command-phrase">scroll up</span> - <span class="command-description">Scroll up the page</span></li>
-            <li><span class="command-phrase">scroll to top</span> - <span class="command-description">Scroll to the top of the page</span></li>
-            <li><span class="command-phrase">scroll to bottom</span> - <span class="command-description">Scroll to the bottom of the page</span></li>
-        </ul>
-        
-        <h4>Memory Lane</h4>
-        <ul>
-            <li><span class="command-phrase">show albums</span> - <span class="command-description">Show memory albums</span></li>
-            <li><span class="command-phrase">show timeline</span> - <span class="command-description">Show life timeline</span></li>
-            <li><span class="command-phrase">play music memories</span> - <span class="command-description">Go to music memories section</span></li>
-        </ul>
-        
-        <h4>Learning Corner</h4>
-        <ul>
-            <li><span class="command-phrase">show research</span> - <span class="command-description">Show latest research</span></li>
-            <li><span class="command-phrase">show daily tip</span> - <span class="command-description">Show daily tip</span></li>
-            <li><span class="command-phrase">show resources</span> - <span class="command-description">Show learning resources</span></li>
-        </ul>
-        
-        <h4>Caregiver Page</h4>
-        <ul>
-            <li><span class="command-phrase">show patient status</span> - <span class="command-description">Show patient overview</span></li>
-            <li><span class="command-phrase">show care plan</span> - <span class="command-description">Show daily care plan</span></li>
-            <li><span class="command-phrase">show medications</span> - <span class="command-description">Show medication schedule</span></li>
-        </ul>
-        
-        <h4>General</h4>
-        <ul>
-            <li><span class="command-phrase">help</span> - <span class="command-description">Show this help panel</span></li>
-            <li><span class="command-phrase">stop listening</span> - <span class="command-description">Turn off voice control</span></li>
-            <li><span class="command-phrase">start listening</span> - <span class="command-description">Turn on voice control</span></li>
-            <li><span class="command-phrase">mute microphone</span> - <span class="command-description">Mute the microphone (won't listen until unmuted)</span></li>
-            <li><span class="command-phrase">unmute microphone</span> - <span class="command-description">Unmute the microphone</span></li>
-            <li><span class="command-phrase">read page</span> - <span class="command-description">Read the current page content</span></li>
-        </ul>
-    `;
-    document.body.appendChild(helpPanel);
-    
-    // Add event listener to close button
-    document.getElementById('close-voice-help').addEventListener('click', function() {
-        document.getElementById('voice-commands-help').style.display = 'none';
-    });
-}
-
-/**
- * Create voice control toggle button
- */
-function createVoiceControlToggle() {
-    const toggleButton = document.createElement('button');
-    toggleButton.className = 'voice-control-toggle';
-    toggleButton.id = 'voice-control-toggle';
-    toggleButton.innerHTML = '<i class="fas fa-microphone"></i>';
-    toggleButton.title = 'Toggle Voice Control';
-    document.body.appendChild(toggleButton);
-    
-    // Add event listener
-    toggleButton.addEventListener('click', function() {
-        const voiceControl = window.alphaVoiceControl;
-        
-        // If already muted, unmute on click
-        if (voiceControl.isMuted) {
-            voiceControl.unmute();
-            this.classList.remove('muted');
-            this.classList.add('active');
-            this.innerHTML = '<i class="fas fa-microphone"></i>';
-        } 
-        // If active, mute on click
-        else if (this.classList.contains('active')) {
-            voiceControl.mute();
-            this.classList.remove('active');
-            this.classList.add('muted');
-            this.innerHTML = '<i class="fas fa-microphone-slash"></i>';
-        } 
-        // If inactive but not muted, activate
-        else {
-            voiceControl.toggle();
-            this.classList.toggle('active');
+    // Check for system commands
+    else if (commandMatches(command, ['mute', 'stop listening', 'turn off voice'])) {
+        if (voiceControlEnabled) {
+            toggleVoiceControl(); // Function from voice_control.js
         }
-    });
-}
-
-/**
- * Register navigation commands
- */
-function registerNavigationCommands() {
-    const voiceControl = window.alphaVoiceControl;
+    }
+    else if (commandMatches(command, ['unmute', 'start listening', 'turn on voice'])) {
+        if (!voiceControlEnabled) {
+            toggleVoiceControl(); // Function from voice_control.js
+        }
+    }
     
-    // Home command
-    voiceControl.registerCommand('go home', function() {
-        voiceControl.speak("Going to home page");
-        window.location.href = '/home';
-    });
+    // Status commands
+    else if (commandMatches(command, ['how am i doing', 'my status', 'cognitive status'])) {
+        fetchCognitiveStatus();
+    }
+    else if (commandMatches(command, ['where am i', 'my location', 'current location'])) {
+        checkCurrentLocation();
+    }
     
-    // Go back command
-    voiceControl.registerCommand('go back', function() {
-        voiceControl.speak("Going back");
-        window.history.back();
-    });
-    
-    // Go to specific page commands
-    voiceControl.registerCommand('go to learning corner', function() {
-        voiceControl.speak("Going to learning corner");
-        window.location.href = '/learning-corner';
-    });
-    
-    voiceControl.registerCommand('go to caregivers', function() {
-        voiceControl.speak("Going to caregivers page");
-        window.location.href = '/caregivers';
-    });
-    
-    voiceControl.registerCommand('go to memory lane', function() {
-        voiceControl.speak("Going to memory lane");
-        window.location.href = '/memory-lane';
-    });
-    
-    voiceControl.registerCommand('go to exercises', function() {
-        voiceControl.speak("Going to cognitive exercises");
-        window.location.href = '/cognitive/exercises';
-    });
-    
-    voiceControl.registerCommand('go to reminders', function() {
-        voiceControl.speak("Going to reminders");
-        window.location.href = '/reminders';
-    });
-    
-    voiceControl.registerCommand('go to safety zones', function() {
-        voiceControl.speak("Going to safety zones");
-        window.location.href = '/safety/zones';
-    });
-}
-
-/**
- * Register feature-specific commands
- */
-function registerFeatureCommands() {
-    const voiceControl = window.alphaVoiceControl;
-    
-    // Memory Lane commands
-    voiceControl.registerCommand('show albums', function() {
-        voiceControl.speak("Showing memory albums");
-        scrollToSection('memory-albums');
-    });
-    
-    voiceControl.registerCommand('show timeline', function() {
-        voiceControl.speak("Showing life timeline");
-        scrollToSection('timeline');
-    });
-    
-    voiceControl.registerCommand('play music memories', function() {
-        voiceControl.speak("Going to music memories");
-        scrollToSection('music-memories');
-    });
-    
-    // Learning Corner commands
-    voiceControl.registerCommand('show research', function() {
-        voiceControl.speak("Showing latest research");
-        scrollToSection('latest-research');
-    });
-    
-    voiceControl.registerCommand('show daily tip', function() {
-        voiceControl.speak("Showing daily tip");
-        scrollToSection('daily-tips');
-    });
-    
-    voiceControl.registerCommand('show resources', function() {
-        voiceControl.speak("Showing learning resources");
-        scrollToSection('resources');
-    });
-    
-    // Caregiver Page commands
-    voiceControl.registerCommand('show patient status', function() {
-        voiceControl.speak("Showing patient overview");
-        scrollToSection('patient-overview');
-    });
-    
-    voiceControl.registerCommand('show care plan', function() {
-        voiceControl.speak("Showing daily care plan");
-        scrollToSection('daily-care-plan');
-    });
-    
-    voiceControl.registerCommand('show medications', function() {
-        const medicationsTab = document.getElementById('medications-tab');
-        if (medicationsTab) {
-            voiceControl.speak("Showing medication schedule");
-            medicationsTab.click();
+    // No recognized command
+    else {
+        // Attempt a more general intent match
+        const generalIntent = detectGeneralIntent(command);
+        
+        if (generalIntent) {
+            handleGeneralIntent(generalIntent, command);
         } else {
-            voiceControl.speak("Medication tab not found on this page");
-        }
-    });
-}
-
-/**
- * Register accessibility commands
- */
-function registerAccessibilityCommands() {
-    const voiceControl = window.alphaVoiceControl;
-    
-    // Scrolling commands
-    voiceControl.registerCommand('scroll down', function() {
-        voiceControl.speak("Scrolling down");
-        window.scrollBy({
-            top: window.innerHeight / 2,
-            behavior: 'smooth'
-        });
-    });
-    
-    voiceControl.registerCommand('scroll up', function() {
-        voiceControl.speak("Scrolling up");
-        window.scrollBy({
-            top: -window.innerHeight / 2,
-            behavior: 'smooth'
-        });
-    });
-    
-    voiceControl.registerCommand('scroll to top', function() {
-        voiceControl.speak("Scrolling to top");
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-    
-    voiceControl.registerCommand('scroll to bottom', function() {
-        voiceControl.speak("Scrolling to bottom");
-        window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: 'smooth'
-        });
-    });
-    
-    // Read page content
-    voiceControl.registerCommand('read page', function() {
-        const mainContent = document.querySelector('main') || document.querySelector('.container');
-        if (mainContent) {
-            const contentText = extractReadableText(mainContent);
-            voiceControl.speak("Reading page content");
+            showNotification("I'm sorry, I didn't understand that command", 'warning');
             
-            // Break content into chunks if it's too long
-            const chunks = chunkText(contentText, 200);
-            readTextChunks(chunks, 0);
+            // Log unrecognized command for improvement
+            console.log('Unrecognized command:', command);
+        }
+    }
+}
+
+/**
+ * Check if the user's command matches any of the phrases
+ */
+function commandMatches(command, phrases) {
+    return phrases.some(phrase => command.includes(phrase));
+}
+
+/**
+ * Navigate to a specific URL
+ */
+function navigateTo(url) {
+    showNotification(`Navigating to ${url}`, 'success');
+    window.location.href = url;
+}
+
+/**
+ * Fetch today's information
+ */
+function fetchTodayInformation() {
+    showNotification("Here's what's happening today", 'info');
+    
+    // Get current date information
+    const now = new Date();
+    const dateString = now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    // Create modal with today's information
+    createInformationModal(
+        "Today's Information",
+        `
+        <div class="mb-3">
+            <h5 class="cyber-text">Today is ${dateString}</h5>
+            <p>Current time: ${now.toLocaleTimeString()}</p>
+        </div>
+        <div class="mb-3">
+            <h6><i class="fas fa-calendar-check me-2 text-info"></i>Today's Reminders</h6>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action bg-dark">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Take morning medication</h6>
+                        <small>8:00 AM</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Doctor's appointment</h6>
+                        <small>2:30 PM</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Call Susan</h6>
+                        <small>5:00 PM</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div>
+            <h6><i class="fas fa-brain me-2 text-info"></i>Cognitive Exercise Progress</h6>
+            <div class="progress-wrapper mb-2">
+                <div class="progress-bar" style="width: 65%"></div>
+            </div>
+            <p class="small text-muted">You've completed 65% of today's exercises</p>
+        </div>
+        `
+    );
+}
+
+/**
+ * Fetch schedule information
+ */
+function fetchScheduleInformation() {
+    showNotification("Here's your schedule", 'info');
+    
+    // Create modal with schedule information
+    createInformationModal(
+        "Your Schedule",
+        `
+        <div class="mb-3">
+            <h6><i class="fas fa-calendar-alt me-2 text-info"></i>Upcoming Events</h6>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action bg-dark">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Doctor's appointment</h6>
+                        <small>Today, 2:30 PM</small>
+                    </div>
+                    <p class="mb-1">Dr. Johnson - Regular checkup</p>
+                    <small>123 Medical Center</small>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Family Visit</h6>
+                        <small>Tomorrow, 11:00 AM</small>
+                    </div>
+                    <p class="mb-1">Susan and the grandkids</p>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Community Center - Art Class</h6>
+                        <small>Wednesday, 3:00 PM</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+        `
+    );
+}
+
+/**
+ * Start cognitive exercises
+ */
+function startCognitiveExercises() {
+    showNotification("Starting cognitive exercises", 'success');
+    navigateTo('/cognitive_exercises');
+}
+
+/**
+ * Initiate caregiver contact
+ */
+function initiateCaregiver() {
+    showNotification("Contacting your caregiver", 'info');
+    
+    // Create modal with caregiver contact options
+    createInformationModal(
+        "Contact Caregiver",
+        `
+        <div class="d-flex align-items-center mb-4">
+            <div class="me-3">
+                <img src="https://via.placeholder.com/60" class="rounded-circle" alt="Caregiver">
+            </div>
+            <div>
+                <h5 class="mb-1">Sarah Johnson</h5>
+                <p class="mb-0 small">Primary Caregiver</p>
+            </div>
+            <div class="ms-auto">
+                <span class="badge bg-success">
+                    <i class="fas fa-circle me-1"></i>Online
+                </span>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-4">
+                <a href="#" class="btn btn-outline-primary btn-lg w-100 mb-2">
+                    <i class="fas fa-phone-alt"></i>
+                </a>
+                <div>Call</div>
+            </div>
+            <div class="col-4">
+                <a href="#" class="btn btn-outline-info btn-lg w-100 mb-2">
+                    <i class="fas fa-video"></i>
+                </a>
+                <div>Video</div>
+            </div>
+            <div class="col-4">
+                <a href="#" class="btn btn-outline-success btn-lg w-100 mb-2">
+                    <i class="fas fa-comment-alt"></i>
+                </a>
+                <div>Message</div>
+            </div>
+        </div>
+        <div class="form-group mt-4">
+            <label for="message" class="form-label">Quick Message:</label>
+            <select class="form-select mb-3" id="message">
+                <option>I need help</option>
+                <option>Please call me</option>
+                <option>I'm feeling confused</option>
+                <option>Everything is fine, just checking in</option>
+            </select>
+            <button class="btn cyber-btn w-100">Send Message</button>
+        </div>
+        `
+    );
+}
+
+/**
+ * Fetch cognitive status information
+ */
+function fetchCognitiveStatus() {
+    showNotification("Here's your cognitive status", 'info');
+    
+    // Create modal with cognitive status
+    createInformationModal(
+        "Cognitive Status",
+        `
+        <div class="mb-4">
+            <h5 class="cyber-text mb-3">Your Cognitive Performance</h5>
+            <div class="cognitive-metrics">
+                <div class="metric-item">
+                    <div class="metric-name">Memory</div>
+                    <div class="metric-value">87%</div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar" style="width: 87%"></div>
+                    </div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-name">Attention</div>
+                    <div class="metric-value">92%</div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar" style="width: 92%"></div>
+                    </div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-name">Language</div>
+                    <div class="metric-value">78%</div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar" style="width: 78%"></div>
+                    </div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-name">Recognition</div>
+                    <div class="metric-value">85%</div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar" style="width: 85%"></div>
+                    </div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-name">Problem Solving</div>
+                    <div class="metric-value">73%</div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar" style="width: 73%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h6><i class="fas fa-chart-line me-2 text-info"></i>Weekly Progress</h6>
+            <p>Your overall cognitive score has improved by 3% this week.</p>
+            <div class="text-center mt-3">
+                <a href="/cognitive_exercises" class="btn cyber-btn">Continue Training</a>
+            </div>
+        </div>
+        `
+    );
+}
+
+/**
+ * Check current location
+ */
+function checkCurrentLocation() {
+    showNotification("Checking your location", 'info');
+    
+    // Create modal with location information
+    createInformationModal(
+        "Your Location",
+        `
+        <div class="text-center mb-3">
+            <i class="fas fa-map-marker-alt fa-3x text-danger mb-3"></i>
+            <h5>You are currently at Home</h5>
+            <p class="text-muted">Safe zone: Primary Residence</p>
+        </div>
+        <div class="bg-dark p-3 rounded mb-3">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <i class="fas fa-shield-alt text-success me-2"></i>Status:
+                </div>
+                <div class="text-success">
+                    <strong>Safe</strong>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+                <div>
+                    <i class="fas fa-map me-2"></i>Address:
+                </div>
+                <div>
+                    123 Main Street
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+                <div>
+                    <i class="fas fa-clock me-2"></i>Time at location:
+                </div>
+                <div>
+                    3 hours 42 minutes
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <a href="/safety_zones" class="btn cyber-btn">View All Safe Zones</a>
+        </div>
+        `
+    );
+}
+
+/**
+ * Attempt to detect a general intent from the command
+ */
+function detectGeneralIntent(command) {
+    // Intents for help
+    if (command.includes('help') || command.includes('assist') || command.includes('support')) {
+        return 'help';
+    }
+    
+    // Intents for information about the system
+    if (command.includes('what can you do') || command.includes('capabilities') || 
+        command.includes('tell me about you') || command.includes('what are you')) {
+        return 'system_info';
+    }
+    
+    // Greeting intents
+    if (command.includes('hello') || command.includes('hi there') || 
+        command.includes('hey') || command.includes('greetings')) {
+        return 'greeting';
+    }
+    
+    // No recognized intent
+    return null;
+}
+
+/**
+ * Handle general intent commands
+ */
+function handleGeneralIntent(intent, command) {
+    if (intent === 'help') {
+        createInformationModal(
+            "AlphaWolf Help",
+            `
+            <div class="mb-3">
+                <h5 class="cyber-text">Voice Commands</h5>
+                <p>You can say "Alpha" followed by any of these commands:</p>
+                <ul class="list-group">
+                    <li class="list-group-item bg-dark">
+                        <i class="fas fa-home me-2 text-info"></i> "go to home" - Return to the home page
+                    </li>
+                    <li class="list-group-item bg-dark">
+                        <i class="fas fa-brain me-2 text-info"></i> "exercises" - Access cognitive exercises
+                    </li>
+                    <li class="list-group-item bg-dark">
+                        <i class="fas fa-map-marked-alt me-2 text-info"></i> "safety zones" - Manage safety settings
+                    </li>
+                    <li class="list-group-item bg-dark">
+                        <i class="fas fa-calendar-alt me-2 text-info"></i> "reminders" - View your reminders
+                    </li>
+                    <li class="list-group-item bg-dark">
+                        <i class="fas fa-info-circle me-2 text-info"></i> "tell me about today" - Get today's information
+                    </li>
+                    <li class="list-group-item bg-dark">
+                        <i class="fas fa-phone-alt me-2 text-info"></i> "call caregiver" - Contact your caregiver
+                    </li>
+                </ul>
+            </div>
+            <div class="text-center">
+                <a href="/voice_control_help" class="btn cyber-btn">View All Commands</a>
+            </div>
+            `
+        );
+    }
+    else if (intent === 'system_info') {
+        createInformationModal(
+            "About AlphaWolf",
+            `
+            <div class="text-center mb-4">
+                <i class="fas fa-brain fa-4x text-info mb-3"></i>
+                <h4 class="cyber-text">AlphaWolf AI Assistant</h4>
+                <p>Version 1.0</p>
+            </div>
+            <p>AlphaWolf is an AI-powered cognitive care system designed to support individuals with Alzheimer's and dementia. I can help with:</p>
+            <ul class="list-group mb-3">
+                <li class="list-group-item bg-dark">
+                    <i class="fas fa-brain me-2 text-info"></i> Cognitive enhancement exercises
+                </li>
+                <li class="list-group-item bg-dark">
+                    <i class="fas fa-shield-alt me-2 text-info"></i> Safety monitoring and alerts
+                </li>
+                <li class="list-group-item bg-dark">
+                    <i class="fas fa-calendar-check me-2 text-info"></i> Reminders and schedule management
+                </li>
+                <li class="list-group-item bg-dark">
+                    <i class="fas fa-photo-video me-2 text-info"></i> Memory preservation and recall
+                </li>
+                <li class="list-group-item bg-dark">
+                    <i class="fas fa-hands-helping me-2 text-info"></i> Caregiver support and coordination
+                </li>
+            </ul>
+            <p class="text-center font-italic">"HOW CAN I HELP YOU LOVE YOURSELF MORE"</p>
+            `
+        );
+    }
+    else if (intent === 'greeting') {
+        // Get current time to provide appropriate greeting
+        const hour = new Date().getHours();
+        let greeting = "Hello";
+        
+        if (hour < 12) {
+            greeting = "Good morning";
+        } else if (hour < 18) {
+            greeting = "Good afternoon";
         } else {
-            voiceControl.speak("I couldn't find the main content to read");
+            greeting = "Good evening";
         }
-    });
-}
-
-/**
- * Register global commands
- */
-function registerGlobalCommands() {
-    const voiceControl = window.alphaVoiceControl;
-    
-    // Help command
-    voiceControl.registerCommand('help', function() {
-        voiceControl.speak("Showing available voice commands");
-        document.getElementById('voice-commands-help').style.display = 'block';
-    });
-    
-    // Stop listening command
-    voiceControl.registerCommand('stop listening', function() {
-        voiceControl.speak("Voice control deactivated");
-        voiceControl.stop();
-        document.getElementById('voice-control-toggle').classList.remove('active');
-    });
-    
-    // Start listening command
-    voiceControl.registerCommand('start listening', function() {
-        voiceControl.speak("Voice control activated");
-        voiceControl.start();
-        document.getElementById('voice-control-toggle').classList.add('active');
-    });
-    
-    // Mute microphone command
-    voiceControl.registerCommand('mute microphone', function() {
-        voiceControl.mute();
-        const toggleBtn = document.getElementById('voice-control-toggle');
-        toggleBtn.classList.remove('active');
-        toggleBtn.classList.add('muted');
-        toggleBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
-    });
-    
-    // Unmute microphone command
-    voiceControl.registerCommand('unmute microphone', function() {
-        voiceControl.unmute();
-        const toggleBtn = document.getElementById('voice-control-toggle');
-        toggleBtn.classList.add('active');
-        toggleBtn.classList.remove('muted');
-        toggleBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-    });
-}
-
-/**
- * Utility function to scroll to a section by ID
- */
-function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-        section.scrollIntoView({
-            behavior: 'smooth'
-        });
+        
+        showNotification(`${greeting}! How can I help you today?`, 'success');
     }
 }
 
 /**
- * Extract readable text from an HTML element
+ * Create an information modal
  */
-function extractReadableText(element) {
-    // Clone the element to avoid modifying the original
-    const clone = element.cloneNode(true);
-    
-    // Remove elements that shouldn't be read
-    const selectorsToRemove = [
-        'script', 'style', 'footer', 'nav',
-        '.voice-control-status', '.voice-control-feedback', '.voice-commands-help'
-    ];
-    
-    selectorsToRemove.forEach(selector => {
-        const elements = clone.querySelectorAll(selector);
-        elements.forEach(el => el.remove());
-    });
-    
-    // Get the text content
-    return clone.textContent
-        .replace(/\s+/g, ' ')
-        .trim();
-}
-
-/**
- * Break text into manageable chunks
- */
-function chunkText(text, maxWords) {
-    const words = text.split(' ');
-    const chunks = [];
-    let currentChunk = [];
-    
-    words.forEach(word => {
-        currentChunk.push(word);
-        if (currentChunk.length >= maxWords) {
-            chunks.push(currentChunk.join(' '));
-            currentChunk = [];
-        }
-    });
-    
-    if (currentChunk.length > 0) {
-        chunks.push(currentChunk.join(' '));
+function createInformationModal(title, content) {
+    // Remove any existing modals
+    const existingModal = document.getElementById('information-modal');
+    if (existingModal) {
+        existingModal.remove();
     }
     
-    return chunks;
-}
-
-/**
- * Read text chunks sequentially
- */
-function readTextChunks(chunks, index) {
-    if (index >= chunks.length) return;
+    // Create modal elements
+    const modalDiv = document.createElement('div');
+    modalDiv.id = 'information-modal';
+    modalDiv.className = 'modal fade';
+    modalDiv.tabIndex = -1;
+    modalDiv.setAttribute('aria-labelledby', 'information-modal-label');
+    modalDiv.setAttribute('aria-hidden', 'true');
     
-    const voiceControl = window.alphaVoiceControl;
+    modalDiv.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-0">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" id="information-modal-label">${title}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ${content}
+                </div>
+                <div class="modal-footer border-top border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
     
-    // Speak current chunk
-    voiceControl.speak(chunks[index], {}, function() {
-        // When done speaking, read the next chunk
-        readTextChunks(chunks, index + 1);
+    // Add modal to body
+    document.body.appendChild(modalDiv);
+    
+    // Create and show Bootstrap modal
+    const modal = new bootstrap.Modal(modalDiv);
+    modal.show();
+    
+    // Clean up when modal is hidden
+    modalDiv.addEventListener('hidden.bs.modal', function () {
+        modalDiv.remove();
     });
 }

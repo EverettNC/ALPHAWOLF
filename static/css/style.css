@@ -1,0 +1,338 @@
+/* AlphaWolf Main Stylesheet */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Header */
+.header {
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Main content area */
+main {
+    flex: 1;
+    padding-bottom: 3rem;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+    background: rgba(15, 15, 25, 0.8);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Cards and containers */
+.card {
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+}
+
+.card-header {
+    background-color: rgba(20, 20, 30, 0.8);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Mission statement */
+.mission-statement {
+    background: linear-gradient(135deg, rgba(30, 30, 40, 0.95), rgba(20, 20, 30, 0.95));
+    border-left: 4px solid var(--primary-color);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Cognitive metrics section */
+.cognitive-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.metric-item {
+    flex: 1 0 30%;
+    background: rgba(15, 15, 25, 0.7);
+    padding: 0.75rem;
+    border-radius: 5px;
+    border: 1px solid rgba(83, 92, 236, 0.2);
+}
+
+.metric-name {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.metric-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* Activity feed */
+.activity-feed {
+    margin-top: 1.5rem;
+}
+
+.activity-card {
+    background: rgba(15, 15, 25, 0.7);
+    border-radius: 5px;
+    border: 1px solid rgba(83, 92, 236, 0.2);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.activity-title {
+    font-weight: 600;
+    margin: 0.25rem 0;
+}
+
+/* Memory Lane section */
+.memory-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    height: 200px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.memory-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+}
+
+.memory-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.memory-card:hover img {
+    transform: scale(1.1);
+}
+
+.memory-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: white;
+}
+
+.memory-date {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-bottom: 0.25rem;
+}
+
+.memory-title {
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+/* Cognitive Exercises */
+.exercise-card {
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.exercise-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.difficulty-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.difficulty-easy {
+    background-color: rgba(74, 222, 128, 0.2);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.difficulty-medium {
+    background-color: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.difficulty-hard {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Safety Zones Map */
+.map-container {
+    height: 400px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Reminders */
+.reminder-list {
+    margin-top: 1.5rem;
+}
+
+.reminder-item {
+    background: rgba(15, 15, 25, 0.7);
+    border-radius: 5px;
+    border: 1px solid rgba(83, 92, 236, 0.2);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.reminder-item:hover {
+    background: rgba(25, 25, 35, 0.7);
+    border-color: rgba(83, 92, 236, 0.4);
+}
+
+.reminder-time {
+    flex: 0 0 80px;
+    text-align: center;
+    padding: 0.5rem;
+    background: rgba(83, 92, 236, 0.2);
+    border-radius: 5px;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.reminder-content {
+    flex: 1;
+    padding: 0 1rem;
+}
+
+.reminder-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.reminder-actions {
+    flex: 0 0 100px;
+    text-align: right;
+}
+
+/* Learning Corner */
+.article-card {
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.article-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.article-image {
+    height: 180px;
+    overflow: hidden;
+}
+
+.article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.article-card:hover .article-image img {
+    transform: scale(1.1);
+}
+
+.article-date {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.article-category {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    background: rgba(83, 92, 236, 0.2);
+    border-radius: 20px;
+    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Caregiver Tools */
+.caregiver-tool-card {
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.caregiver-tool-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Media Queries */
+@media (max-width: 767.98px) {
+    .metric-item {
+        flex: 1 0 45%;
+    }
+    
+    .cognitive-metrics {
+        gap: 0.5rem;
+    }
+    
+    .reminder-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .reminder-time {
+        margin-bottom: 0.5rem;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+    
+    .reminder-actions {
+        margin-top: 1rem;
+        width: 100%;
+        text-align: left;
+        flex: 0 0 auto;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .metric-item {
+        flex: 1 0 100%;
+    }
+    
+    .memory-card {
+        height: 160px;
+    }
+}

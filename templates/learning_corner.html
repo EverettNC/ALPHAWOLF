@@ -48,45 +48,62 @@
     </div>
     
     <div class="row" id="research-articles">
-      <!-- Research articles will be populated here -->
-      <div class="col-md-4 mb-3">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="card-date">May 5, 2025</div>
-            <h5 class="card-title">Advances in Early Detection</h5>
-            <p class="card-text">New research shows promising results in early detection of Alzheimer's biomarkers, potentially allowing for earlier intervention.</p>
+      {% if research_articles %}
+        {% for article in research_articles %}
+          <div class="col-md-4 mb-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <div class="card-date">{{ article.date }}</div>
+                <h5 class="card-title">{{ article.title }}</h5>
+                <p class="card-text">{{ article.summary }}</p>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-sm btn-primary read-more-btn" data-article-id="{{ loop.index }}">Read More</button>
+              </div>
+            </div>
           </div>
-          <div class="card-footer">
-            <button class="btn btn-sm btn-primary" id="read-more-1">Read More</button>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-4 mb-3">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="card-date">April 28, 2025</div>
-            <h5 class="card-title">Diet and Cognitive Health</h5>
-            <p class="card-text">Recent studies link Mediterranean diet adherence with slower cognitive decline in adults with early-stage dementia.</p>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-sm btn-primary" id="read-more-2">Read More</button>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-4 mb-3">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="card-date">April 15, 2025</div>
-            <h5 class="card-title">Sleep Quality and Memory</h5>
-            <p class="card-text">New findings suggest that improving sleep quality may help preserve memory function in people with mild cognitive impairment.</p>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-sm btn-primary" id="read-more-3">Read More</button>
+        {% endfor %}
+      {% else %}
+        <!-- Fallback if no articles are available -->
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="card-date">May 5, 2025</div>
+              <h5 class="card-title">Advances in Early Detection</h5>
+              <p class="card-text">New research shows promising results in early detection of Alzheimer's biomarkers, potentially allowing for earlier intervention.</p>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-sm btn-primary read-more-btn" data-article-id="1">Read More</button>
+            </div>
           </div>
         </div>
-      </div>
+        
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="card-date">April 28, 2025</div>
+              <h5 class="card-title">Diet and Cognitive Health</h5>
+              <p class="card-text">Recent studies link Mediterranean diet adherence with slower cognitive decline in adults with early-stage dementia.</p>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-sm btn-primary read-more-btn" data-article-id="2">Read More</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="card-date">April 15, 2025</div>
+              <h5 class="card-title">Sleep Quality and Memory</h5>
+              <p class="card-text">New findings suggest that improving sleep quality may help preserve memory function in people with mild cognitive impairment.</p>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-sm btn-primary read-more-btn" data-article-id="3">Read More</button>
+            </div>
+          </div>
+        </div>
+      {% endif %}
     </div>
     
     <div class="text-center mt-3">
@@ -104,10 +121,18 @@
     <div class="tip-card">
       <div class="tip-card-header">
         <i class="fas fa-lightbulb tip-icon"></i>
-        <h4>Today's Tip: Morning Routines</h4>
+        {% if daily_tip %}
+          <h4>Today's Tip: {{ daily_tip.title }}</h4>
+      </div>
+      <div class="tip-card-body">
+        <p>{{ daily_tip.content }}</p>
+        <div class="small text-muted mb-2">Category: {{ daily_tip.category }}</div>
+        {% else %}
+          <h4>Today's Tip: Morning Routines</h4>
       </div>
       <div class="tip-card-body">
         <p>Establishing a consistent morning routine can help reduce anxiety and confusion. Consider creating a visual checklist of morning activities such as brushing teeth, getting dressed, and having breakfast.</p>
+        {% endif %}
         <div class="tip-actions">
           <button class="btn btn-sm btn-success" id="useful-tip">Mark as Useful</button>
           <button class="btn btn-sm btn-outline-secondary" id="save-tip">Save for Later</button>
@@ -129,77 +154,153 @@
     </div>
     
     <div class="row">
-      <div class="col-md-6 mb-3">
-        <div class="resource-card">
-          <div class="resource-icon">
-            <i class="fas fa-book"></i>
-          </div>
-          <div class="resource-content">
-            <h5>Recommended Books</h5>
-            <ul class="resource-list">
-              <li>The 36-Hour Day: A Family Guide</li>
-              <li>Creating Moments of Joy</li>
-              <li>Dementia Reimagined</li>
-              <li>The Alzheimer's Solution</li>
-            </ul>
-            <button class="btn btn-sm btn-outline-info">See All Books</button>
+      {% if resources and resources.books %}
+        <div class="col-md-6 mb-3">
+          <div class="resource-card">
+            <div class="resource-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <div class="resource-content">
+              <h5>Recommended Books</h5>
+              <ul class="resource-list">
+                {% for book in resources.books[:4] %}
+                  <li>{{ book.title }}{% if book.author %} by {{ book.author }}{% endif %}</li>
+                {% endfor %}
+              </ul>
+              <button class="btn btn-sm btn-outline-info">See All Books</button>
+            </div>
           </div>
         </div>
-      </div>
+      {% else %}
+        <div class="col-md-6 mb-3">
+          <div class="resource-card">
+            <div class="resource-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <div class="resource-content">
+              <h5>Recommended Books</h5>
+              <ul class="resource-list">
+                <li>The 36-Hour Day: A Family Guide</li>
+                <li>Creating Moments of Joy</li>
+                <li>Dementia Reimagined</li>
+                <li>The Alzheimer's Solution</li>
+              </ul>
+              <button class="btn btn-sm btn-outline-info">See All Books</button>
+            </div>
+          </div>
+        </div>
+      {% endif %}
       
-      <div class="col-md-6 mb-3">
-        <div class="resource-card">
-          <div class="resource-icon">
-            <i class="fas fa-globe"></i>
-          </div>
-          <div class="resource-content">
-            <h5>Helpful Websites</h5>
-            <ul class="resource-list">
-              <li>Alzheimer's Association</li>
-              <li>National Institute on Aging</li>
-              <li>Family Caregiver Alliance</li>
-              <li>Dementia Society of America</li>
-            </ul>
-            <button class="btn btn-sm btn-outline-info">Visit Websites</button>
+      {% if resources and resources.websites %}
+        <div class="col-md-6 mb-3">
+          <div class="resource-card">
+            <div class="resource-icon">
+              <i class="fas fa-globe"></i>
+            </div>
+            <div class="resource-content">
+              <h5>Helpful Websites</h5>
+              <ul class="resource-list">
+                {% for website in resources.websites[:4] %}
+                  <li>{{ website.name }}</li>
+                {% endfor %}
+              </ul>
+              <button class="btn btn-sm btn-outline-info">Visit Websites</button>
+            </div>
           </div>
         </div>
-      </div>
+      {% else %}
+        <div class="col-md-6 mb-3">
+          <div class="resource-card">
+            <div class="resource-icon">
+              <i class="fas fa-globe"></i>
+            </div>
+            <div class="resource-content">
+              <h5>Helpful Websites</h5>
+              <ul class="resource-list">
+                <li>Alzheimer's Association</li>
+                <li>National Institute on Aging</li>
+                <li>Family Caregiver Alliance</li>
+                <li>Dementia Society of America</li>
+              </ul>
+              <button class="btn btn-sm btn-outline-info">Visit Websites</button>
+            </div>
+          </div>
+        </div>
+      {% endif %}
       
-      <div class="col-md-6 mb-3">
-        <div class="resource-card">
-          <div class="resource-icon">
-            <i class="fas fa-file-pdf"></i>
-          </div>
-          <div class="resource-content">
-            <h5>Downloadable Guides</h5>
-            <ul class="resource-list">
-              <li>Daily Care Plan Template</li>
-              <li>Home Safety Checklist</li>
-              <li>Communication Strategies Guide</li>
-              <li>Legal and Financial Planning</li>
-            </ul>
-            <button class="btn btn-sm btn-outline-info">Download Guides</button>
+      {% if resources and resources.guides %}
+        <div class="col-md-6 mb-3">
+          <div class="resource-card">
+            <div class="resource-icon">
+              <i class="fas fa-file-pdf"></i>
+            </div>
+            <div class="resource-content">
+              <h5>Downloadable Guides</h5>
+              <ul class="resource-list">
+                {% for guide in resources.guides[:4] %}
+                  <li>{{ guide.title }}</li>
+                {% endfor %}
+              </ul>
+              <button class="btn btn-sm btn-outline-info">Download Guides</button>
+            </div>
           </div>
         </div>
-      </div>
+      {% else %}
+        <div class="col-md-6 mb-3">
+          <div class="resource-card">
+            <div class="resource-icon">
+              <i class="fas fa-file-pdf"></i>
+            </div>
+            <div class="resource-content">
+              <h5>Downloadable Guides</h5>
+              <ul class="resource-list">
+                <li>Daily Care Plan Template</li>
+                <li>Home Safety Checklist</li>
+                <li>Communication Strategies Guide</li>
+                <li>Legal and Financial Planning</li>
+              </ul>
+              <button class="btn btn-sm btn-outline-info">Download Guides</button>
+            </div>
+          </div>
+        </div>
+      {% endif %}
       
-      <div class="col-md-6 mb-3">
-        <div class="resource-card">
-          <div class="resource-icon">
-            <i class="fas fa-handshake"></i>
-          </div>
-          <div class="resource-content">
-            <h5>Support Groups</h5>
-            <ul class="resource-list">
-              <li>Online Caregiver Forums</li>
-              <li>Local Support Meetings</li>
-              <li>Memory Cafés</li>
-              <li>Family Support Programs</li>
-            </ul>
-            <button class="btn btn-sm btn-outline-info">Find Support</button>
+      {% if resources and resources.support_groups %}
+        <div class="col-md-6 mb-3">
+          <div class="resource-card">
+            <div class="resource-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <div class="resource-content">
+              <h5>Support Groups</h5>
+              <ul class="resource-list">
+                {% for group in resources.support_groups[:4] %}
+                  <li>{{ group.name }}</li>
+                {% endfor %}
+              </ul>
+              <button class="btn btn-sm btn-outline-info">Find Support</button>
+            </div>
           </div>
         </div>
-      </div>
+      {% else %}
+        <div class="col-md-6 mb-3">
+          <div class="resource-card">
+            <div class="resource-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <div class="resource-content">
+              <h5>Support Groups</h5>
+              <ul class="resource-list">
+                <li>Online Caregiver Forums</li>
+                <li>Local Support Meetings</li>
+                <li>Memory Cafés</li>
+                <li>Family Support Programs</li>
+              </ul>
+              <button class="btn btn-sm btn-outline-info">Find Support</button>
+            </div>
+          </div>
+        </div>
+      {% endif %}
     </div>
   </section>
   
@@ -210,23 +311,45 @@
       <p class="text-muted">Knowledge from healthcare professionals and researchers</p>
     </div>
     
-    <div class="expert-insight-container">
-      <div class="expert-profile">
-        <img src="{{ url_for('static', filename='img/expert-placeholder.jpg') }}" alt="Expert" class="expert-image">
-        <div class="expert-info">
-          <h5>Dr. Eleanor Bennett</h5>
-          <span class="expert-title">Neurologist & Dementia Specialist</span>
+    {% if expert_insights %}
+      {% for insight in expert_insights %}
+        <div class="expert-insight-container mb-4">
+          <div class="expert-profile">
+            <img src="{{ url_for('static', filename='img/expert-placeholder.jpg') }}" alt="Expert" class="expert-image">
+            <div class="expert-info">
+              <h5>{{ insight.expert_name }}</h5>
+              <span class="expert-title">{{ insight.title }}</span>
+            </div>
+          </div>
+          <div class="expert-quote">
+            <p>"{{ insight.quote }}"</p>
+          </div>
+          <div class="insight-topic-tags">
+            {% for topic in insight.topics %}
+              <span class="insight-tag">{{ topic }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="expert-insight-container">
+        <div class="expert-profile">
+          <img src="{{ url_for('static', filename='img/expert-placeholder.jpg') }}" alt="Expert" class="expert-image">
+          <div class="expert-info">
+            <h5>Dr. Eleanor Bennett</h5>
+            <span class="expert-title">Neurologist & Dementia Specialist</span>
+          </div>
+        </div>
+        <div class="expert-quote">
+          <p>"One of the most important aspects of dementia care is maintaining social connections. Regular meaningful interactions help preserve cognitive function and emotional well-being. Even brief daily conversations or video calls with loved ones can make a significant difference."</p>
+        </div>
+        <div class="insight-topic-tags">
+          <span class="insight-tag">Social Engagement</span>
+          <span class="insight-tag">Cognitive Health</span>
+          <span class="insight-tag">Well-being</span>
         </div>
       </div>
-      <div class="expert-quote">
-        <p>"One of the most important aspects of dementia care is maintaining social connections. Regular meaningful interactions help preserve cognitive function and emotional well-being. Even brief daily conversations or video calls with loved ones can make a significant difference."</p>
-      </div>
-      <div class="insight-topic-tags">
-        <span class="insight-tag">Social Engagement</span>
-        <span class="insight-tag">Cognitive Health</span>
-        <span class="insight-tag">Well-being</span>
-      </div>
-    </div>
+    {% endif %}
     
     <div class="text-center mt-3">
       <button class="btn btn-outline-info" id="more-insights">More Expert Insights</button>

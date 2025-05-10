@@ -959,7 +959,28 @@ def get_navigation_instructions(patient_id):
 @app.route('/learning-corner')
 def learning_corner():
     """Learning resources about dementia and Alzheimer's."""
-    return render_template('learning_corner.html')
+    from services.research_service import ResearchService
+    
+    # Initialize research service
+    research_service = ResearchService()
+    
+    # Get research articles
+    research_articles = research_service.get_research_articles(limit=6)
+    
+    # Get daily tip
+    daily_tip = research_service.get_daily_tip()
+    
+    # Get expert insights
+    expert_insights = research_service.get_expert_insights(limit=3)
+    
+    # Get resources
+    resources = research_service.get_resources()
+    
+    return render_template('learning_corner.html', 
+                          research_articles=research_articles,
+                          daily_tip=daily_tip,
+                          expert_insights=expert_insights, 
+                          resources=resources)
 
 @app.route('/caregivers')
 def caregivers_page():

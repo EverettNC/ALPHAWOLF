@@ -15,74 +15,114 @@
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     overflow: hidden;
+    background: var(--primary-gradient);
   }
   
   .landing-container {
     height: 100vh;
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: var(--primary-gradient);
     position: relative;
-  }
-  
-  .landing-content {
-    text-align: center;
     color: var(--text-light);
-    padding: 2rem;
-    max-width: 800px;
-    z-index: 2;
+    text-align: center;
   }
   
-  .landing-logo {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin: 0 auto 1.5rem;
-    background: white;
-    padding: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  .app-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .app-badge i {
+    margin-right: 5px;
+    color: #ffcc00;
+  }
+  
+  .landing-header {
+    margin-bottom: 1.5rem;
   }
   
   .landing-title {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 800;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(to right, #ffffff, #c8d8ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
   }
   
-  .landing-subtitle {
+  .landing-slogan {
     font-size: 1.5rem;
+    font-weight: 600;
     opacity: 0.9;
-    margin-bottom: 1.5rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0.5rem 0 1.5rem;
+    letter-spacing: 0.5px;
   }
   
-  .landing-features {
+  .system-description {
+    font-size: 1.8rem;
+    font-weight: 600;
+    max-width: 900px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.4;
+  }
+  
+  .landing-tagline {
+    font-size: 1.4rem;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    line-height: 1.5;
+  }
+  
+  .feature-boxes {
     display: flex;
     justify-content: center;
+    gap: 1.5rem;
     margin: 2rem 0;
     flex-wrap: wrap;
+    max-width: 1000px;
   }
   
-  .landing-feature {
+  .feature-box {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(5px);
-    padding: 1rem 1.5rem;
-    border-radius: 10px;
-    margin: 0.5rem;
-    text-align: center;
-    flex: 0 0 auto;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border-radius: 12px;
+    width: 280px;
+    text-align: left;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   }
   
-  .landing-feature i {
-    display: block;
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
+  .feature-box h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .feature-box h3 i {
+    margin-right: 10px;
+    font-size: 1.5rem;
+  }
+  
+  .feature-box p {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    margin: 0;
   }
   
   .landing-cta {
@@ -93,7 +133,7 @@
     background: white;
     color: var(--primary-color);
     border: none;
-    padding: 1rem 2rem;
+    padding: 1rem 2.5rem;
     font-size: 1.25rem;
     font-weight: 600;
     border-radius: 50px;
@@ -101,6 +141,8 @@
     transition: all 0.3s ease;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
   }
   
   .btn-initialize:hover {
@@ -110,7 +152,8 @@
   }
   
   .btn-initialize i {
-    margin-right: 10px;
+    margin-right: 12px;
+    font-size: 1.5rem;
   }
   
   .particles {
@@ -119,26 +162,29 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: -1;
   }
   
   @media (max-width: 768px) {
     .landing-title {
-      font-size: 2.5rem;
+      font-size: 3rem;
     }
     
-    .landing-subtitle {
-      font-size: 1.2rem;
+    .system-description {
+      font-size: 1.4rem;
     }
     
-    .landing-logo {
-      width: 120px;
-      height: 120px;
+    .landing-tagline {
+      font-size: 1.1rem;
+    }
+    
+    .feature-box {
+      width: 100%;
     }
     
     .btn-initialize {
       padding: 0.75rem 1.5rem;
-      font-size: 1rem;
+      font-size: 1.1rem;
     }
   }
 </style>
@@ -148,34 +194,44 @@
 <div class="landing-container">
   <div class="particles" id="particles-js"></div>
   
-  <div class="landing-content">
-    <img src="{{ url_for('static', filename='img/alphawolf_avatar.png') }}" alt="AlphaWolf" class="landing-logo" onerror="this.src='{{ url_for('static', filename='img/default_avatar.png') }}'">
-    
+  <div class="app-badge">
+    <i class="fas fa-star"></i> Advanced AI System
+  </div>
+  
+  <div class="landing-header">
     <h1 class="landing-title">AlphaWolf</h1>
-    <p class="landing-subtitle">An AI-powered companion for dementia and Alzheimer's care</p>
-    
-    <p class="landing-mission">"HOW CAN I HELP YOU LOVE YOURSELF MORE"</p>
-    
-    <div class="landing-features">
-      <div class="landing-feature">
-        <i class="fas fa-brain"></i>
-        <span>Cognitive Support</span>
-      </div>
-      <div class="landing-feature">
-        <i class="fas fa-shield-alt"></i>
-        <span>Safety Tools</span>
-      </div>
-      <div class="landing-feature">
-        <i class="fas fa-comments"></i>
-        <span>Voice Control</span>
-      </div>
+    <p class="landing-slogan">Advanced AI-Powered Multi-modal Communication System</p>
+  </div>
+  
+  <div class="system-description">
+    For Alzheimer's and Dementia
+  </div>
+  
+  <div class="landing-tagline">
+    AlphaWolf enables individuals with Alzheimer's or dementia to remain safe at home and anywhere
+  </div>
+  
+  <div class="feature-boxes">
+    <div class="feature-box">
+      <h3><i class="fas fa-shield-alt"></i> Safety System</h3>
+      <p>Advanced location tracking, geofencing, and wandering prevention with automated alerts</p>
     </div>
     
-    <div class="landing-cta">
-      <a href="{{ url_for('home') }}" class="btn-initialize">
-        <i class="fas fa-power-off"></i> Initialize Communication System
-      </a>
+    <div class="feature-box">
+      <h3><i class="fas fa-brain"></i> Cognitive Support</h3>
+      <p>Personalized exercises to maintain cognitive abilities and delay disease progression</p>
     </div>
+    
+    <div class="feature-box">
+      <h3><i class="fas fa-comments"></i> Voice Interface</h3>
+      <p>Natural, simplified communication through voice commands and speech recognition</p>
+    </div>
+  </div>
+  
+  <div class="landing-cta">
+    <a href="{{ url_for('home') }}" class="btn-initialize">
+      <i class="fas fa-power-off"></i> Initialize Communication System
+    </a>
   </div>
 </div>
 {% endblock %}
@@ -188,7 +244,7 @@
       particlesJS("particles-js", {
         "particles": {
           "number": {
-            "value": 80,
+            "value": 100,
             "density": {
               "enable": true,
               "value_area": 800
@@ -206,7 +262,7 @@
           },
           "opacity": {
             "value": 0.5,
-            "random": false,
+            "random": true,
             "anim": {
               "enable": false,
               "speed": 1,
@@ -228,7 +284,7 @@
             "enable": true,
             "distance": 150,
             "color": "#ffffff",
-            "opacity": 0.4,
+            "opacity": 0.2,
             "width": 1
           },
           "move": {

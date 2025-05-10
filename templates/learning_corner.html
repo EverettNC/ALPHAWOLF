@@ -99,7 +99,7 @@
               <p class="card-text">New findings suggest that improving sleep quality may help preserve memory function in people with mild cognitive impairment.</p>
             </div>
             <div class="card-footer">
-              <button class="btn btn-sm btn-primary read-more-btn" data-article-id="3">Read More</button>
+              <a href="{{ url_for('research_article', article_id=3) }}" class="btn btn-sm btn-primary">Read More</a>
             </div>
           </div>
         </div>
@@ -142,7 +142,7 @@
     </div>
     
     <div class="text-center mt-3">
-      <button class="btn btn-outline-success" id="get-new-tip">Get a New Tip</button>
+      <a href="{{ url_for('daily_tips') }}" class="btn btn-outline-success">Browse All Tips</a>
     </div>
   </section>
   

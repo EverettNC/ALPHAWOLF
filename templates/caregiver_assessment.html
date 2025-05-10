@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Caregiver Stress Assessment{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/caregivers_page.css') }}">
+<style>
+    .assessment-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .assessment-intro {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 30px;
+    }
+    
+    .assessment-form {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .question-item {
+        margin-bottom: 25px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .question-item:last-child {
+        border-bottom: none;
+    }
+    
+    .question-text {
+        font-weight: 500;
+        margin-bottom: 15px;
+    }
+    
+    .options-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    
+    .option-item {
+        flex: 0 0 18%;
+        min-width: 120px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    
+    .option-label {
+        display: block;
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .option-label:hover {
+        background-color: #e9ecef;
+    }
+    
+    .option-input {
+        position: absolute;
+        opacity: 0;
+    }
+    
+    .option-input:checked + .option-label {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .privacy-notice {
+        font-size: 0.9rem;
+        margin-top: 20px;
+        color: #6c757d;
+    }
+    
+    @media (max-width: 768px) {
+        .option-item {
+            flex: 0 0 30%;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .option-item {
+            flex: 0 0 48%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="assessment-container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>Caregiver Stress Assessment</h1>
+            <a href="{{ url_for('caregivers_page') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Caregivers Hub
+            </a>
+        </div>
+        
+        <div class="assessment-intro">
+            <h4>Why Take This Assessment?</h4>
+            <p>Caregiving can be physically and emotionally demanding. This brief assessment will help you identify your stress level and provide personalized recommendations for self-care and support resources.</p>
+            <ul>
+                <li>Takes about 3-5 minutes to complete</li>
+                <li>Provides immediate results and recommendations</li>
+                <li>All responses are confidential and stored securely</li>
+                <li>You can retake the assessment anytime to track changes</li>
+            </ul>
+        </div>
+        
+        <div class="assessment-form">
+            <form action="{{ url_for('caregiver_assessment_results') }}" method="POST">
+                {% for question in questions %}
+                <div class="question-item">
+                    <div class="question-text">{{ loop.index }}. {{ question.text }}</div>
+                    <div class="options-list">
+                        {% for option in question.options %}
+                        <div class="option-item">
+                            <input type="radio" 
+                                   name="question_{{ question.id }}" 
+                                   id="q{{ question.id }}_option{{ loop.index0 }}" 
+                                   value="{{ loop.index0 }}" 
+                                   class="option-input"
+                                   required>
+                            <label for="q{{ question.id }}_option{{ loop.index0 }}" class="option-label">
+                                {{ option }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Get My Results</button>
+                </div>
+                
+                <div class="privacy-notice">
+                    <p><strong>Privacy Notice:</strong> Your responses are used only to generate personalized recommendations and are not shared with third parties. In a production version of this application, your data would be protected according to HIPAA guidelines and other relevant privacy regulations.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure all required fields are completed before submission
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            const questions = document.querySelectorAll('.question-item');
+            let allAnswered = true;
+            
+            questions.forEach(function(question, index) {
+                const options = question.querySelectorAll('input[type="radio"]');
+                const questionNumber = index + 1;
+                let questionAnswered = false;
+                
+                options.forEach(function(option) {
+                    if (option.checked) {
+                        questionAnswered = true;
+                    }
+                });
+                
+                if (!questionAnswered) {
+                    allAnswered = false;
+                    // In a real app, we might highlight the unanswered questions
+                    console.log(`Question ${questionNumber} not answered`);
+                }
+            });
+            
+            if (!allAnswered) {
+                event.preventDefault();
+                alert('Please answer all questions before submitting.');
+            }
+        });
+    });
+</script>
+{% endblock %}

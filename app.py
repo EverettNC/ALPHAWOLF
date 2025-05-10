@@ -970,6 +970,257 @@ def caregivers_page():
     
     return render_template('caregivers_page.html')
 
+@app.route('/caregivers/videos')
+def caregiver_videos():
+    """Training videos for caregivers."""
+    # Define video categories and their content
+    videos = [
+        {
+            'id': 1,
+            'title': 'Safe Transferring Techniques',
+            'description': 'Learn how to safely assist a person with dementia when moving between bed, chair, or bathroom.',
+            'thumbnail': 'https://source.unsplash.com/300x200/?healthcare',
+            'duration': '5:32',
+            'categories': ['Daily Care', 'Safety']
+        },
+        {
+            'id': 2,
+            'title': 'Bathing and Hygiene Tips',
+            'description': 'Strategies to make bathing and personal hygiene more comfortable for both patient and caregiver.',
+            'thumbnail': 'https://source.unsplash.com/300x200/?wellness',
+            'duration': '7:15',
+            'categories': ['Daily Care', 'Comfort']
+        },
+        {
+            'id': 3,
+            'title': 'Redirection Strategies',
+            'description': 'How to handle challenging behaviors through effective communication and redirection.',
+            'thumbnail': 'https://source.unsplash.com/300x200/?communication',
+            'duration': '8:45',
+            'categories': ['Behavior', 'Communication']
+        },
+        {
+            'id': 4,
+            'title': 'Emotion-Focused Care',
+            'description': 'Understanding the emotional needs of dementia patients and responding with empathy.',
+            'thumbnail': 'https://source.unsplash.com/300x200/?empathy',
+            'duration': '6:20',
+            'categories': ['Emotional Support', 'Communication']
+        }
+    ]
+    
+    return render_template('caregiver_videos.html', videos=videos)
+
+@app.route('/caregivers/video/<int:video_id>')
+def caregiver_video_detail(video_id):
+    """Display a specific training video."""
+    # In a real app, we'd fetch video details from a database
+    videos = {
+        1: {
+            'id': 1,
+            'title': 'Safe Transferring Techniques',
+            'description': 'Learn how to safely assist a person with dementia when moving between bed, chair, or bathroom.',
+            'embed_code': '<iframe width="100%" height="450" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+            'transcript': 'In this video, we cover the basics of safe transferring techniques for individuals with dementia. Always remember to protect your own body mechanics while ensuring the safety and dignity of the person in your care.',
+            'tips': [
+                'Always communicate clearly before beginning a transfer',
+                'Ensure proper body mechanics to prevent caregiver injury',
+                'Use assistive devices when appropriate',
+                'Promote as much independence as possible'
+            ]
+        },
+        2: {
+            'id': 2,
+            'title': 'Bathing and Hygiene Tips',
+            'description': 'Strategies to make bathing and personal hygiene more comfortable for both patient and caregiver.',
+            'embed_code': '<iframe width="100%" height="450" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+            'transcript': 'This video covers strategies for making bathing and hygiene routines more comfortable for individuals with dementia. We discuss creating a calm environment and addressing common challenges.',
+            'tips': [
+                'Maintain a consistent routine',
+                'Create a warm, comfortable environment',
+                'Use distraction and positive reinforcement',
+                'Consider alternative bathing methods when needed'
+            ]
+        },
+        3: {
+            'id': 3,
+            'title': 'Redirection Strategies',
+            'description': 'How to handle challenging behaviors through effective communication and redirection.',
+            'embed_code': '<iframe width="100%" height="450" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+            'transcript': 'In this video, we explore effective redirection strategies for caregivers of people with dementia. Learn how to de-escalate situations and redirect attention in a positive way.',
+            'tips': [
+                'Validate feelings before redirecting',
+                'Use clear, simple language',
+                'Offer meaningful alternatives',
+                'Stay calm and patient throughout the process'
+            ]
+        },
+        4: {
+            'id': 4,
+            'title': 'Emotion-Focused Care',
+            'description': 'Understanding the emotional needs of dementia patients and responding with empathy.',
+            'embed_code': '<iframe width="100%" height="450" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+            'transcript': 'This video focuses on the emotional aspects of dementia care. Learn techniques for recognizing emotional cues and responding with empathy and understanding.',
+            'tips': [
+                'Focus on the feeling, not just the behavior',
+                'Use validation rather than correction',
+                'Maintain meaningful connections through activities',
+                'Practice self-awareness of your own emotions'
+            ]
+        }
+    }
+    
+    video = videos.get(video_id)
+    if not video:
+        flash('Video not found', 'error')
+        return redirect(url_for('caregiver_videos'))
+    
+    return render_template('caregiver_video_detail.html', video=video)
+
+@app.route('/caregivers/assessment')
+def caregiver_assessment():
+    """Caregiver stress assessment tool."""
+    assessment_questions = [
+        {
+            'id': 1,
+            'text': 'How often do you feel overwhelmed by your caregiving responsibilities?',
+            'options': ['Never', 'Rarely', 'Sometimes', 'Often', 'Always']
+        },
+        {
+            'id': 2,
+            'text': 'How often do you feel you don\'t have enough time for yourself because of caregiving?',
+            'options': ['Never', 'Rarely', 'Sometimes', 'Often', 'Always']
+        },
+        {
+            'id': 3,
+            'text': 'How often do you experience stress-related physical symptoms (headaches, fatigue, etc.)?',
+            'options': ['Never', 'Rarely', 'Sometimes', 'Often', 'Always']
+        },
+        {
+            'id': 4,
+            'text': 'How often do you feel emotionally drained because of your caregiving role?',
+            'options': ['Never', 'Rarely', 'Sometimes', 'Often', 'Always']
+        },
+        {
+            'id': 5,
+            'text': 'How often do you feel socially isolated or like you\'ve lost connection with friends?',
+            'options': ['Never', 'Rarely', 'Sometimes', 'Often', 'Always']
+        },
+        {
+            'id': 6,
+            'text': 'How often do you feel you\'re not doing enough for the person you\'re caring for?',
+            'options': ['Never', 'Rarely', 'Sometimes', 'Often', 'Always']
+        },
+        {
+            'id': 7,
+            'text': 'How difficult is it for you to find time for relaxation or hobbies?',
+            'options': ['Not difficult', 'Slightly difficult', 'Moderately difficult', 'Very difficult', 'Extremely difficult']
+        },
+        {
+            'id': 8,
+            'text': 'How would you rate your overall stress level as a caregiver?',
+            'options': ['Very low', 'Low', 'Moderate', 'High', 'Very high']
+        },
+        {
+            'id': 9,
+            'text': 'How often do you feel uncertain about what to do about the person you\'re caring for?',
+            'options': ['Never', 'Rarely', 'Sometimes', 'Often', 'Always']
+        },
+        {
+            'id': 10,
+            'text': 'How well are you taking care of your own health and well-being?',
+            'options': ['Very well', 'Well', 'Moderately well', 'Not very well', 'Not at all']
+        }
+    ]
+    
+    return render_template('caregiver_assessment.html', questions=assessment_questions)
+
+@app.route('/caregivers/assessment/results', methods=['POST'])
+def caregiver_assessment_results():
+    """Process and display results of the caregiver stress assessment."""
+    # Process form submission
+    responses = {}
+    for key, value in request.form.items():
+        if key.startswith('question_'):
+            question_id = int(key.split('_')[1])
+            responses[question_id] = int(value)
+    
+    # Calculate stress score (0-40)
+    # Questions 1-6, 9: Never=0, Rarely=1, Sometimes=2, Often=3, Always=4
+    # Question 7: Not difficult=0 to Extremely difficult=4
+    # Question 8: Very low=0 to Very high=4
+    # Question 10: Very well=0 to Not at all=4 (reversed scale)
+    
+    stress_score = sum(responses.values())
+    
+    # Determine stress level and recommendations
+    if stress_score <= 10:
+        stress_level = "Low"
+        color_class = "success"
+        recommendations = [
+            "Continue your current self-care practices",
+            "Maintain your support network",
+            "Consider joining a caregiver support group to share experiences",
+            "Keep a journal to track changes in your stress levels"
+        ]
+    elif stress_score <= 20:
+        stress_level = "Moderate"
+        color_class = "warning"
+        recommendations = [
+            "Schedule regular breaks throughout your caregiving day",
+            "Practice relaxation techniques like deep breathing or meditation",
+            "Connect with other caregivers for emotional support",
+            "Consider respite care options to give yourself time off",
+            "Talk to your doctor about your stress levels"
+        ]
+    else:
+        stress_level = "High"
+        color_class = "danger"
+        recommendations = [
+            "Speak with a healthcare professional about your stress levels",
+            "Look into regular respite care options",
+            "Join a support group for caregivers",
+            "Consider counseling or therapy for stress management",
+            "Delegate responsibilities when possible",
+            "Explore community resources for additional support",
+            "Make your own health a priority—schedule medical check-ups"
+        ]
+    
+    # Resources for all stress levels
+    resources = [
+        {
+            'name': 'Alzheimer\'s Association Caregiver Support',
+            'url': 'https://www.alz.org/help-support/caregiving',
+            'description': 'Support groups, education, and resources for caregivers.'
+        },
+        {
+            'name': 'Caregiver Action Network',
+            'url': 'https://caregiveraction.org/',
+            'description': 'Education, peer support, and resources for family caregivers.'
+        },
+        {
+            'name': 'National Alliance for Caregiving',
+            'url': 'https://www.caregiving.org/',
+            'description': 'Research, advocacy, and innovation for family caregivers.'
+        },
+        {
+            'name': 'Family Caregiver Alliance',
+            'url': 'https://www.caregiver.org/',
+            'description': 'Information, education, and services for family caregivers.'
+        }
+    ]
+    
+    # Get current datetime for the results page
+    now = datetime.now()
+    
+    return render_template('caregiver_assessment_results.html', 
+                          stress_score=stress_score,
+                          stress_level=stress_level,
+                          color_class=color_class,
+                          recommendations=recommendations,
+                          resources=resources,
+                          now=now)
+
 @app.route('/memory-lane')
 def memory_lane():
     """Memory preservation and reminiscence tools."""

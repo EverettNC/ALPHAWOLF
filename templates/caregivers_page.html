@@ -535,7 +535,7 @@
               <li>Redirection Strategies</li>
               <li>Emotion-Focused Care</li>
             </ul>
-            <button class="btn btn-outline-primary mt-2">Watch Videos</button>
+            <a href="{{ url_for('caregiver_videos') }}" class="btn btn-outline-primary mt-2">Watch Videos</a>
           </div>
         </div>
       </div>
@@ -576,7 +576,7 @@
           <p>As a caregiver, your well-being is essential. Self-care isn't selfish—it's necessary to sustain your ability to provide care. Taking time for yourself helps prevent burnout, reduces stress, and improves your physical and emotional health.</p>
           <div class="stress-check">
             <h6>Caregiver Stress Check</h6>
-            <button class="btn btn-outline-primary">Take Quick Assessment</button>
+            <a href="{{ url_for('caregiver_assessment') }}" class="btn btn-outline-primary">Take Quick Assessment</a>
           </div>
         </div>
       </div>
@@ -832,10 +832,10 @@
       })
     })
     
-    // Add event listeners for buttons (for a real implementation, these would do more)
-    document.querySelectorAll('.btn').forEach(function(button) {
+    // Add event listeners for buttons (except the ones that already have working links)
+    document.querySelectorAll('.btn:not([href])').forEach(function(button) {
       button.addEventListener('click', function(event) {
-        if (!this.classList.contains('nav-link')) {
+        if (!this.classList.contains('nav-link') && !this.closest('a[href]')) {
           event.preventDefault();
           console.log('Button clicked: ' + this.textContent.trim());
           alert('This button would perform an action in the full implementation.');

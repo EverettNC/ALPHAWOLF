@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Caregiver Training Videos{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/caregivers_page.css') }}">
+<style>
+    .video-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 20px;
+        height: 100%;
+    }
+    
+    .video-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .video-thumbnail {
+        height: 180px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-top-left-radius: calc(0.25rem - 1px);
+        border-top-right-radius: calc(0.25rem - 1px);
+    }
+    
+    .video-duration {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0,0,0,0.7);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 0.8rem;
+    }
+    
+    .video-categories {
+        margin-top: 10px;
+    }
+    
+    .video-category {
+        display: inline-block;
+        background-color: #f0f0f0;
+        color: #666;
+        padding: 2px 8px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+    
+    .filter-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Caregiver Training Videos</h1>
+        <a href="{{ url_for('caregivers_page') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Caregivers Hub
+        </a>
+    </div>
+    
+    <div class="filter-section">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="category-filter">Filter by Category</label>
+                    <select class="form-control" id="category-filter">
+                        <option value="all">All Categories</option>
+                        <option value="Daily Care">Daily Care</option>
+                        <option value="Safety">Safety</option>
+                        <option value="Comfort">Comfort</option>
+                        <option value="Behavior">Behavior</option>
+                        <option value="Communication">Communication</option>
+                        <option value="Emotional Support">Emotional Support</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="duration-filter">Filter by Duration</label>
+                    <select class="form-control" id="duration-filter">
+                        <option value="all">All Durations</option>
+                        <option value="short">Short (< 5 min)</option>
+                        <option value="medium">Medium (5-10 min)</option>
+                        <option value="long">Long (> 10 min)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="search-videos">Search Videos</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="search-videos" placeholder="Search by keyword...">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% for video in videos %}
+        <div class="col-md-4 col-sm-6">
+            <div class="card video-card">
+                <div class="video-thumbnail" style="background-image: url('{{ video.thumbnail }}')">
+                    <span class="video-duration">{{ video.duration }}</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ video.title }}</h5>
+                    <p class="card-text">{{ video.description }}</p>
+                    <div class="video-categories">
+                        {% for category in video.categories %}
+                        <span class="video-category">{{ category }}</span>
+                        {% endfor %}
+                    </div>
+                    <a href="{{ url_for('caregiver_video_detail', video_id=video.id) }}" class="btn btn-primary mt-3">Watch Video</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="mt-4 text-center">
+        <p class="text-muted">Don't see what you're looking for? Check out our <a href="#">additional resources</a> or <a href="#">suggest a topic</a>.</p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Simple filter functionality - to be enhanced in the future
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryFilter = document.getElementById('category-filter');
+        const durationFilter = document.getElementById('duration-filter');
+        const searchInput = document.getElementById('search-videos');
+        
+        // Placeholder for filter implementation
+        // In a real application, we'd implement proper filtering here
+    });
+</script>
+{% endblock %}

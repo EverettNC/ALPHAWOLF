@@ -132,10 +132,12 @@ scheduler_thread.start()
 # Routes
 @app.route('/')
 def index():
-    return render_template('index.html')
+    """Landing page with AlphaWolf introduction"""
+    return render_template('welcome.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Login page for patients and caregivers"""
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -157,10 +159,11 @@ def login():
         else:
             flash('Invalid email or password', 'error')
     
-    return render_template('index.html')
+    return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """Registration page for patients and caregivers"""
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
@@ -175,7 +178,7 @@ def register():
             
         if existing_user:
             flash('Email already registered', 'error')
-            return redirect(url_for('index'))
+            return redirect(url_for('register'))
         
         # Create new user
         password_hash = generate_password_hash(password)
@@ -189,9 +192,9 @@ def register():
         db.session.commit()
         
         flash('Registration successful! Please log in.', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
         
-    return render_template('index.html')
+    return render_template('register.html')
 
 @app.route('/logout')
 def logout():

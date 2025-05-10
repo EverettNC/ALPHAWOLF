@@ -286,6 +286,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/patient_dashboard.js') }}"></script>
 <script>
   // Function to mark reminder as complete
   function markReminderComplete(reminderId, isComplete) {
@@ -307,26 +308,6 @@
         console.error('Failed to update reminder');
       }
     });
-  }
-  
-  // Function to refresh the visual recognition section
-  document.getElementById('refresh-recognition').addEventListener('click', function() {
-    // Simulate loading with animation
-    const container = document.getElementById('recognition-container');
-    container.style.opacity = '0.5';
-    
-    setTimeout(() => {
-      // Simulated response - in reality, this would come from a backend API call
-      // that uses computer vision or a database of scheduled visits
-      updateRecognitionCards();
-      container.style.opacity = '1';
-    }, 1000);
-  });
-  
-  function updateRecognitionCards() {
-    // In a real implementation, this would receive data from the server
-    // but for now we're just demonstrating the UI
-    console.log('Recognition data refreshed');
   }
 </script>
 {% endblock %}

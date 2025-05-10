@@ -1,5 +1,6 @@
 import os
 import logging
+from datetime import datetime
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
@@ -209,7 +210,14 @@ def patient_dashboard():
     exercises = models.CognitiveExercise.query.all()
     reminders = models.Reminder.query.filter_by(patient_id=session['user_id']).all()
     
-    return render_template('cognitive_exercises.html', patient=patient, exercises=exercises, reminders=reminders)
+    # Get the current date for display
+    today_date = datetime.now().strftime("%A, %B %d, %Y")
+    
+    return render_template('patient_dashboard.html', 
+                          patient=patient, 
+                          exercises=exercises, 
+                          reminders=reminders,
+                          today_date=today_date)
 
 @app.route('/caregiver/dashboard')
 def caregiver_dashboard():

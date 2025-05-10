@@ -380,6 +380,11 @@ def safety_zones():
         safe_zones_json=json.dumps(safe_zones_json),
         patients_json=json.dumps(patients_json)
     )
+    
+@app.route('/voice/settings')
+def voice_settings():
+    """Voice settings and controls page"""
+    return render_template('voice_settings.html')
 
 @app.route('/safety/zones/add', methods=['POST'])
 def add_safety_zone():

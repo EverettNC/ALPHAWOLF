@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}Daily Tips Archive - AlphaWolf Learning Center{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('learning_corner') }}">Learning Corner</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Daily Tips Archive</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Page Title -->
+            <div class="mb-4">
+                <h1 class="display-5 cyber-title-gradient mb-3">Daily Care Tips Archive</h1>
+                <p class="lead">Practical advice and strategies for caregivers and patients dealing with Alzheimer's and dementia.</p>
+                <div class="processor-bar mb-4"></div>
+            </div>
+            
+            <!-- Tips Filter Bar -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="input-group">
+                                <input type="text" class="form-control cyber-input" placeholder="Search tips...">
+                                <button class="btn cyber-btn" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-select cyber-input">
+                                <option value="all" selected>All Categories</option>
+                                <option value="communication">Communication</option>
+                                <option value="daily-care">Daily Care</option>
+                                <option value="activities">Activities</option>
+                                <option value="environment">Environment</option>
+                                <option value="nutrition">Nutrition</option>
+                                <option value="behavioral">Behavioral Challenges</option>
+                                <option value="caregiver">Caregiver Self-Care</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tips Grid -->
+            <div class="row">
+                {% for tip in tips %}
+                <div class="col-md-6 mb-4">
+                    <div class="cyber-card h-100">
+                        <div class="cyber-card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">{{ tip.title }}</h5>
+                            {% if tip.category %}
+                            <span class="badge cyber-badge-primary">{{ tip.category }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="cyber-card-body">
+                            <p>{{ tip.content }}</p>
+                            {% if tip.source %}
+                            <p class="mb-0 small text-muted">Source: {{ tip.source }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="cyber-card-footer d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Added: {{ tip.date }}</small>
+                            <div>
+                                <button class="btn btn-sm cyber-btn-outline" data-bs-toggle="tooltip" title="Save tip">
+                                    <i class="far fa-bookmark"></i>
+                                </button>
+                                <button class="btn btn-sm cyber-btn-outline ms-2" data-bs-toggle="tooltip" title="Share tip">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            <nav aria-label="Tips pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Featured Tip -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header cyber-primary-gradient text-white">
+                    <h5 class="mb-0">Tip of the Day</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <h5>Establish a Routine</h5>
+                    <p>Maintaining a regular daily routine helps reduce confusion and anxiety for individuals with dementia. Try to schedule activities, meals, and rest at the same times each day.</p>
+                    <div class="text-center">
+                        <button class="btn cyber-btn-outline">
+                            <i class="far fa-calendar-plus me-2"></i>Add to My Reminders
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Categories Card -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Categories</h5>
+                </div>
+                <div class="cyber-card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Communication
+                            <span class="badge bg-primary rounded-pill">12</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Daily Care
+                            <span class="badge bg-primary rounded-pill">24</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Activities
+                            <span class="badge bg-primary rounded-pill">18</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Environment
+                            <span class="badge bg-primary rounded-pill">9</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Nutrition
+                            <span class="badge bg-primary rounded-pill">16</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Behavioral Challenges
+                            <span class="badge bg-primary rounded-pill">14</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Caregiver Self-Care
+                            <span class="badge bg-primary rounded-pill">11</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Expert Advice Card -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Ask an Expert</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <p>Have a specific question about dementia care? Submit your question to our panel of experts.</p>
+                    <form>
+                        <div class="mb-3">
+                            <label for="expertQuestion" class="form-label">Your Question</label>
+                            <textarea class="form-control cyber-input" id="expertQuestion" rows="3" placeholder="Type your question here..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <select class="form-select cyber-input">
+                                <option selected>Select category</option>
+                                <option>Medical</option>
+                                <option>Behavioral</option>
+                                <option>Daily Care</option>
+                                <option>Legal/Financial</option>
+                                <option>Support Resources</option>
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn cyber-btn">Submit Question</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Community Tips Card -->
+            <div class="cyber-card">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Community Tips</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <p>Share your own tips and advice with the AlphaWolf community!</p>
+                    <button class="btn cyber-btn-outline mb-3 w-100">
+                        <i class="fas fa-plus-circle me-2"></i>Share Your Tip
+                    </button>
+                    <div class="d-flex align-items-center">
+                        <span class="me-3"><i class="fas fa-users fa-2x text-primary"></i></span>
+                        <div>
+                            <h6 class="mb-0">123 community members</h6>
+                            <p class="mb-0 small text-muted">have shared 342 tips</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1021,6 +1021,41 @@ def learning_corner():
                           expert_insights=expert_insights, 
                           resources=resources)
 
+@app.route('/learning-corner/research/<int:article_id>')
+def research_article(article_id):
+    """Display a specific research article."""
+    from services.research_service import ResearchService
+    
+    # Initialize research service
+    research_service = ResearchService()
+    
+    # Get the specific article
+    article = research_service.get_article_by_id(article_id)
+    
+    if not article:
+        flash('Article not found', 'error')
+        return redirect(url_for('learning_corner'))
+    
+    # Get related articles
+    related_articles = research_service.get_related_articles(article_id, limit=3)
+    
+    return render_template('research_article.html', 
+                          article=article,
+                          related_articles=related_articles)
+
+@app.route('/learning-corner/tips')
+def daily_tips():
+    """Browse all daily tips."""
+    from services.research_service import ResearchService
+    
+    # Initialize research service
+    research_service = ResearchService()
+    
+    # Get all tips
+    tips = research_service.get_all_tips()
+    
+    return render_template('daily_tips.html', tips=tips)
+
 @app.route('/caregivers')
 def caregivers_page():
     """Support and tools for caregivers."""

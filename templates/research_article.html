@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }} - AlphaWolf Learning Center{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('learning_corner') }}">Learning Corner</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Research Article</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Article Header -->
+            <div class="mb-4">
+                <h1 class="display-5 cyber-title-gradient mb-3">{{ article.title }}</h1>
+                <div class="d-flex flex-wrap align-items-center mb-3">
+                    <span class="badge cyber-badge-primary me-2">Research</span>
+                    {% for topic in article.topics %}
+                    <span class="badge cyber-badge-secondary me-2">{{ topic }}</span>
+                    {% endfor %}
+                    <span class="text-muted ms-auto">Published: {{ article.date }}</span>
+                </div>
+                <div class="processor-bar mb-4"></div>
+                
+                {% if article.authors %}
+                <div class="d-flex align-items-center mb-3">
+                    <div class="me-3">
+                        <i class="fas fa-user-md fa-2x text-primary"></i>
+                    </div>
+                    <div>
+                        <p class="mb-0"><strong>Authors:</strong> {{ article.authors }}</p>
+                        {% if article.institution %}
+                        <p class="mb-0 small text-muted">{{ article.institution }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Featured Image -->
+            {% if article.image_url %}
+            <div class="mb-4">
+                <img src="{{ article.image_url }}" alt="{{ article.title }}" class="img-fluid rounded cyber-card" style="width: 100%;">
+                {% if article.image_caption %}
+                <p class="text-muted mt-2 small text-center">{{ article.image_caption }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Abstract -->
+            {% if article.abstract %}
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Abstract</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <p class="lead">{{ article.abstract }}</p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Article Content -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-body">
+                    <div class="article-content">
+                        {{ article.content|safe }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Key Findings -->
+            {% if article.key_findings %}
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Key Findings</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="row">
+                        {% for finding in article.key_findings %}
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <div class="cyber-badge cyber-badge-primary">
+                                        <i class="fas fa-lightbulb"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="mb-0">{{ finding }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Practical Applications -->
+            {% if article.practical_applications %}
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Practical Applications</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="row">
+                        {% for application in article.practical_applications %}
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <div class="cyber-badge cyber-badge-success">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="mb-0">{{ application }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- References -->
+            {% if article.references %}
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">References</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <ol class="mb-0">
+                        {% for reference in article.references %}
+                        <li class="mb-2">{{ reference }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Article Footer -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <a href="{{ url_for('learning_corner') }}" class="btn cyber-btn-outline">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Learning Corner
+                    </a>
+                </div>
+                <div>
+                    <button class="btn cyber-btn-outline me-2">
+                        <i class="fas fa-download me-2"></i>Download PDF
+                    </button>
+                    <button class="btn cyber-btn-outline">
+                        <i class="fas fa-share-alt me-2"></i>Share
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Related Articles -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Related Articles</h5>
+                </div>
+                <div class="cyber-card-body p-0">
+                    {% for related in related_articles %}
+                    <div class="p-3 {% if not loop.last %}border-bottom cyber-border-bottom{% endif %}">
+                        <h6><a href="{{ url_for('research_article', article_id=related.id) }}" class="text-reset">{{ related.title }}</a></h6>
+                        <p class="mb-2 small">{{ related.description|truncate(100) }}</p>
+                        <div class="d-flex align-items-center small">
+                            <span class="text-muted">{{ related.date }}</span>
+                            <span class="ms-auto">
+                                {% for topic in related.topics[:1] %}
+                                <span class="badge cyber-badge-secondary">{{ topic }}</span>
+                                {% endfor %}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Glossary -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Key Terms</h5>
+                    <i class="fas fa-book text-primary"></i>
+                </div>
+                <div class="cyber-card-body">
+                    <dl>
+                        {% for term in article.glossary %}
+                        <dt>{{ term.term }}</dt>
+                        <dd class="mb-3">{{ term.definition }}</dd>
+                        {% endfor %}
+                    </dl>
+                </div>
+            </div>
+            
+            <!-- Research Categories -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Research Categories</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="#" class="btn btn-sm cyber-btn-outline mb-2">Treatment Approaches</a>
+                        <a href="#" class="btn btn-sm cyber-btn-outline mb-2">Prevention</a>
+                        <a href="#" class="btn btn-sm cyber-btn-outline mb-2">Diagnosis</a>
+                        <a href="#" class="btn btn-sm cyber-btn-outline mb-2">Risk Factors</a>
+                        <a href="#" class="btn btn-sm cyber-btn-outline mb-2">Care Strategies</a>
+                        <a href="#" class="btn btn-sm cyber-btn-outline mb-2">Clinical Trials</a>
+                        <a href="#" class="btn btn-sm cyber-btn-outline mb-2">Technology</a>
+                        <a href="#" class="btn btn-sm cyber-btn-outline mb-2">Quality of Life</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Subscribe Card -->
+            <div class="cyber-card">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Stay Updated</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <p>Receive the latest research updates on Alzheimer's and dementia directly to your inbox.</p>
+                    <form>
+                        <div class="mb-3">
+                            <input type="email" class="form-control cyber-input" placeholder="Your email address">
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="weeklyDigest">
+                                <label class="form-check-label" for="weeklyDigest">
+                                    Weekly research digest
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="clinicalTrials">
+                                <label class="form-check-label" for="clinicalTrials">
+                                    Clinical trial opportunities
+                                </label>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn cyber-btn">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

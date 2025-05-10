@@ -1,250 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaWolf - Dementia Support System</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Feather Icons -->
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <!-- Leaflet CSS for maps -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>{% block title %}AlphaWolf{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Cyber Theme CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cyber-theme.css') }}">
+    
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <!-- Voice Control CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/voice_control.css') }}">
-    {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block styles %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Header -->
+    <header class="header bg-dark py-3 mb-4">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                AlphaWolf
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    {% if request.path != '/' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('learning_corner') }}">
-                            <i class="fas fa-book-open"></i> Learning Corner
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-brain fa-2x text-info me-2"></i>
+                    <h1 class="mb-0 cyber-text">AlphaWolf <span class="version-badge">v1.0</span></h1>
+                </div>
+                
+                <!-- Navigation -->
+                <div class="d-none d-md-flex align-items-center">
+                    <nav class="nav">
+                        <a class="nav-link text-light" href="{{ url_for('home') }}">
+                            <i class="fas fa-home me-1"></i> Home
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('memory_lane') }}">
-                            <i class="fas fa-images"></i> Memory Lane
+                        <a class="nav-link text-light" href="{{ url_for('cognitive_exercises') }}">
+                            <i class="fas fa-brain me-1"></i> Exercises
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('caregivers_page') }}">
-                            <i class="fas fa-hands-helping"></i> Caregivers
+                        <a class="nav-link text-light" href="{{ url_for('safety_zones') }}">
+                            <i class="fas fa-map-marked-alt me-1"></i> Safety
                         </a>
-                    </li>
-                    {% endif %}
-                    {% if session.get('user_id') %}
-                        {% if session.get('user_type') == 'patient' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('cognitive_exercises') }}">Cognitive Exercises</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('reminders') }}">Reminders</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('cognitive_features') }}">
-                                    <span class="badge bg-success">New</span> AlphaVox Features
-                                </a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('caregiver_dashboard') }}">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('safety_zones') }}">Safety Zones</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('alerts') }}">Alerts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('cognitive_features') }}">
-                                    <span class="badge bg-success">New</span> AlphaVox Features
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    {% if session.get('user_id') %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('user_profile') }}">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                        </li>
-                    {% else %}
-                        {% if request.path != '/' %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">
-                                <i class="fas fa-sign-in-alt"></i> Log In
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">
-                                <i class="fas fa-user-plus"></i> Register
-                            </a>
-                        </li>
-                        {% endif %}
-                    {% endif %}
-                </ul>
+                        <a class="nav-link text-light" href="{{ url_for('reminders') }}">
+                            <i class="fas fa-calendar-alt me-1"></i> Reminders
+                        </a>
+                        <a class="nav-link text-light" href="{{ url_for('memory_lane') }}">
+                            <i class="fas fa-photo-video me-1"></i> Memories
+                        </a>
+                        <a class="nav-link text-light" href="{{ url_for('learning_corner') }}">
+                            <i class="fas fa-book-reader me-1"></i> Learning
+                        </a>
+                        <a class="nav-link text-light" href="{{ url_for('caregivers_page') }}">
+                            <i class="fas fa-hands-helping me-1"></i> Caregiver
+                        </a>
+                    </nav>
+                </div>
+                
+                <div>
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i> Menu
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('home') }}">
+                                <i class="fas fa-home me-2"></i> Home
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('cognitive_exercises') }}">
+                                <i class="fas fa-brain me-2"></i> Cognitive Exercises
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('safety_zones') }}">
+                                <i class="fas fa-map-marked-alt me-2"></i> Safety Zones
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('reminders') }}">
+                                <i class="fas fa-calendar-alt me-2"></i> Reminders
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('memory_lane') }}">
+                                <i class="fas fa-photo-video me-2"></i> Memory Lane
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('learning_corner') }}">
+                                <i class="fas fa-book-reader me-2"></i> Learning Corner
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('caregivers_page') }}">
+                                <i class="fas fa-hands-helping me-2"></i> Caregiver Tools
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('user_profile') }}">
+                                <i class="fas fa-user-cog me-2"></i> Profile Settings
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('index') }}">
+                                <i class="fas fa-sign-out-alt me-2"></i> Sign Out
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
-
-    <div class="container mt-4">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category if category else 'info' }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
+    </header>
+    
+    <!-- Main Content -->
+    <main>
         {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Voice Control Toggle -->
+    <div class="voice-control-toggle">
+        <button id="voiceToggleBtn" class="btn voice-btn" aria-label="Toggle voice control">
+            <i class="fas fa-microphone"></i>
+        </button>
     </div>
-
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Log In</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    
+    <!-- Footer -->
+    <footer class="footer bg-dark py-3 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2025 AlphaWolf - AI Cognitive Care System</p>
+                    <p class="small text-muted mt-1">Part of the Christman AI Family</p>
                 </div>
-                <form action="{{ url_for('login') }}" method="post">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">I am a:</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="user_type" id="patientRadio" value="patient" checked>
-                                <label class="form-check-label" for="patientRadio">
-                                    Patient
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="user_type" id="caregiverRadio" value="caregiver">
-                                <label class="form-check-label" for="caregiverRadio">
-                                    Caregiver
-                                </label>
-                            </div>
-                        </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="d-flex justify-content-md-end justify-content-center mt-2 flex-wrap gap-2">
+                        <span class="badge cyber-badge">
+                            <i class="fas fa-brain me-1 text-info"></i> Adaptive Learning
+                        </span>
+                        <span class="badge cyber-badge">
+                            <i class="fas fa-shield-alt me-1 text-info"></i> Safety Monitoring
+                        </span>
+                        <span class="badge cyber-badge">
+                            <i class="fas fa-microphone me-1 text-info"></i> Voice Control
+                        </span>
+                        <span class="badge cyber-badge">
+                            <i class="fas fa-hands-helping me-1 text-info"></i> Caregiver Support
+                        </span>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Log In</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Register Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">Register</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ url_for('register') }}" method="post">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="reg-name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="reg-name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="reg-email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="reg-email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="reg-password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="reg-password" name="password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">I am a:</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="user_type" id="regPatientRadio" value="patient" checked>
-                                <label class="form-check-label" for="regPatientRadio">
-                                    Patient
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="user_type" id="regCaregiverRadio" value="caregiver">
-                                <label class="form-check-label" for="regCaregiverRadio">
-                                    Caregiver
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Register</button>
-                    </div>
-                </form>
             </div>
-        </div>
-    </div>
-
-    <footer class="mt-5 py-3 bg-light">
-        <div class="container text-center">
-            <p>&copy; 2025 AlphaWolf - A Comprehensive AI Solution for Alzheimer's and Dementia Care</p>
-            <p class="mt-2">
-                <a href="{{ url_for('voice_control_help') }}" class="text-decoration-none">
-                    <i class="fas fa-microphone"></i> Voice Control Help
-                </a>
-            </p>
         </div>
     </footer>
-
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Init Feather Icons -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            feather.replace();
-        });
-    </script>
-    <!-- Main JS -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Voice Control - Only load on non-landing pages -->
-    {% if request.path != '/' %}
+    <!-- Voice Control JS -->
     <script src="{{ url_for('static', filename='js/voice_control.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/alphawolf_voice_commands.js') }}"></script>
-    {% endif %}
     
-    {% block extra_js %}{% endblock %}
+    <!-- Alpha Commands JS -->
+    <script src="{{ url_for('static', filename='js/alphawolf_voice_commands.js') }}"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    {% block scripts %}{% endblock %}
 </body>
 </html>

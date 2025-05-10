@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AlphaVox{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS from Replit-themed CDN -->
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Cyber Theme CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='cyber-theme.css') }}">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <!-- Dynamic Color Scheme -->
+    {% if 'user_id' in session %}
+    <style id="dynamic-color-scheme">
+        :root {
+            {% set user_id = session.get('user_id', 'default') %}
+            {% set scheme = get_current_scheme(user_id) if get_current_scheme is defined else {} %}
+            
+            --primary-color: {{ scheme.primary|default('#00b4d8') }};
+            --primary-rgb: {{ scheme.primary_rgb|default('0, 180, 216') }};
+            --secondary-color: {{ scheme.secondary|default('#0077b6') }};
+            --secondary-rgb: {{ scheme.secondary_rgb|default('0, 119, 182') }};
+            --background-color: {{ scheme.background|default('#121212') }};
+            --surface-color: {{ scheme.surface|default('#1e1e1e') }};
+            --text-color: {{ scheme.text|default('#ffffff') }};
+            --text-rgb: {{ scheme.text_rgb|default('255, 255, 255') }};
+            --accent-color: {{ scheme.accent|default('#90e0ef') }};
+            --accent-rgb: {{ scheme.accent_rgb|default('144, 224, 239') }};
+        }
+    </style>
+    {% endif %}
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Header -->
+    <header class="header bg-dark py-3 mb-4">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-microphone-alt fa-2x text-cyan me-2"></i>
+                    <h1 class="mb-0 cyber-text">AlphaVox <span class="version-badge">v2.5</span></h1>
+                </div>
+                
+                <!-- Navigation -->
+                {% if 'name' in session %}
+                <div class="d-none d-md-flex align-items-center">
+                    <nav class="nav">
+                        <a class="nav-link text-light" href="{{ url_for('home') }}">
+                            <i class="fas fa-home me-1"></i> Home
+                        </a>
+                        <a class="nav-link text-light" href="{{ url_for('symbols') }}">
+                            <i class="fas fa-th-large me-1"></i> Symbols
+                        </a>
+                        <a class="nav-link text-light" href="{{ url_for('user_profile') }}">
+                            <i class="fas fa-user-cog me-1"></i> Profile
+                        </a>
+                        <a class="nav-link text-light" href="{{ url_for('color_scheme.color_preferences') }}">
+                            <i class="fas fa-palette me-1"></i> Colors
+                        </a>
+                        <a class="nav-link text-light" href="{{ url_for('ai_control') }}">
+                            <i class="fas fa-robot me-1"></i> AI Control
+                        </a>
+                        <a class="nav-link text-light" href="{{ url_for('caregiver_dashboard') }}">
+                            <i class="fas fa-chart-line me-1"></i> Caregiver
+                        </a>
+                        <a class="nav-link text-light" href="/learning">
+                            <i class="fas fa-graduation-cap me-1"></i> Learning Hub
+                        </a>
+                        <a class="nav-link text-light" href="{{ url_for('behavior_capture_page') }}">
+                            <i class="fas fa-video me-1"></i> Behavior Capture
+                        </a>
+                    </nav>
+                </div>
+                {% endif %}
+                
+                <div>
+                    {% if 'name' in session %}
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ session.name }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('home') }}">
+                                <i class="fas fa-home me-2"></i> Home
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('symbols') }}">
+                                <i class="fas fa-th-large me-2"></i> Symbols
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('user_profile') }}">
+                                <i class="fas fa-user-cog me-2"></i> Profile
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('color_scheme.color_preferences') }}">
+                                <i class="fas fa-palette me-2"></i> Colors
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('ai_control') }}">
+                                <i class="fas fa-robot me-2"></i> AI Control
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('caregiver_dashboard') }}">
+                                <i class="fas fa-chart-line me-2"></i> Caregiver
+                            </a></li>
+                            <li><a class="dropdown-item" href="/learning">
+                                <i class="fas fa-graduation-cap me-2"></i> Learning Hub
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('behavior_capture_page') }}">
+                                <i class="fas fa-video me-2"></i> Behavior Capture
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('index') }}">
+                                <i class="fas fa-sign-out-alt me-2"></i> Sign Out
+                            </a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer bg-dark py-3 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2025 AlphaVox - AI Communication System</p>
+                    <p class="small text-muted mt-1">Multimodal communication for all</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="d-flex justify-content-md-end mt-1 gap-3">
+                        <span class="badge cyber-badge">
+                            <i class="fas fa-hand-paper me-1 text-cyan"></i> Gestures
+                        </span>
+                        <span class="badge cyber-badge">
+                            <i class="fas fa-eye me-1 text-cyan"></i> Eye Tracking
+                        </span>
+                        <span class="badge cyber-badge">
+                            <i class="fas fa-volume-up me-1 text-cyan"></i> Voice
+                        </span>
+                        <span class="badge cyber-badge">
+                            <i class="fas fa-th-large me-1 text-cyan"></i> Symbols
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Cyber UI JS -->
+    <script src="{{ url_for('static', filename='cyber-ui.js') }}"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

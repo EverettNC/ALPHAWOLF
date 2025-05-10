@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+
+{% block title %}AlphaVox - Multimodal AI Communication System{% endblock %}
+
+{% block content %}
+<div class="cyber-grid-overlay"></div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="welcome-container system-card p-5 rounded position-relative">
+                <div class="processor-bar mb-4"></div>
+                
+                <!-- Main title with reflective effect -->
+                <div class="title-container mb-4">
+                    <h1 class="welcome-title cyber-glow-text">AlphaVox</h1>
+                    <div class="reflective-surface"></div>
+                </div>
+                
+                <!-- Subtitle with improved styling -->
+                <p class="welcome-subtitle cyber-text">Multi-modal, neurodiverse-inclusive, speech-generating AI communication system</p>
+                
+                <div class="mb-5">
+                    <p class="text-center fs-5">AlphaVox empowers expression, enhances social connection, and promotes dignity through technology that listens, learns, and adapts.</p>
+                    
+                    <div class="row text-center mt-4">
+                        <div class="col-md-3">
+                            <div class="communication-icon">
+                                <i class="fas fa-hand-paper fa-3x mb-3 text-cyan"></i>
+                                <div class="pulse-ring"></div>
+                            </div>
+                            <h5 class="cyber-text">Gestures</h5>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="communication-icon">
+                                <i class="fas fa-eye fa-3x mb-3 text-cyan"></i>
+                                <div class="pulse-ring"></div>
+                            </div>
+                            <h5 class="cyber-text">Eye Tracking</h5>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="communication-icon">
+                                <i class="fas fa-volume-up fa-3x mb-3 text-cyan"></i>
+                                <div class="pulse-ring"></div>
+                            </div>
+                            <h5 class="cyber-text">Vocalizations</h5>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="communication-icon">
+                                <i class="fas fa-th-large fa-3x mb-3 text-cyan"></i>
+                                <div class="pulse-ring"></div>
+                            </div>
+                            <h5 class="cyber-text">Symbol Boards</h5>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="start-form system-card p-4 rounded mt-5">
+                    <div class="processor-bar mb-3"></div>
+                    <h3 class="mb-4 cyber-title text-center">Initialize Communication System</h3>
+                    <form action="/start" method="POST">
+                        <div class="mb-4">
+                            <label for="name" class="form-label cyber-text">User Identification</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control cyber-input" id="name" name="name" placeholder="Enter your name" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn neural-btn btn-lg w-100">
+                            <i class="fas fa-power-off me-2"></i>Initialize System
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="features-section mt-5 text-center">
+                <h2 class="mb-4 cyber-title">Core System Architecture</h2>
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="card system-card h-100">
+                            <div class="card-body">
+                                <div class="feature-icon">
+                                    <i class="fas fa-sign-language fa-2x mb-3 text-cyan"></i>
+                                </div>
+                                <h5 class="card-title cyber-text">Input Processing</h5>
+                                <p class="card-text">Multi-modal input processing through touch, eye-tracking, and gesture recognition.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card system-card h-100">
+                            <div class="card-body">
+                                <div class="feature-icon">
+                                    <i class="fas fa-brain fa-2x mb-3 text-cyan"></i>
+                                </div>
+                                <h5 class="card-title cyber-text">Intent Understanding</h5>
+                                <p class="card-text">Contextual memory engine that interprets user intent and maintains conversation context.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card system-card h-100">
+                            <div class="card-body">
+                                <div class="feature-icon">
+                                    <i class="fas fa-comments fa-2x mb-3 text-cyan"></i>
+                                </div>
+                                <h5 class="card-title cyber-text">Expression Output</h5>
+                                <p class="card-text">Emotionally-aware speech synthesis that adjusts tone and expression to match intent.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card system-card h-100">
+                            <div class="card-body">
+                                <div class="feature-icon">
+                                    <i class="fas fa-fingerprint fa-2x mb-3 text-cyan"></i>
+                                </div>
+                                <h5 class="card-title cyber-text">User Modeling</h5>
+                                <p class="card-text">Personalization layer that adapts to individual communication styles and preferences.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-4 mb-4">
+                        <div class="card system-card h-100">
+                            <div class="card-body">
+                                <div class="feature-icon">
+                                    <i class="fas fa-cloud fa-2x mb-3 text-cyan"></i>
+                                </div>
+                                <h5 class="card-title cyber-text">Cloud Integration</h5>
+                                <p class="card-text">Secure data synchronization across devices with user control over privacy and sharing.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card system-card h-100">
+                            <div class="card-body">
+                                <div class="feature-icon">
+                                    <i class="fas fa-desktop fa-2x mb-3 text-cyan"></i>
+                                </div>
+                                <h5 class="card-title cyber-text">Accessible Interface</h5>
+                                <p class="card-text">AAC-style grid interface with customizable symbols and adaptive input methods.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card system-card h-100">
+                            <div class="card-body">
+                                <div class="feature-icon">
+                                    <i class="fas fa-sync fa-2x mb-3 text-cyan"></i>
+                                </div>
+                                <h5 class="card-title cyber-text">Self-Learning AI</h5>
+                                <p class="card-text">Continuous adaptation through analysis of interaction patterns and user feedback.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,296 @@
+{% extends 'layout.html' %}
+
+{% block title %}AlphaVox - Dashboard{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="{{ url_for('static', filename='home-enhanced.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5" id="user-greeting" data-username="{{ name }}">Welcome, {{ name }}!</h1>
+            <p class="lead">AlphaVox: Your multimodal AI-powered communication companion</p>
+            <div class="mission-statement alert alert-info cyber-alert mb-3">
+                <div class="d-flex">
+                    <div class="me-3"><i class="fas fa-info-circle fa-2x"></i></div>
+                    <div>
+                        <p class="mb-0">AlphaVox is designed to empower expression, enhance social connection, and promote dignity through technology that listens, learns, and adapts to your unique communication style.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Vision Feed</h5>
+                    <div id="ai-status">
+                        <span class="badge bg-secondary">Inactive</span>
+                    </div>
+                </div>
+                <div class="card-body p-0 position-relative">
+                    <img src="{{ url_for('video_feed') }}" class="video-feed" alt="Eye tracking feed">
+                    <div id="eye-tracking-overlay" class="eye-tracking-overlay">
+                        <div id="eye-position-dot" class="eye-position-dot"></div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <div>
+                        <button id="start-ai" class="btn btn-primary">
+                            <i class="fas fa-play me-2"></i>Start AI Assistant
+                        </button>
+                        <button id="stop-ai" class="btn btn-warning" style="display: none;">
+                            <i class="fas fa-pause me-2"></i>Pause AI Assistant
+                        </button>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('symbols') }}" class="btn btn-info">
+                            <i class="fas fa-th-large me-2"></i>Symbol Board
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Communication</h5>
+                </div>
+                <div class="card-body">
+                    <div id="response-container" class="response-container mb-4">
+                        <div class="alert alert-info cyber-response">
+                            <div class="d-flex align-items-start">
+                                <div class="me-3">
+                                    <i class="fas fa-robot fa-2x text-cyan"></i>
+                                </div>
+                                <div>
+                                    <div class="mb-2">I'm ready to help you communicate. Try using a gesture, your voice, or type a message.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Voice conversation interface -->
+                    <div class="conversation-interface mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <button id="toggle-voice-btn" class="btn neural-btn">
+                                <i class="fas fa-microphone me-2"></i><span>Start Conversation</span>
+                            </button>
+                            <div id="voice-status" class="voice-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Ready</span>
+                            </div>
+                        </div>
+                        
+                        <div id="voice-visualization" class="voice-visualization mb-3">
+                            <div class="wave-container">
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Text input as fallback -->
+                    <form id="input-form" class="mb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-keyboard"></i>
+                                </span>
+                            </div>
+                            <input type="text" id="input_text" name="input_text" class="form-control cyber-input" 
+                                   placeholder="Type a message or press Enter to use voice...">
+                            <button class="btn neural-btn" type="submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Gestures</h5>
+                </div>
+                <div class="card-body">
+                    <div class="gesture-container">
+                        <button class="btn btn-dark gesture-button" data-gesture="nod">
+                            <i class="fas fa-check-circle"></i>
+                            <div>Nod (Yes)</div>
+                        </button>
+                        <button class="btn btn-dark gesture-button" data-gesture="shake">
+                            <i class="fas fa-times-circle"></i>
+                            <div>Shake (No)</div>
+                        </button>
+                        <button class="btn btn-dark gesture-button" data-gesture="point_up">
+                            <i class="fas fa-hand-point-up"></i>
+                            <div>Need Help</div>
+                        </button>
+                        <button class="btn btn-dark gesture-button" data-gesture="wave">
+                            <i class="fas fa-hand-paper"></i>
+                            <div>Wave (Hello)</div>
+                        </button>
+                        <button class="btn btn-dark gesture-button" data-gesture="thumbs_up">
+                            <i class="fas fa-thumbs-up"></i>
+                            <div>Like</div>
+                        </button>
+                        <button class="btn btn-dark gesture-button" data-gesture="thumbs_down">
+                            <i class="fas fa-thumbs-down"></i>
+                            <div>Dislike</div>
+                        </button>
+                        <button class="btn btn-dark gesture-button" data-gesture="open_palm">
+                            <i class="fas fa-hand-paper"></i>
+                            <div>Stop</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">AlphaVox Neural System</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card bg-dark border-primary cyber-card mb-3">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title cyber-text">Learning Hub</h5>
+                                    <p class="card-text">Explore personalized content, track learning progress, and build your vocabulary through tailored experiences.</p>
+                                    <a href="/learning" class="btn btn-primary cyber-btn">
+                                        <i class="fas fa-graduation-cap me-2"></i>Learning Hub
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-dark border-success cyber-card mb-3">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title cyber-text">Adaptive Conversation</h5>
+                                    <p class="card-text">Experience AI-powered conversations that adjust complexity based on your unique communication style and preferences.</p>
+                                    <a href="/adaptive" class="btn btn-success cyber-btn">
+                                        <i class="fas fa-comments me-2"></i>Adaptive Talk
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-dark border-info cyber-card mb-3">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title cyber-text">Symbol Communication</h5>
+                                    <p class="card-text">Express yourself through customizable symbol boards with expressive voice output and contextual awareness.</p>
+                                    <a href="/symbols" class="btn btn-info cyber-btn">
+                                        <i class="fas fa-th-large me-2"></i>Symbol Board
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="card bg-dark border-warning cyber-card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title cyber-text"><i class="fas fa-brain me-2"></i>Self-Learning Engine</h5>
+                                    <p>AlphaVox features a continuous learning system that improves through every interaction:</p>
+                                    <ul class="list-group list-group-flush bg-transparent">
+                                        <li class="list-group-item bg-transparent text-light border-secondary">
+                                            <i class="fas fa-sync-alt me-2 text-info"></i>Pattern recognition and adaptive responses
+                                        </li>
+                                        <li class="list-group-item bg-transparent text-light border-secondary">
+                                            <i class="fas fa-chart-line me-2 text-info"></i>Continuous model improvement with user feedback
+                                        </li>
+                                        <li class="list-group-item bg-transparent text-light border-secondary">
+                                            <i class="fas fa-user-cog me-2 text-info"></i>Personalized vocabulary and communication preferences
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-dark border-danger cyber-card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title cyber-text"><i class="fas fa-heartbeat me-2"></i>Emotion-Aware System</h5>
+                                    <p>Our unique emotional intelligence features include:</p>
+                                    <ul class="list-group list-group-flush bg-transparent">
+                                        <li class="list-group-item bg-transparent text-light border-secondary">
+                                            <i class="fas fa-smile me-2 text-warning"></i>Facial expression and emotion recognition
+                                        </li>
+                                        <li class="list-group-item bg-transparent text-light border-secondary">
+                                            <i class="fas fa-volume-up me-2 text-warning"></i>Emotionally-matched speech synthesis for natural communication
+                                        </li>
+                                        <li class="list-group-item bg-transparent text-light border-secondary">
+                                            <i class="fas fa-comment-dots me-2 text-warning"></i>Context-aware responses that honor emotional state
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card bg-dark text-white">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">How to Use AlphaVox</h5>
+                    <a href="{{ url_for('hardware_test') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-tools me-1"></i>Hardware Test
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card mb-3 bg-dark border-secondary">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-hand-paper me-2"></i>Gestures</h5>
+                                    <p class="card-text">Use the gesture buttons above to communicate common phrases. The AI will interpret your intent and speak for you.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card mb-3 bg-dark border-secondary">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-eye me-2"></i>Eye Tracking</h5>
+                                    <p class="card-text">Look at different areas of the screen to navigate. Using your webcam, your eye movements can be tracked to select options.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card mb-3 bg-dark border-secondary">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-volume-up me-2"></i>Vocalizations</h5>
+                                    <p class="card-text">Use your microphone to speak or make sounds. The system can detect speech and sound patterns for communication.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

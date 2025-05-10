@@ -1,590 +1,534 @@
 {% extends "base.html" %}
 
-{% block title %}Welcome to AlphaWolf{% endblock %}
+{% block title %}AlphaWolf - Home{% endblock %}
 
 {% block styles %}
 <style>
-  :root {
-    --primary-gradient: linear-gradient(135deg, #1a56db, #4f46e5);
-    --accent-color: #7c3aed;
-    --secondary-color: #6c757d;
-    --text-light: #f8f9fa;
-    --text-dark: #212529;
-    --success-color: #28a745;
-    --highlight: #fb7185;
-    --primary-color: #4f46e5;
-    --primary-dark: #4338ca;
-    --primary-light: #818cf8;
-    --bg-light: #f3f4f6;
-  }
-  
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-  
-  .welcome-hero {
-    position: relative;
-    background: var(--primary-gradient);
-    padding: 0;
-    overflow: hidden;
-    margin-top: -1.5rem;
-    color: var(--text-light);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-  
-  .welcome-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    z-index: 1;
-  }
-  
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    padding: 3rem 0;
-  }
-  
-  .hero-content h1 {
-    font-size: 3.5rem;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 1.5rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .hero-content p.tagline {
-    font-size: 1.5rem;
-    opacity: 0.9;
-    margin-bottom: 2rem;
-    max-width: 600px;
-  }
-  
-  .hero-content p.mission {
-    font-size: 1.2rem;
-    font-style: italic;
-    margin-bottom: 2rem;
-    border-left: 4px solid var(--accent-color);
-    padding-left: 1rem;
-  }
-  
-  .login-form-container {
-    background: white;
-    border-radius: 10px;
-    padding: 2rem;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    color: var(--text-dark);
-  }
-  
-  .login-tabs {
-    display: flex;
-    margin-bottom: 1.5rem;
-  }
-  
-  .login-tab {
-    flex: 1;
-    text-align: center;
-    padding: 0.75rem;
-    cursor: pointer;
-    font-weight: 500;
-    border-bottom: 2px solid #e9ecef;
-    transition: all 0.3s;
-  }
-  
-  .login-tab.active {
-    border-bottom-color: var(--accent-color);
-    color: var(--primary);
-  }
-  
-  .tab-content {
-    display: none;
-  }
-  
-  .tab-content.active {
-    display: block;
-  }
-  
-  .form-label {
-    font-weight: 500;
-  }
-  
-  .btn-auth {
-    width: 100%;
-    padding: 0.75rem;
-    font-weight: 600;
-    margin-top: 1rem;
-    transition: all 0.3s;
-    background: var(--primary-color);
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .btn-auth:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  .alphawolf-logo {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: white;
-    padding: 5px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1.5rem;
-  }
-  
-  .feature-section {
-    padding: 5rem 0;
-    background-color: #f8f9fa;
-  }
-  
-  .feature-heading {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-  
-  .feature-heading h2 {
-    font-weight: 700;
-    margin-bottom: 1rem;
-    font-size: 2.5rem;
-  }
-  
-  .feature-card {
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    height: 100%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    border: none;
-  }
-  
-  .feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  }
-  
-  .feature-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: var(--primary-gradient);
-    color: white;
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .how-it-works {
-    padding: 5rem 0;
-  }
-  
-  .step-card {
-    position: relative;
-    padding: 2rem;
-    border-radius: 10px;
-    background-color: white;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    height: 100%;
-    border-top: 4px solid var(--accent-color);
-    transition: all 0.3s ease;
-  }
-  
-  .step-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  }
-  
-  .step-number {
-    position: absolute;
-    top: -20px;
-    left: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: var(--primary-gradient);
-    color: white;
-    border-radius: 50%;
-    font-weight: bold;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .testimonial-section {
-    padding: 5rem 0;
-    background: linear-gradient(135deg, #f5f7fa, #e4e7f0);
-  }
-  
-  .testimonial-card {
-    background: white;
-    border-radius: 10px;
-    padding: 2rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    height: 100%;
-    position: relative;
-  }
-  
-  .testimonial-card::before {
-    content: '"';
-    position: absolute;
-    top: 10px;
-    left: 15px;
-    font-size: 4rem;
-    font-family: Georgia, serif;
-    color: rgba(0, 0, 0, 0.1);
-    line-height: 1;
-  }
-  
-  .testimonial-avatar {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid white;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  @media (max-width: 768px) {
-    .hero-content h1 {
-      font-size: 2.5rem;
+    /* Cyber UI elements */
+    .cyber-card {
+        background: rgba(30, 30, 40, 0.8);
+        border: 1px solid rgba(83, 92, 236, 0.3);
+        box-shadow: 0 0 15px rgba(83, 92, 236, 0.2);
+        transition: all 0.3s ease;
     }
     
-    .hero-content p.tagline {
-      font-size: 1.2rem;
+    .cyber-card:hover {
+        box-shadow: 0 0 25px rgba(83, 92, 236, 0.4);
+        transform: translateY(-5px);
     }
     
-    .login-form-container {
-      margin-top: 2rem;
+    .card-header {
+        border-bottom: 1px solid rgba(83, 92, 236, 0.3);
     }
-  }
-  
-  @media (max-width: 576px) {
-    .hero-content h1 {
-      font-size: 2rem;
+    
+    .cyber-title {
+        color: #f8f9fa;
+        text-shadow: 0 0 10px rgba(83, 92, 236, 0.7);
+        font-weight: 700;
+    }
+    
+    .cyber-text {
+        color: #90e0ef;
+        font-weight: 500;
+    }
+    
+    .cyber-btn {
+        background: linear-gradient(135deg, #4f46e5, #3730a3);
+        border: none;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cyber-btn:hover {
+        box-shadow: 0 0 15px rgba(83, 92, 236, 0.7);
+    }
+    
+    .cyber-btn:after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+        transform: rotate(30deg);
+        transition: all 0.3s ease;
+    }
+    
+    .cyber-btn:hover:after {
+        transform: rotate(30deg) translateX(10%);
+    }
+    
+    .feature-section {
+        margin: 3rem 0;
     }
     
     .feature-icon {
-      width: 60px;
-      height: 60px;
-      font-size: 1.5rem;
+        height: 70px;
+        width: 70px;
+        background: rgba(30, 30, 40, 0.8);
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(83, 92, 236, 0.3);
+        box-shadow: 0 0 15px rgba(83, 92, 236, 0.2);
     }
-  }
+    
+    .feature-icon i {
+        font-size: 1.75rem;
+        color: #90e0ef;
+    }
+    
+    .safety-badge {
+        background: rgba(25, 135, 84, 0.2);
+        color: #4ade80;
+        border: 1px solid rgba(25, 135, 84, 0.4);
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.25rem;
+    }
+    
+    .ai-badge {
+        background: rgba(13, 110, 253, 0.2);
+        color: #6ea8fe;
+        border: 1px solid rgba(13, 110, 253, 0.4);
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.25rem;
+    }
+    
+    .mission-statement {
+        background: linear-gradient(135deg, rgba(30, 30, 40, 0.95), rgba(20, 20, 30, 0.95));
+        border-left: 4px solid #4f46e5;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border-radius: 5px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .module-card {
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .module-card:hover {
+        transform: translateY(-7px);
+    }
+    
+    .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 6px;
+        display: inline-block;
+    }
+    
+    .status-active {
+        background-color: #4ade80;
+        box-shadow: 0 0 10px rgba(74, 222, 128, 0.7);
+    }
+    
+    .status-warning {
+        background-color: #fbbf24;
+        box-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+    }
+    
+    .cognitive-metrics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .metric-item {
+        flex: 1 0 30%;
+        background: rgba(15, 15, 25, 0.7);
+        padding: 0.75rem;
+        border-radius: 5px;
+        border: 1px solid rgba(83, 92, 236, 0.2);
+    }
+    
+    .metric-name {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .metric-value {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #90e0ef;
+    }
+    
+    .progress-wrapper {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        margin-top: 0.25rem;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        border-radius: 4px;
+        background: linear-gradient(to right, #4f46e5, #90e0ef);
+    }
+    
+    /* Activity cards */
+    .activity-feed {
+        margin-top: 1.5rem;
+    }
+    
+    .activity-card {
+        background: rgba(15, 15, 25, 0.7);
+        border-radius: 5px;
+        border: 1px solid rgba(83, 92, 236, 0.2);
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .activity-time {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .activity-title {
+        font-weight: 600;
+        margin: 0.25rem 0;
+    }
+    
+    /* Voice control indicator */
+    .voice-status {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        background: rgba(15, 15, 25, 0.7);
+        border: 1px solid rgba(83, 92, 236, 0.2);
+        border-radius: 20px;
+        font-size: 0.85rem;
+    }
+    
+    .voice-status-icon {
+        margin-right: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .voice-status.active .voice-status-icon {
+        color: #4ade80;
+    }
+    
+    .voice-status.muted .voice-status-icon {
+        color: #fbbf24;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section with Login/Register Form -->
-<section class="welcome-hero">
-  <div class="welcome-overlay"></div>
-  <div class="container hero-content">
-    <div class="row align-items-center">
-      <div class="col-lg-6 mb-5 mb-lg-0">
-        <img src="{{ url_for('static', filename='img/alphawolf_avatar.png') }}" alt="AlphaWolf" class="alphawolf-logo" onerror="this.src='{{ url_for('static', filename='img/default_avatar.png') }}'">
-        <h1>Welcome to AlphaWolf</h1>
-        <p class="tagline">Your Intelligent Companion for Dementia and Alzheimer's Care</p>
-        <p class="mission">"HOW CAN I HELP YOU LOVE YOURSELF MORE"</p>
-        <p>AlphaWolf empowers patients and caregivers through AI-driven support, cognitive exercises, and comprehensive care solutions.</p>
-      </div>
-      
-      <div class="col-lg-5 offset-lg-1">
-        <div class="login-form-container">
-          <div class="login-tabs">
-            <div class="login-tab active" id="login-tab">Sign In</div>
-            <div class="login-tab" id="register-tab">Register</div>
-          </div>
-          
-          <!-- Login Form -->
-          <div class="tab-content active" id="login-content">
-            <form method="POST" action="{{ url_for('login') }}">
-              <div class="mb-3">
-                <label for="user_type" class="form-label">I am a:</label>
-                <select class="form-select" id="user_type" name="user_type" required>
-                  <option value="patient">Patient</option>
-                  <option value="caregiver">Caregiver</option>
-                </select>
-              </div>
-              
-              <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-              </div>
-              
-              <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-              </div>
-              
-              <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="remember">
-                <label class="form-check-label" for="remember">Remember me</label>
-              </div>
-              
-              <button type="submit" class="btn btn-primary btn-auth">Sign In</button>
-              <div class="text-center mt-3">
-                <a href="#" class="text-decoration-none">Forgot password?</a>
-              </div>
-            </form>
-          </div>
-          
-          <!-- Register Form -->
-          <div class="tab-content" id="register-content">
-            <form method="POST" action="{{ url_for('register') }}">
-              <div class="mb-3">
-                <label for="reg_user_type" class="form-label">I am registering as a:</label>
-                <select class="form-select" id="reg_user_type" name="user_type" required>
-                  <option value="patient">Patient</option>
-                  <option value="caregiver">Caregiver</option>
-                </select>
-              </div>
-              
-              <div class="mb-3">
-                <label for="reg_name" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="reg_name" name="name" required>
-              </div>
-              
-              <div class="mb-3">
-                <label for="reg_email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="reg_email" name="email" required>
-              </div>
-              
-              <div class="mb-3">
-                <label for="reg_password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="reg_password" name="password" required>
-              </div>
-              
-              <div class="mb-3">
-                <label for="reg_confirm" class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" id="reg_confirm" name="confirm_password" required>
-              </div>
-              
-              <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="terms" required>
-                <label class="form-check-label" for="terms">I agree to the <a href="#">Terms of Service</a></label>
-              </div>
-              
-              <button type="submit" class="btn btn-primary btn-auth">Create Account</button>
-            </form>
-          </div>
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">Welcome to AlphaWolf</h1>
+            <p class="lead text-light">Your AI-powered companion for Alzheimer's and dementia care</p>
+            
+            <div class="mission-statement">
+                <div class="d-flex">
+                    <div class="me-3"><i class="fas fa-quote-left fa-2x text-light opacity-25"></i></div>
+                    <div>
+                        <p class="mb-0">"HOW CAN I HELP YOU LOVE YOURSELF MORE" - AlphaWolf is designed to empower individuals with cognitive challenges, enhance their safety, and promote dignity through AI technology that listens, adapts, and provides personalized support.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Features Section -->
-<section class="feature-section">
-  <div class="container">
-    <div class="feature-heading">
-      <h2>How AlphaWolf Helps You</h2>
-      <p class="text-muted">Comprehensive support for patients and caregivers</p>
     </div>
     
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card feature-card">
-          <div class="card-body text-center">
-            <div class="feature-icon">
-              <i class="fas fa-brain"></i>
+    <!-- Voice Control Status -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="voice-status active">
+                    <i class="fas fa-microphone voice-status-icon"></i>
+                    <span>Voice control active</span>
+                </div>
+                <div>
+                    <button class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-cog me-1"></i>Voice Settings
+                    </button>
+                </div>
             </div>
-            <h4>Cognitive Support</h4>
-            <p>Personalized cognitive exercises, memory aids, and adaptive learning technology that grows with you.</p>
-          </div>
         </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="card feature-card">
-          <div class="card-body text-center">
-            <div class="feature-icon">
-              <i class="fas fa-shield-alt"></i>
-            </div>
-            <h4>Safety & Independence</h4>
-            <p>Location tracking, safety zone alerts, and reminder systems to help maintain independence safely.</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="card feature-card">
-          <div class="card-body text-center">
-            <div class="feature-icon">
-              <i class="fas fa-hands-helping"></i>
-            </div>
-            <h4>Caregiver Tools</h4>
-            <p>Resources, monitoring capabilities, and stress management tools specifically designed for caregivers.</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="card feature-card">
-          <div class="card-body text-center">
-            <div class="feature-icon">
-              <i class="fas fa-robot"></i>
-            </div>
-            <h4>AI-Powered Assistance</h4>
-            <p>Advanced artificial intelligence that adapts to individual needs and learns from interactions.</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="card feature-card">
-          <div class="card-body text-center">
-            <div class="feature-icon">
-              <i class="fas fa-comments"></i>
-            </div>
-            <h4>Voice Control</h4>
-            <p>Intuitive voice commands make navigation simple, even for those with limited tech experience.</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="card feature-card">
-          <div class="card-body text-center">
-            <div class="feature-icon">
-              <i class="fas fa-graduation-cap"></i>
-            </div>
-            <h4>Learning Resources</h4>
-            <p>Continuously updated educational content about dementia care, research, and strategies.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- How It Works Section -->
-<section class="how-it-works">
-  <div class="container">
-    <div class="feature-heading">
-      <h2>Getting Started with AlphaWolf</h2>
-      <p class="text-muted">It's easy to begin your journey with AlphaWolf</p>
     </div>
     
-    <div class="row g-4">
-      <div class="col-md-3">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <h5>Create an Account</h5>
-          <p>Register as a patient or caregiver to access personalized features.</p>
-        </div>
-      </div>
-      
-      <div class="col-md-3">
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <h5>Complete Your Profile</h5>
-          <p>Add important information to customize your AlphaWolf experience.</p>
-        </div>
-      </div>
-      
-      <div class="col-md-3">
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <h5>Explore Features</h5>
-          <p>Discover cognitive exercises, safety tools, and learning resources.</p>
-        </div>
-      </div>
-      
-      <div class="col-md-3">
-        <div class="step-card">
-          <div class="step-number">4</div>
-          <h5>Connect with Support</h5>
-          <p>Link with caregivers or patients for a complete care network.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Testimonials Section -->
-<section class="testimonial-section">
-  <div class="container">
-    <div class="feature-heading">
-      <h2>Stories from Our Community</h2>
-      <p class="text-muted">How AlphaWolf has helped patients and caregivers</p>
-    </div>
-    
-    <div class="row g-4">
-      <div class="col-md-6">
-        <div class="testimonial-card">
-          <div class="d-flex align-items-center mb-4">
-            <img src="{{ url_for('static', filename='img/testimonial-1.jpg') }}" alt="Testimonial" class="testimonial-avatar me-3" onerror="this.src='{{ url_for('static', filename='img/default_avatar.png') }}'">
-            <div>
-              <h5 class="mb-0">David Johnson</h5>
-              <small class="text-muted">Living with early-stage Alzheimer's</small>
+    <!-- Main Modules -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 cyber-title">Cognitive Enhancement</h5>
+                    <span class="safety-badge">
+                        <i class="fas fa-shield-alt me-1"></i>Self-Optimizing
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p>Personalized cognitive exercises and memory reinforcement activities to help maintain brain function:</p>
+                    
+                    <div class="cognitive-metrics">
+                        <div class="metric-item">
+                            <div class="metric-name">Memory</div>
+                            <div class="metric-value">87%</div>
+                            <div class="progress-wrapper">
+                                <div class="progress-bar" style="width: 87%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-name">Attention</div>
+                            <div class="metric-value">92%</div>
+                            <div class="progress-wrapper">
+                                <div class="progress-bar" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-name">Language</div>
+                            <div class="metric-value">78%</div>
+                            <div class="progress-wrapper">
+                                <div class="progress-bar" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-name">Recognition</div>
+                            <div class="metric-value">85%</div>
+                            <div class="progress-wrapper">
+                                <div class="progress-bar" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-name">Problem Solving</div>
+                            <div class="metric-value">73%</div>
+                            <div class="progress-wrapper">
+                                <div class="progress-bar" style="width: 73%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-name">Overall</div>
+                            <div class="metric-value">82%</div>
+                            <div class="progress-wrapper">
+                                <div class="progress-bar" style="width: 82%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end mt-4">
+                        <a href="{{ url_for('cognitive_exercises') }}" class="btn cyber-btn">
+                            <i class="fas fa-brain me-2"></i>Start Exercises
+                        </a>
+                    </div>
+                </div>
             </div>
-          </div>
-          <p>"AlphaWolf has given me back a sense of independence. The cognitive exercises keep my mind active, and the reminder system helps me stay on track with daily tasks. I feel more confident navigating each day."</p>
         </div>
-      </div>
-      
-      <div class="col-md-6">
-        <div class="testimonial-card">
-          <div class="d-flex align-items-center mb-4">
-            <img src="{{ url_for('static', filename='img/testimonial-2.jpg') }}" alt="Testimonial" class="testimonial-avatar me-3" onerror="this.src='{{ url_for('static', filename='img/default_avatar.png') }}'">
-            <div>
-              <h5 class="mb-0">Maria Rodriguez</h5>
-              <small class="text-muted">Caregiver for her mother</small>
-            </div>
-          </div>
-          <p>"As a caregiver, AlphaWolf has been invaluable. The safety alerts give me peace of mind when I can't be physically present, and the caregiver resources have helped me better understand how to support my mother through her journey."</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-{% endblock %}
-
-{% block scripts %}
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Tab switching functionality
-    const loginTab = document.getElementById('login-tab');
-    const registerTab = document.getElementById('register-tab');
-    const loginContent = document.getElementById('login-content');
-    const registerContent = document.getElementById('register-content');
-    
-    loginTab.addEventListener('click', function() {
-      loginTab.classList.add('active');
-      registerTab.classList.remove('active');
-      loginContent.classList.add('active');
-      registerContent.classList.remove('active');
-    });
-    
-    registerTab.addEventListener('click', function() {
-      registerTab.classList.add('active');
-      loginTab.classList.remove('active');
-      registerContent.classList.add('active');
-      loginContent.classList.remove('active');
-    });
-    
-    // Password confirmation validation
-    const registerForm = document.querySelector('#register-content form');
-    if (registerForm) {
-      registerForm.addEventListener('submit', function(e) {
-        const password = document.getElementById('reg_password').value;
-        const confirm = document.getElementById('reg_confirm').value;
         
-        if (password !== confirm) {
-          e.preventDefault();
-          alert('Passwords do not match. Please try again.');
-        }
-      });
-    }
-  });
-</script>
+        <div class="col-md-6 mb-4">
+            <div class="card cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 cyber-title">Safety Monitoring</h5>
+                    <span class="safety-badge">
+                        <i class="fas fa-shield-alt me-1"></i>Protected
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p>Geofencing, location tracking, and safety alerts to protect against wandering and ensure safety:</p>
+                    
+                    <div class="activity-feed">
+                        <div class="activity-card">
+                            <div class="activity-time">Today, 10:35 AM</div>
+                            <div class="activity-title text-success">
+                                <i class="fas fa-check-circle me-1"></i>Safe zone check-in: Home
+                            </div>
+                            <div class="small">Location confirmed within primary safe zone</div>
+                        </div>
+                        
+                        <div class="activity-card">
+                            <div class="activity-time">Today, 8:12 AM</div>
+                            <div class="activity-title text-warning">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Approaching zone boundary
+                            </div>
+                            <div class="small">Alert sent to caregiver: approaching eastern boundary</div>
+                        </div>
+                        
+                        <div class="activity-card">
+                            <div class="activity-time">Yesterday, 3:42 PM</div>
+                            <div class="activity-title text-success">
+                                <i class="fas fa-map-marker-alt me-1"></i>New safe zone added
+                            </div>
+                            <div class="small">Caregiver added "Community Center" to safe zones</div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end mt-3">
+                        <a href="{{ url_for('safety_zones') }}" class="btn cyber-btn">
+                            <i class="fas fa-map-marked-alt me-2"></i>Manage Safe Zones
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card cyber-card module-card">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h5 class="card-title cyber-text text-center mb-3">Reminders</h5>
+                    <p class="card-text">Schedule and manage medication, appointments, and daily activities with voice-controlled reminders.</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div>
+                            <span class="status-indicator status-active"></span>
+                            <span class="small">4 active reminders</span>
+                        </div>
+                        <a href="{{ url_for('reminders') }}" class="ms-auto btn btn-sm btn-outline-primary">Manage</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card cyber-card module-card">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="fas fa-photo-video"></i>
+                    </div>
+                    <h5 class="card-title cyber-text text-center mb-3">Memory Lane</h5>
+                    <p class="card-text">Access cherished memories through photos, videos, and stories to strengthen cognitive connections.</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div>
+                            <span class="status-indicator status-active"></span>
+                            <span class="small">78 memories stored</span>
+                        </div>
+                        <a href="{{ url_for('memory_lane') }}" class="ms-auto btn btn-sm btn-outline-primary">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card cyber-card module-card">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <h5 class="card-title cyber-text text-center mb-3">Learning Corner</h5>
+                    <p class="card-text">Discover the latest research and resources about Alzheimer's and dementia care practices.</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div>
+                            <span class="status-indicator status-warning"></span>
+                            <span class="small">3 new articles</span>
+                        </div>
+                        <a href="{{ url_for('learning_corner') }}" class="ms-auto btn btn-sm btn-outline-primary">Read</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-2">
+        <div class="col-md-6 mb-4">
+            <div class="card cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 cyber-title">Voice Commands</h5>
+                    <span class="ai-badge">
+                        <i class="fas fa-robot me-1"></i>AI-Powered
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p>AlphaWolf responds to these voice commands - simply say "Alpha" followed by:</p>
+                    
+                    <div class="row mt-3">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-angle-right me-2 text-primary"></i>"tell me about today"</li>
+                                <li class="mb-2"><i class="fas fa-angle-right me-2 text-primary"></i>"what's my schedule"</li>
+                                <li class="mb-2"><i class="fas fa-angle-right me-2 text-primary"></i>"remind me to take medicine"</li>
+                                <li class="mb-2"><i class="fas fa-angle-right me-2 text-primary"></i>"call my caregiver"</li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-angle-right me-2 text-primary"></i>"show my photos"</li>
+                                <li class="mb-2"><i class="fas fa-angle-right me-2 text-primary"></i>"help me navigate home"</li>
+                                <li class="mb-2"><i class="fas fa-angle-right me-2 text-primary"></i>"start cognitive exercises"</li>
+                                <li class="mb-2"><i class="fas fa-angle-right me-2 text-primary"></i>"how am I doing today"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end mt-2">
+                        <a href="{{ url_for('voice_control_help') }}" class="btn cyber-btn">
+                            <i class="fas fa-microphone-alt me-2"></i>Voice Guide
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 cyber-title">Caregiver Connection</h5>
+                    <span class="ai-badge">
+                        <i class="fas fa-heartbeat me-1"></i>Connected
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p>Keep caregivers informed with real-time insights and coordinated care:</p>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <img src="https://via.placeholder.com/50" class="rounded-circle" alt="Caregiver">
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Sarah Johnson</h6>
+                                    <p class="mb-0 small">Primary Caregiver</p>
+                                </div>
+                                <div class="ms-auto">
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-circle me-1"></i>Online
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-file-medical-alt me-2 text-primary"></i>
+                                    <span>Last check-in: Today, 9:45 AM</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-stethoscope me-2 text-primary"></i>
+                                    <span>Next appointment: Thursday, 2:00 PM</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-capsules me-2 text-primary"></i>
+                                    <span>Medication check: Complete</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end mt-4">
+                        <a href="{{ url_for('caregivers_page') }}" class="btn cyber-btn">
+                            <i class="fas fa-hands-helping me-2"></i>Caregiver Portal
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

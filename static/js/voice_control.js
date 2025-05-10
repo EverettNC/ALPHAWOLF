@@ -53,14 +53,23 @@ class VoiceControl {
         this.recognition.interimResults = false;
         this.recognition.lang = this.options.language;
         
+        // Check localStorage for saved mute state
+        const savedMuteState = localStorage.getItem('alphaVoiceControlMuted');
+        if (savedMuteState !== null) {
+            this.isMuted = savedMuteState === 'true';
+            if (this.options.debug) {
+                console.log('Loaded saved mute state:', this.isMuted);
+            }
+        }
+        
         // Setup recognition event handlers
         this.setupRecognitionEvents();
         
         // Load available voices
         this.loadVoices();
         
-        // Auto-start if configured
-        if (this.options.autoStart) {
+        // Auto-start if configured and not muted
+        if (this.options.autoStart && !this.isMuted) {
             this.start();
         }
         
@@ -412,6 +421,10 @@ class VoiceControl {
             this.isMuted = true;
             this.stop();
             this.updateFeedback('muted', 'Microphone muted');
+            
+            // Save mute state to localStorage
+            localStorage.setItem('alphaVoiceControlMuted', 'true');
+            
             if (this.options.debug) {
                 console.log('Microphone muted');
             }
@@ -433,6 +446,10 @@ class VoiceControl {
     unmute() {
         if (this.isMuted) {
             this.isMuted = false;
+            
+            // Save mute state to localStorage
+            localStorage.setItem('alphaVoiceControlMuted', 'false');
+            
             if (this.options.debug) {
                 console.log('Microphone unmuted');
             }

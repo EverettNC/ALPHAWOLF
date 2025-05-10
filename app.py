@@ -133,6 +133,12 @@ scheduler_thread.start()
 @app.route('/')
 def index():
     """Landing page with AlphaWolf introduction"""
+    # If user is already logged in, redirect to their dashboard
+    if session.get('user_id'):
+        if session.get('user_type') == 'patient':
+            return redirect(url_for('patient_dashboard'))
+        else:
+            return redirect(url_for('caregiver_dashboard'))
     return render_template('welcome.html')
 
 @app.route('/login', methods=['GET', 'POST'])

@@ -132,14 +132,25 @@ scheduler_thread.start()
 # Routes
 @app.route('/')
 def index():
-    """Landing page with AlphaWolf introduction"""
+    """Minimal landing page for AlphaWolf"""
     # If user is already logged in, redirect to their dashboard
     if session.get('user_id'):
         if session.get('user_type') == 'patient':
             return redirect(url_for('patient_dashboard'))
         else:
             return redirect(url_for('caregiver_dashboard'))
-    return render_template('welcome.html')
+    return render_template('landing.html')
+
+@app.route('/home')
+def home():
+    """Homepage with features, how it works, and sign in options"""
+    # If user is already logged in, redirect to their dashboard
+    if session.get('user_id'):
+        if session.get('user_type') == 'patient':
+            return redirect(url_for('patient_dashboard'))
+        else:
+            return redirect(url_for('caregiver_dashboard'))
+    return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

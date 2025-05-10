@@ -31,7 +31,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('learning_corner') }}">
@@ -230,9 +230,11 @@
     <!-- Main JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     
-    <!-- Voice Control -->
+    <!-- Voice Control - Only load on non-landing pages -->
+    {% if request.path != '/' %}
     <script src="{{ url_for('static', filename='js/voice_control.js') }}"></script>
     <script src="{{ url_for('static', filename='js/alphawolf_voice_commands.js') }}"></script>
+    {% endif %}
     
     {% block extra_js %}{% endblock %}
 </body>

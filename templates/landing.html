@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+
+{% block title %}AlphaWolf{% endblock %}
+
+{% block styles %}
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #1a56db, #4f46e5);
+    --accent-color: #7c3aed;
+    --primary-color: #4f46e5;
+    --primary-dark: #4338ca;
+    --text-light: #f8f9fa;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    overflow: hidden;
+  }
+  
+  .landing-container {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--primary-gradient);
+    position: relative;
+  }
+  
+  .landing-content {
+    text-align: center;
+    color: var(--text-light);
+    padding: 2rem;
+    max-width: 800px;
+    z-index: 2;
+  }
+  
+  .landing-logo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  .landing-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .landing-subtitle {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .landing-features {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+  }
+  
+  .landing-feature {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    margin: 0.5rem;
+    text-align: center;
+    flex: 0 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .landing-feature i {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .landing-cta {
+    margin-top: 3rem;
+  }
+  
+  .btn-initialize {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+  }
+  
+  .btn-initialize:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    background: #f8f9fa;
+  }
+  
+  .btn-initialize i {
+    margin-right: 10px;
+  }
+  
+  .particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .landing-title {
+      font-size: 2.5rem;
+    }
+    
+    .landing-subtitle {
+      font-size: 1.2rem;
+    }
+    
+    .landing-logo {
+      width: 120px;
+      height: 120px;
+    }
+    
+    .btn-initialize {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="landing-container">
+  <div class="particles" id="particles-js"></div>
+  
+  <div class="landing-content">
+    <img src="{{ url_for('static', filename='img/alphawolf_avatar.png') }}" alt="AlphaWolf" class="landing-logo" onerror="this.src='{{ url_for('static', filename='img/default_avatar.png') }}'">
+    
+    <h1 class="landing-title">AlphaWolf</h1>
+    <p class="landing-subtitle">An AI-powered companion for dementia and Alzheimer's care</p>
+    
+    <p class="landing-mission">"HOW CAN I HELP YOU LOVE YOURSELF MORE"</p>
+    
+    <div class="landing-features">
+      <div class="landing-feature">
+        <i class="fas fa-brain"></i>
+        <span>Cognitive Support</span>
+      </div>
+      <div class="landing-feature">
+        <i class="fas fa-shield-alt"></i>
+        <span>Safety Tools</span>
+      </div>
+      <div class="landing-feature">
+        <i class="fas fa-comments"></i>
+        <span>Voice Control</span>
+      </div>
+    </div>
+    
+    <div class="landing-cta">
+      <a href="{{ url_for('home') }}" class="btn-initialize">
+        <i class="fas fa-power-off"></i> Initialize Communication System
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof particlesJS !== 'undefined') {
+      particlesJS("particles-js", {
+        "particles": {
+          "number": {
+            "value": 80,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": "#ffffff"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000000"
+            },
+          },
+          "opacity": {
+            "value": 0.5,
+            "random": false,
+            "anim": {
+              "enable": false,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true,
+            "anim": {
+              "enable": false,
+              "speed": 40,
+              "size_min": 0.1,
+              "sync": false
+            }
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#ffffff",
+            "opacity": 0.4,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 2,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false,
+            "attract": {
+              "enable": false,
+              "rotateX": 600,
+              "rotateY": 1200
+            }
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "repulse"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 400,
+              "line_linked": {
+                "opacity": 1
+              }
+            },
+            "bubble": {
+              "distance": 400,
+              "size": 40,
+              "duration": 2,
+              "opacity": 8,
+              "speed": 3
+            },
+            "repulse": {
+              "distance": 100,
+              "duration": 0.4
+            },
+            "push": {
+              "particles_nb": 4
+            },
+            "remove": {
+              "particles_nb": 2
+            }
+          }
+        },
+        "retina_detect": true
+      });
+    }
+  });
+</script>
+{% endblock %}

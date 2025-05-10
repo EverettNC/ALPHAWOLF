@@ -147,7 +147,7 @@ function registerNavigationCommands() {
     // Home command
     voiceControl.registerCommand('go home', function() {
         voiceControl.speak("Going to home page");
-        window.location.href = '/';
+        window.location.href = '/home';
     });
     
     // Go back command

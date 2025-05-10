@@ -23,6 +23,7 @@ class VoiceControl {
         this.isListening = false;
         this.isSpeaking = false;
         this.lastResult = null;
+        this.isMuted = false; // Track muted state
         
         // Speech synthesis setup
         this.speechSynthesis = window.speechSynthesis;
@@ -115,8 +116,8 @@ class VoiceControl {
             this.isListening = false;
             this.updateStatus();
             
-            // Restart recognition if continuous listening is enabled
-            if (this.options.continuousListening && !this.isSpeaking) {
+            // Restart recognition if continuous listening is enabled and not muted
+            if (this.options.continuousListening && !this.isSpeaking && !this.isMuted) {
                 this.restart();
             }
         };
@@ -183,12 +184,18 @@ class VoiceControl {
     updateStatus() {
         if (!this.statusElement) return;
         
-        if (this.isListening) {
+        if (this.isMuted) {
+            this.statusElement.innerHTML = '<i class="fas fa-microphone-slash"></i> Microphone Muted';
+            this.statusElement.classList.add('muted');
+            this.statusElement.classList.remove('listening');
+        } else if (this.isListening) {
             this.statusElement.innerHTML = '<span class="pulse"></span> Listening...';
             this.statusElement.classList.add('listening');
+            this.statusElement.classList.remove('muted');
         } else {
             this.statusElement.innerHTML = 'Voice Control';
             this.statusElement.classList.remove('listening');
+            this.statusElement.classList.remove('muted');
         }
     }
     
@@ -217,7 +224,7 @@ class VoiceControl {
      * Start voice recognition
      */
     start() {
-        if (this.isListening) return;
+        if (this.isListening || this.isMuted) return;
         
         try {
             this.recognition.start();
@@ -254,6 +261,8 @@ class VoiceControl {
      * Restart voice recognition
      */
     restart() {
+        if (this.isMuted) return; // Don't restart if muted
+        
         this.stop();
         setTimeout(() => this.start(), 200);
     }
@@ -341,8 +350,8 @@ class VoiceControl {
             }
             this.isSpeaking = false;
             
-            // Resume listening after speaking
-            if (this.options.continuousListening) {
+            // Resume listening after speaking if not muted
+            if (this.options.continuousListening && !this.isMuted) {
                 setTimeout(() => this.start(), 500);
             }
         };
@@ -351,8 +360,8 @@ class VoiceControl {
             console.error('Speech synthesis error:', event);
             this.isSpeaking = false;
             
-            // Resume listening after error
-            if (this.options.continuousListening) {
+            // Resume listening after error if not muted
+            if (this.options.continuousListening && !this.isMuted) {
                 setTimeout(() => this.start(), 500);
             }
         };
@@ -392,6 +401,67 @@ class VoiceControl {
             this.stop();
         } else {
             this.start();
+        }
+    }
+    
+    /**
+     * Mute the microphone
+     */
+    mute() {
+        if (!this.isMuted) {
+            this.isMuted = true;
+            this.stop();
+            this.updateFeedback('muted', 'Microphone muted');
+            if (this.options.debug) {
+                console.log('Microphone muted');
+            }
+            
+            // Update status indicator
+            if (this.statusElement) {
+                this.statusElement.innerHTML = '<i class="fas fa-microphone-slash"></i> Microphone Muted';
+                this.statusElement.classList.add('muted');
+                this.statusElement.classList.remove('listening');
+            }
+            
+            this.speak("Microphone muted. Voice commands will not be recognized until unmuted.");
+        }
+    }
+    
+    /**
+     * Unmute the microphone
+     */
+    unmute() {
+        if (this.isMuted) {
+            this.isMuted = false;
+            if (this.options.debug) {
+                console.log('Microphone unmuted');
+            }
+            this.updateFeedback('unmuted', 'Microphone active');
+            
+            // Update status indicator
+            if (this.statusElement) {
+                this.statusElement.classList.remove('muted');
+            }
+            
+            this.speak("Microphone activated. I'm now listening for voice commands.");
+            
+            // Restart listening after a delay to avoid feedback loops
+            setTimeout(() => {
+                if (this.options.continuousListening) {
+                    this.start();
+                }
+            }, 1000);
+        }
+    }
+    
+    /**
+     * Toggle mute state
+     */
+    toggleMute() {
+        if (this.isMuted) {
+            this.unmute();
+        } else {
+            this.mute();
         }
     }
 }

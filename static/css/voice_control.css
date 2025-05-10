@@ -23,6 +23,11 @@
     animation: pulse-border 2s infinite;
 }
 
+.voice-control-status.muted {
+    background-color: rgba(158, 158, 158, 0.9);
+    box-shadow: 0 2px 15px rgba(158, 158, 158, 0.4);
+}
+
 .voice-control-status .pulse {
     display: inline-block;
     width: 12px;
@@ -63,6 +68,14 @@
 
 .voice-control-feedback.feedback-error {
     background-color: rgba(244, 67, 54, 0.8);
+}
+
+.voice-control-feedback.feedback-muted {
+    background-color: rgba(158, 158, 158, 0.8);
+}
+
+.voice-control-feedback.feedback-unmuted {
+    background-color: rgba(76, 175, 80, 0.8);
 }
 
 .voice-commands-help {

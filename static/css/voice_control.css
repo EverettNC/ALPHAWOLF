@@ -159,6 +159,10 @@
     background-color: #F44336;
 }
 
+.voice-control-toggle.muted {
+    background-color: #9E9E9E;
+}
+
 .voice-control-toggle i {
     font-size: 24px;
 }

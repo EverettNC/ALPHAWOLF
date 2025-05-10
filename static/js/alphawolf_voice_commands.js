@@ -88,6 +88,8 @@ function createCommandsHelpPanel() {
             <li><span class="command-phrase">help</span> - <span class="command-description">Show this help panel</span></li>
             <li><span class="command-phrase">stop listening</span> - <span class="command-description">Turn off voice control</span></li>
             <li><span class="command-phrase">start listening</span> - <span class="command-description">Turn on voice control</span></li>
+            <li><span class="command-phrase">mute microphone</span> - <span class="command-description">Mute the microphone (won't listen until unmuted)</span></li>
+            <li><span class="command-phrase">unmute microphone</span> - <span class="command-description">Unmute the microphone</span></li>
             <li><span class="command-phrase">read page</span> - <span class="command-description">Read the current page content</span></li>
         </ul>
     `;
@@ -112,8 +114,27 @@ function createVoiceControlToggle() {
     
     // Add event listener
     toggleButton.addEventListener('click', function() {
-        window.alphaVoiceControl.toggle();
-        this.classList.toggle('active');
+        const voiceControl = window.alphaVoiceControl;
+        
+        // If already muted, unmute on click
+        if (voiceControl.isMuted) {
+            voiceControl.unmute();
+            this.classList.remove('muted');
+            this.classList.add('active');
+            this.innerHTML = '<i class="fas fa-microphone"></i>';
+        } 
+        // If active, mute on click
+        else if (this.classList.contains('active')) {
+            voiceControl.mute();
+            this.classList.remove('active');
+            this.classList.add('muted');
+            this.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+        } 
+        // If inactive but not muted, activate
+        else {
+            voiceControl.toggle();
+            this.classList.toggle('active');
+        }
     });
 }
 
@@ -306,6 +327,24 @@ function registerGlobalCommands() {
         voiceControl.speak("Voice control activated");
         voiceControl.start();
         document.getElementById('voice-control-toggle').classList.add('active');
+    });
+    
+    // Mute microphone command
+    voiceControl.registerCommand('mute microphone', function() {
+        voiceControl.mute();
+        const toggleBtn = document.getElementById('voice-control-toggle');
+        toggleBtn.classList.remove('active');
+        toggleBtn.classList.add('muted');
+        toggleBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+    });
+    
+    // Unmute microphone command
+    voiceControl.registerCommand('unmute microphone', function() {
+        voiceControl.unmute();
+        const toggleBtn = document.getElementById('voice-control-toggle');
+        toggleBtn.classList.add('active');
+        toggleBtn.classList.remove('muted');
+        toggleBtn.innerHTML = '<i class="fas fa-microphone"></i>';
     });
 }
 

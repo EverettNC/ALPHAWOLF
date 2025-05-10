@@ -141,7 +141,7 @@ def index():
             return redirect(url_for('caregiver_dashboard'))
     return render_template('landing.html')
 
-@app.route('/home')
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     """Homepage with features, how it works, and sign in options"""
     # If user is already logged in, redirect to their dashboard
@@ -150,7 +150,17 @@ def home():
             return redirect(url_for('patient_dashboard'))
         else:
             return redirect(url_for('caregiver_dashboard'))
-    return render_template('home.html')
+    
+    # Handle form submission from landing page
+    if request.method == 'POST':
+        name = request.form.get('name')
+        if name:
+            session['guest_name'] = name
+            flash(f'Welcome, {name}! Your AlphaWolf system has been initialized.', 'success')
+    
+    # Pass the guest name to the template if available
+    guest_name = session.get('guest_name', 'Guest')
+    return render_template('home.html', name=guest_name)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

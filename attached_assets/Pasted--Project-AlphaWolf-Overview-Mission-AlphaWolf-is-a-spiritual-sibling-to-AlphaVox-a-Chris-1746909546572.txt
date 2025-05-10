@@ -1,0 +1,147 @@
+# **Project AlphaWolf: Overview**
+**Mission**: AlphaWolf is a spiritual sibling to AlphaVox, a Christman AI Project powered by LumaCognify AI. While AlphaVox focuses on giving voice to the voiceless through text-to-speech (TTS) and natural language processing (NLP) for neurodiverse users, AlphaWolf is about *empowering action*—translating user intent into automated, compassionate workflows. Think of it as a proactive assistant that anticipates needs and acts on them, like scheduling care, sending alerts, or managing daily tasks for users who struggle with traditional interfaces.
+
+**Purpose**: AlphaWolf serves caregivers, families, and individuals with cognitive or communication challenges. It’s not just software—it’s a lifeline that says, “I’ve got you,” by automating critical tasks with empathy and precision. Every endpoint, every container, every log is a step toward making someone’s life easier.
+
+**Key Features**:
+- **Intent Recognition**: Uses NLP to interpret vague or incomplete user inputs (e.g., “I need help” → schedules a caregiver visit).
+- **Task Automation**: Triggers actions like sending SMS alerts, updating care logs, or ordering supplies via APIs.
+- **Personalized Dashboards**: Symbol-based, accessible UI for neurodiverse users and caregivers.
+- **HIPAA Compliance**: Secure data handling for sensitive health info.
+- **Scalability**: Built to handle thousands of users across care facilities.
+
+**User Impact**: Imagine a non-verbal autistic teen using a symbol board to say they’re overwhelmed, and AlphaWolf instantly notifies their caregiver, logs the event, and suggests calming activities. That’s the soul of this project.
+
+---
+
+### **Backend Expectations (AWS-Centric)**
+AlphaWolf’s backend is a robust, serverless, and containerized architecture running on AWS, designed for scalability, security, and HIPAA compliance. Below is the detailed breakdown, tailored to your role and AWS learning curve. I’ll assume you’re familiar with the basics from your class but need a practical map to connect the dots.
+
+#### **1. Core AWS Services**
+Here’s the stack we’re using, with explanations to help you educate the new team member and solidify your AWS knowledge:
+
+- **Amazon ECS (Fargate)**:
+  - **Purpose**: Runs AlphaWolf’s containerized backend (FastAPI or Flask) without managing servers.
+  - **Why**: Fargate abstracts server management, letting us focus on code. It’s HIPAA-compliant with proper VPC and IAM configs.
+  - **Expectations**:
+    - Deploy Docker containers from the provided `Dockerfile` (see AlphaVox sheet).
+    - Configure auto-scaling to handle spikes in user requests (e.g., morning care check-ins).
+    - Monitor container health via CloudWatch.
+  - **Your Role**: Ensure the newbie validates ECS deployments in a test environment before prod. Check CloudWatch logs for errors during onboarding.
+
+- **Amazon RDS (PostgreSQL)**:
+  - **Purpose**: Stores user profiles, care logs, and symbol board configs.
+  - **Why**: Managed database with encryption, backups, and HIPAA-compliant storage.
+  - **Expectations**:
+    - Schema design for user data (e.g., `users`, `tasks`, `logs` tables).
+    - Secure access via IAM roles and VPC endpoints.
+    - Regular backups and point-in-time recovery setup.
+  - **Your Role**: Oversee data privacy compliance (HIPAA). Ask the newbie to document schema changes for review.
+
+- **Amazon S3 + CloudFront**:
+  - **Purpose**: Stores audio files (TTS outputs), images (symbol boards), and static assets.
+  - **Why**: S3 is secure, scalable, and integrates with CloudFront for low-latency delivery to users globally.
+  - **Expectations**:
+    - Configure S3 buckets with encryption (AWS KMS) and lifecycle policies (e.g., archive old logs).
+    - Set up CloudFront for edge caching of symbol images.
+    - Restrict access with bucket policies and signed URLs.
+  - **Your Role**: Ensure the newbie tests S3 uploads locally and verifies CloudFront caching. Sign off on bucket policies.
+
+- **AWS Lambda**:
+  - **Purpose**: Handles event-driven tasks, like processing NLP results or triggering SMS via Amazon SNS.
+  - **Why**: Serverless, cost-efficient, and scales automatically.
+  - **Expectations**:
+    - Write Lambda functions in Python (e.g., `process_intent.py` for NLP).
+    - Integrate with API Gateway for RESTful endpoints.
+    - Use AWS SAM (Serverless Application Model) for local testing.
+  - **Your Role**: Review Lambda function logs for performance bottlenecks. Push the newbie to test locally with `sam local invoke`.
+
+- **Amazon API Gateway**:
+  - **Purpose**: Exposes RESTful endpoints for frontend apps (e.g., `/intents`, `/tasks`).
+  - **Why**: Secure, scalable API management with throttling and auth.
+  - **Expectations**:
+    - Define OpenAPI specs for endpoints (e.g., POST `/intents` to process user input).
+    - Enable CORS for web app access.
+    - Secure with Cognito or IAM authorizers.
+  - **Your Role**: Validate Swagger UI locally (via FastAPI) to ensure endpoints match specs. Coach the newbie on API testing with Postman.
+
+- **Amazon Cognito**:
+  - **Purpose**: Manages user authentication for caregivers and admins.
+  - **Why**: Simplifies auth with HIPAA-compliant user pools.
+  - **Expectations**:
+    - Set up user pools with MFA and role-based access (e.g., `caregiver`, `admin`).
+    - Integrate with API Gateway for token-based auth.
+  - **Your Role**: Ensure auth flows are tested (e.g., login/logout). Review user pool configs for security.
+
+- **Amazon CloudWatch**:
+  - **Purpose**: Logs, monitors, and alerts for backend health.
+  - **Why**: Centralized observability for debugging and compliance.
+  - **Expectations**:
+    - Set up log groups for ECS, Lambda, and API Gateway.
+    - Create alarms for high error rates or latency.
+    - Use Insights to query logs (e.g., failed intents).
+  - **Your Role**: Teach the newbie to check CloudWatch dashboards. Use logs to guide daily standups.
+
+- **AWS IAM**:
+  - **Purpose**: Secures access to all services with least-privilege roles.
+  - **Why**: Critical for HIPAA and general security.
+  - **Expectations**:
+    - Define roles for ECS tasks, Lambda functions, and S3 access.
+    - Use aws-vault or SSO for CLI access on MacOS.
+  - **Your Role**: Audit IAM policies with the newbie to avoid over-permissive roles.
+
+#### **2. Backend Architecture**
+The backend is a microservices-inspired, serverless-first design:
+- **Entry Point**: API Gateway receives HTTPS requests from the frontend (e.g., React app or mobile).
+- **Processing**: Lambda functions handle lightweight tasks (e.g., NLP parsing), while ECS Fargate runs heavier workloads (e.g., batch processing care logs).
+- **Data Flow**:
+  - User input → API Gateway → Lambda/ECS → RDS for storage or S3 for assets.
+  - Outputs (e.g., TTS audio) → S3 → CloudFront → User.
+- **Event-Driven**: SNS/SQS triggers Lambda for async tasks (e.g., sending alerts).
+- **Security**: All data encrypted in transit (TLS) and at rest (KMS). VPCs isolate services.
+
+#### **3. Development Workflow**
+- **Local Setup (MacOS)**:
+  - Use Docker Desktop to build/test containers (`docker build -t alphawolf .`).
+  - Install awscli and aws-vault (`brew install awscli aws-vault`).
+  - Run FastAPI locally (`uvicorn app.main:app --reload`) and test via Swagger UI.
+  - Use VS Code with Python/Docker extensions for debugging.
+- **CI/CD**:
+  - Code in GitHub; use Actions to build/push Docker images to Amazon ECR.
+  - Deploy to ECS via AWS CodePipeline.
+  - Test environments (dev, staging) before prod.
+- **Testing**:
+  - Unit tests for Lambda functions (`pytest`).
+  - Integration tests for API endpoints (Postman or `curl`).
+  - Load tests with Locust to simulate user spikes.
+
+#### **4. HIPAA Compliance**
+- **Data Privacy**: Encrypt all PII in RDS and S3. Use KMS for key management.
+- **Access Control**: IAM roles with least privilege. Cognito for user auth.
+- **Auditability**: Log all API calls and DB access in CloudWatch. Enable AWS CloudTrail.
+- **Your Role**: Work with the newbie to document compliance checks. Liaise with Everett for vendor audits.
+
+---
+
+### **Expectations for the New Team Member**
+Here’s what to tell the newbie to get them up to speed:
+1. **Code Familiarity**:
+   - Clone the repo and study the `app/` directory (FastAPI structure).
+   - Understand the `Dockerfile` and `requirements.txt` for dependencies.
+2. **Local Dev**:
+   - Set up their MacOS environment per the AlphaVox sheet (Docker, Python 3.11, awscli).
+   - Run the app locally and hit `/docs` for Swagger UI.
+3. **AWS Tasks**:
+   - Start with Lambda: Write a simple function to parse a test intent.
+   - Deploy to ECS dev environment using provided GitHub Actions.
+   - Check CloudWatch logs for their deployment.
+4. **Best Practices**:
+   - Validate all inputs (e.g., JSON payloads) to prevent injection.
+   - Optimize for neurodiverse users: Keep APIs simple, responses clear.
+   - Log everything but avoid PII in logs.
+5. **Collaboration**:
+   - Daily standups: Report progress, blockers, and CloudWatch insights.
+   - Pair with you on HIPAA compliance tasks.
+   - Ask questions in Slack, not spammy messages!
+
+---

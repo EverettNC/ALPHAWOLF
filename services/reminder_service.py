@@ -16,6 +16,45 @@ class ReminderService:
             'on_reminder': []  # Callbacks to execute when reminder is triggered
         }
         self.logger.info("Reminder service initialized")
+        
+    def check_reminders(self):
+        """
+        Check all reminders and trigger notifications for any that are due.
+        This method is called by the scheduler.
+        """
+        try:
+            from app import db
+            import models
+            
+            self.logger.info("Checking reminders...")
+            current_time = datetime.now().strftime("%H:%M")
+            # Get all reminders that are due now
+            reminders = models.Reminder.query.filter_by(completed=False).all()
+            
+            reminded_count = 0
+            for reminder in reminders:
+                reminder_time = reminder.time
+                # Check if reminder time matches current time (HH:MM)
+                if reminder_time == current_time:
+                    reminded_count += 1
+                    self.logger.info(f"Triggering reminder: {reminder.title} for patient {reminder.patient_id}")
+                    
+                    # Trigger callbacks for this reminder
+                    for callback in self.callbacks['on_reminder']:
+                        callback(reminder)
+                    
+                    # If not recurring, mark as completed
+                    if not reminder.recurring:
+                        reminder.completed = True
+                        db.session.commit()
+            
+            if reminded_count > 0:
+                self.logger.info(f"Triggered {reminded_count} reminders")
+            else:
+                self.logger.debug("No reminders due at this time")
+                
+        except Exception as e:
+            self.logger.error(f"Error checking reminders: {str(e)}")
     
     def add_reminder(self, reminder):
         """

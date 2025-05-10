@@ -120,9 +120,32 @@ with app.app_context():
         logger.info("Initialized default cognitive exercises")
 
 def run_schedule():
+    """Run scheduled tasks in a continuous loop"""
     while True:
         schedule.run_pending()
         time.sleep(1)
+
+# Setup scheduled tasks
+def run_scheduled_tasks():
+    """Run scheduled tasks"""
+    logger.info("Running scheduled tasks")
+    
+    # Check for reminders
+    reminder_service.check_reminders()
+    
+    # Run web crawler to update database
+    try:
+        from services.web_crawler import WebCrawler
+        web_crawler = WebCrawler()
+        results = web_crawler.run_scheduled_crawl()
+        logger.info(f"Web crawler updated database with {results['articles_count']} articles and {results['tips_count']} tips")
+    except Exception as e:
+        logger.error(f"Error running web crawler: {str(e)}")
+    
+    # Other scheduled tasks can be added here
+
+# Schedule tasks to run daily at 3 AM
+schedule.every().day.at("03:00").do(run_scheduled_tasks)
 
 # Start the scheduler in a separate thread
 scheduler_thread = threading.Thread(target=run_schedule)

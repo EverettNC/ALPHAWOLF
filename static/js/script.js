@@ -1,194 +1,243 @@
 /**
  * AlphaWolf Main JavaScript
- * General functionality for the AlphaWolf application
+ * Part of The Christman AI Project - Powered by LumaCognify AI
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('AlphaWolf system initializing...');
+    // Initialize tooltips
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    if (tooltips.length > 0) {
+        Array.from(tooltips).map(tooltip => new bootstrap.Tooltip(tooltip));
+    }
     
-    // Initialize any Bootstrap tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+    // Initialize popovers
+    const popovers = document.querySelectorAll('[data-bs-toggle="popover"]');
+    if (popovers.length > 0) {
+        Array.from(popovers).map(popover => new bootstrap.Popover(popover));
+    }
     
-    // Initialize Bootstrap popovers
-    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl);
-    });
-    
-    // Add cyber effects to cards
-    const cyberCards = document.querySelectorAll('.cyber-card');
-    cyberCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-            this.style.boxShadow = '0 0 25px rgba(83, 92, 236, 0.4)';
+    // Automatically dismiss alerts after 5 seconds
+    const autoAlerts = document.querySelectorAll('.alert.auto-dismiss');
+    if (autoAlerts.length > 0) {
+        autoAlerts.forEach(alert => {
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 5000);
         });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = '';
-            this.style.boxShadow = '';
-        });
-    });
+    }
     
-    // Handle form submissions with AJAX when needed
-    const ajaxForms = document.querySelectorAll('form[data-ajax="true"]');
-    ajaxForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const url = this.getAttribute('action');
-            const method = this.getAttribute('method') || 'POST';
-            
-            fetch(url, {
-                method: method,
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Form submission response:', data);
-                
-                if (data.success) {
-                    showNotification(data.message || 'Success!', 'success');
-                    
-                    // Handle redirect if provided
-                    if (data.redirect) {
-                        setTimeout(() => {
-                            window.location.href = data.redirect;
-                        }, 1000);
-                    }
-                    
-                    // Handle DOM updates if provided
-                    if (data.update_element && data.update_content) {
-                        const element = document.querySelector(data.update_element);
-                        if (element) {
-                            element.innerHTML = data.update_content;
-                        }
-                    }
-                    
-                    // Reset form if needed
-                    if (data.reset_form) {
-                        form.reset();
-                    }
-                } else {
-                    showNotification(data.message || 'An error occurred', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error submitting form:', error);
-                showNotification('An error occurred while submitting the form', 'error');
-            });
-        });
-    });
-    
-    // Handle tabbed interfaces
-    const tabLinks = document.querySelectorAll('[data-bs-toggle="tab"]');
-    tabLinks.forEach(tabLink => {
-        tabLink.addEventListener('shown.bs.tab', function (event) {
-            const targetId = event.target.getAttribute('href');
-            // Save active tab to sessionStorage if needed
-            if (this.closest('[data-store-state]')) {
-                const stateKey = this.closest('[data-store-state]').getAttribute('data-store-state');
-                sessionStorage.setItem(stateKey, targetId);
-            }
-        });
-        
-        // Restore active tab from sessionStorage if needed
-        if (tabLink.closest('[data-store-state]')) {
-            const stateKey = tabLink.closest('[data-store-state]').getAttribute('data-store-state');
-            const savedTab = sessionStorage.getItem(stateKey);
-            
-            if (savedTab && savedTab === tabLink.getAttribute('href')) {
-                const tab = new bootstrap.Tab(tabLink);
-                tab.show();
-            }
-        }
-    });
-    
-    // Futuristic typing effect for designated elements
-    const typeElements = document.querySelectorAll('[data-type-effect]');
-    typeElements.forEach(element => {
-        const text = element.textContent;
-        const speed = parseInt(element.getAttribute('data-type-speed')) || 50;
-        
-        // Clear the element and set up for typing
-        element.textContent = '';
-        element.style.borderRight = '0.15em solid var(--accent-color)';
-        element.style.animation = 'blink-caret 0.75s step-end infinite';
-        
-        // Add typing animation style if not already in the document
-        if (!document.getElementById('typing-animation-style')) {
-            const style = document.createElement('style');
-            style.id = 'typing-animation-style';
-            style.textContent = `
-                @keyframes blink-caret {
-                    from, to { border-color: transparent }
-                    50% { border-color: var(--accent-color) }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        // Perform typing animation
-        let charIndex = 0;
-        function typeWriter() {
-            if (charIndex < text.length) {
-                element.textContent += text.charAt(charIndex);
-                charIndex++;
-                setTimeout(typeWriter, speed);
-            } else {
-                // Remove cursor after typing is complete
-                setTimeout(() => {
-                    element.style.borderRight = 'none';
-                    element.style.animation = 'none';
-                }, 1000);
-            }
-        }
-        
-        // Start the typing effect
-        typeWriter();
-    });
-    
-    // Dynamic content loaders
-    const contentLoaders = document.querySelectorAll('[data-load-content]');
-    contentLoaders.forEach(loader => {
-        const url = loader.getAttribute('data-load-content');
-        const target = loader.getAttribute('data-target') || loader;
-        const auto = loader.hasAttribute('data-auto-load');
-        
-        const loadContent = () => {
-            if (target) {
-                const targetElement = target === loader ? loader : document.querySelector(target);
-                if (targetElement) {
-                    targetElement.innerHTML = '<div class="text-center p-3"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
-                    
-                    fetch(url)
-                        .then(response => response.text())
-                        .then(html => {
-                            targetElement.innerHTML = html;
-                        })
-                        .catch(error => {
-                            console.error('Error loading content:', error);
-                            targetElement.innerHTML = '<div class="alert alert-danger">Error loading content</div>';
-                        });
-                }
-            }
-        };
-        
-        if (auto) {
-            loadContent();
-        } else {
-            loader.addEventListener('click', function(e) {
+    // Add smooth scrolling to all links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            if (this.getAttribute('href') !== '#') {
                 e.preventDefault();
-                loadContent();
-            });
-        }
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
     });
     
-    console.log('AlphaWolf system initialized');
+    // Form validation
+    const forms = document.querySelectorAll('.needs-validation');
+    if (forms.length > 0) {
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }
+    
+    // Toggle password visibility
+    const passwordToggles = document.querySelectorAll('.password-toggle');
+    if (passwordToggles.length > 0) {
+        passwordToggles.forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const input = document.querySelector(this.getAttribute('data-bs-target'));
+                if (input) {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                    } else {
+                        input.type = 'password';
+                        this.innerHTML = '<i class="fas fa-eye"></i>';
+                    }
+                }
+            });
+        });
+    }
+    
+    // Add animation classes when elements enter viewport
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    if (animatedElements.length > 0) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animatedElements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+    
+    // Handle theme toggle if present
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            document.documentElement.setAttribute('data-bs-theme', 
+                document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark');
+            
+            // Save preference to localStorage
+            localStorage.setItem('alphawolf-theme', document.documentElement.getAttribute('data-bs-theme'));
+        });
+        
+        // Set initial theme based on user preference
+        const savedTheme = localStorage.getItem('alphawolf-theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        }
+    }
+    
+    // Progress bars animation
+    const progressBars = document.querySelectorAll('.progress-bar-animated');
+    if (progressBars.length > 0) {
+        progressBars.forEach(bar => {
+            const targetWidth = bar.getAttribute('aria-valuenow') + '%';
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = targetWidth;
+            }, 300);
+        });
+    }
+    
+    // User menu dropdown enhancement
+    const userMenuDropdown = document.querySelector('.user-menu-dropdown');
+    if (userMenuDropdown) {
+        userMenuDropdown.addEventListener('show.bs.dropdown', function() {
+            document.querySelector('.user-avatar').classList.add('pulse');
+        });
+        
+        userMenuDropdown.addEventListener('hide.bs.dropdown', function() {
+            document.querySelector('.user-avatar').classList.remove('pulse');
+        });
+    }
+    
+    // Countdown timer functionality
+    const countdownElements = document.querySelectorAll('[data-countdown]');
+    if (countdownElements.length > 0) {
+        countdownElements.forEach(element => {
+            const targetDate = new Date(element.getAttribute('data-countdown')).getTime();
+            
+            const interval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+                
+                if (distance < 0) {
+                    clearInterval(interval);
+                    element.innerHTML = "Expired";
+                    return;
+                }
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                element.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        });
+    }
+    
+    // Initialize any carousels with custom options
+    const carousels = document.querySelectorAll('.alphawolf-carousel');
+    if (carousels.length > 0) {
+        carousels.forEach(carousel => {
+            new bootstrap.Carousel(carousel, {
+                interval: 5000,
+                touch: true,
+                pause: 'hover'
+            });
+        });
+    }
+    
+    // Add pulsing effect to notification icons
+    const notificationIcons = document.querySelectorAll('.notification-icon');
+    if (notificationIcons.length > 0) {
+        notificationIcons.forEach(icon => {
+            if (parseInt(icon.getAttribute('data-count') || '0') > 0) {
+                icon.classList.add('cyber-pulse');
+            }
+        });
+    }
+    
+    // Special initialization for home page features
+    if (document.body.classList.contains('home-page')) {
+        console.log("Initializing home page special features...");
+        
+        // Feature animation trigger on scroll
+        const featureCards = document.querySelectorAll('.feature-card');
+        if (featureCards.length > 0) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('revealed');
+                        }, index * 150); // Staggered animation
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            featureCards.forEach(card => {
+                observer.observe(card);
+            });
+        }
+    }
+    
+    // Initialize the mission statement cycler if present
+    const missionStatementCycler = document.getElementById('mission-statement-cycler');
+    if (missionStatementCycler) {
+        const statements = [
+            "How can I help you love yourself more?",
+            "AI that empowers, protects, and redefines humanity.",
+            "Because communication is a human right.",
+            "Because no one should lose their memories—or their dignity.",
+            "Because learning should be accessible for everyone."
+        ];
+        
+        let currentIndex = 0;
+        
+        setInterval(() => {
+            missionStatementCycler.style.opacity = 0;
+            
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % statements.length;
+                missionStatementCycler.textContent = statements[currentIndex];
+                missionStatementCycler.style.opacity = 1;
+            }, 500);
+        }, 5000);
+    }
+    
+    // Add class to body based on current page
+    const currentPath = window.location.pathname;
+    if (currentPath === '/') {
+        document.body.classList.add('landing-page');
+    } else if (currentPath === '/home') {
+        document.body.classList.add('home-page');
+    } else if (currentPath.includes('patient_dashboard')) {
+        document.body.classList.add('dashboard-page', 'patient-user');
+    } else if (currentPath.includes('caregiver_dashboard')) {
+        document.body.classList.add('dashboard-page', 'caregiver-user');
+    }
 });

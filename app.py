@@ -162,6 +162,11 @@ def home():
     guest_name = session.get('guest_name', 'Guest')
     return render_template('home.html', name=guest_name)
 
+@app.route('/license')
+def license():
+    """Display the LumaCognify Public Covenant License"""
+    return render_template('license.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Login page for patients and caregivers"""

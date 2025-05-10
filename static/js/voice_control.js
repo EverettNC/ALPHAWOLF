@@ -1,275 +1,221 @@
 /**
  * AlphaWolf Voice Control System
- * This script manages the voice control interface for AlphaWolf
+ * Part of The Christman AI Project - Powered by LumaCognify AI
  */
 
-// Voice control state
-let voiceControlEnabled = true;
-const voiceToggleBtn = document.getElementById('voiceToggleBtn');
-const voiceControlKey = 'alphawolf_voice_control';
+// Initialize variables
+let recognition;
+let isListening = true;
+let lastRecognizedSpeech = '';
+const voiceControlStatus = document.getElementById('voice-control-status');
+const voiceControlToggle = document.getElementById('voice-control-toggle');
 
-// Initialize voice control based on previously saved state
-document.addEventListener('DOMContentLoaded', () => {
-    // Check if we're on the landing page
-    const isLandingPage = !document.querySelector('header');
-    
-    if (isLandingPage) {
-        // Don't show voice controls on landing page
-        if (voiceToggleBtn) {
-            voiceToggleBtn.style.display = 'none';
+// Speech Recognition setup
+function initVoiceControl() {
+    try {
+        // Check if voice control was previously disabled by user
+        const savedVoiceControlState = localStorage.getItem('alphawolf_voice_control');
+        isListening = savedVoiceControlState !== 'inactive';
+        
+        // Setup Web Speech API
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new window.SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+        
+        // Set initial UI state
+        updateVoiceControlUI();
+        
+        // Start recognition if active
+        if (isListening) {
+            startVoiceRecognition();
         }
-        return;
+        
+        // Add event listener to the toggle button
+        if (voiceControlToggle) {
+            voiceControlToggle.addEventListener('click', toggleVoiceControl);
+        }
+        
+        console.log("Voice control system initialized. Status: " + (isListening ? "Active" : "Inactive"));
+    } catch (error) {
+        console.error("Error initializing voice control:", error);
+        isListening = false;
+        updateVoiceControlUI();
     }
-    
-    // Load previous voice control state from localStorage
-    const savedState = localStorage.getItem(voiceControlKey);
-    if (savedState !== null) {
-        voiceControlEnabled = savedState === 'true';
-    }
-    
-    // Update UI based on voice control state
-    updateVoiceControlUI();
-    
-    // Set up event listener for voice toggle button
-    if (voiceToggleBtn) {
-        voiceToggleBtn.addEventListener('click', toggleVoiceControl);
-    }
-    
-    // Initialize voice control system if enabled
-    if (voiceControlEnabled) {
-        initializeVoiceRecognition();
-    }
-    
-    console.log(`Voice control system initialized. Status: ${voiceControlEnabled ? 'Active' : 'Muted'}`);
-});
+}
 
-/**
- * Toggle voice control on/off
- */
-function toggleVoiceControl() {
-    voiceControlEnabled = !voiceControlEnabled;
+// Start voice recognition
+function startVoiceRecognition() {
+    if (!recognition) return;
     
-    // Save state to localStorage for persistence across pages
-    localStorage.setItem(voiceControlKey, voiceControlEnabled.toString());
+    try {
+        recognition.start();
+        console.log("Voice recognition started");
+        
+        // Recognition events
+        recognition.onresult = function(event) {
+            const speechResult = event.results[0][0].transcript.toLowerCase();
+            lastRecognizedSpeech = speechResult;
+            console.log("Speech recognized:", speechResult);
+            
+            // Process the speech command
+            processVoiceCommand(speechResult);
+        };
+        
+        recognition.onerror = function(event) {
+            console.error("Speech recognition error:", event.error);
+            if (isListening) {
+                // Restart recognition after a brief pause on error
+                setTimeout(() => {
+                    if (isListening) startVoiceRecognition();
+                }, 500);
+            }
+        };
+        
+        recognition.onend = function() {
+            console.log("Voice recognition ended");
+            // Restart if still in listening mode
+            if (isListening) {
+                setTimeout(() => {
+                    if (isListening) startVoiceRecognition();
+                }, 500);
+            }
+        };
+    } catch (error) {
+        console.error("Error starting voice recognition:", error);
+    }
+}
+
+// Toggle voice control on/off
+function toggleVoiceControl() {
+    isListening = !isListening;
+    
+    // Save state to localStorage for persistence
+    localStorage.setItem('alphawolf_voice_control', isListening ? 'active' : 'inactive');
     
     // Update UI
     updateVoiceControlUI();
     
-    // Enable or disable voice recognition
-    if (voiceControlEnabled) {
-        initializeVoiceRecognition();
-        showNotification('Voice control activated', 'success');
+    // Start or stop recognition
+    if (isListening) {
+        startVoiceRecognition();
     } else {
-        stopVoiceRecognition();
-        showNotification('Voice control deactivated', 'warning');
+        if (recognition) {
+            try {
+                recognition.stop();
+            } catch (e) {
+                console.error("Error stopping recognition:", e);
+            }
+        }
     }
     
-    console.log(`Voice control toggled: ${voiceControlEnabled ? 'Active' : 'Muted'}`);
+    // Provide feedback to user
+    if (isListening) {
+        showFeedback("Voice control enabled");
+    } else {
+        showFeedback("Voice control disabled");
+    }
 }
 
-/**
- * Update UI elements based on voice control state
- */
+// Update the UI to reflect current voice control state
 function updateVoiceControlUI() {
-    if (!voiceToggleBtn) return;
+    if (!voiceControlStatus) return;
     
-    // Update button appearance
-    if (voiceControlEnabled) {
-        voiceToggleBtn.classList.remove('muted');
-        voiceToggleBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+    if (isListening) {
+        voiceControlStatus.textContent = "Active";
+        voiceControlStatus.classList.remove("inactive");
     } else {
-        voiceToggleBtn.classList.add('muted');
-        voiceToggleBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
-    }
-    
-    // Update any voice status indicators
-    const voiceStatusElements = document.querySelectorAll('.voice-status');
-    voiceStatusElements.forEach(element => {
-        if (voiceControlEnabled) {
-            element.classList.remove('muted');
-            element.classList.add('active');
-            const iconElement = element.querySelector('.voice-status-icon');
-            if (iconElement) {
-                iconElement.className = 'fas fa-microphone voice-status-icon';
-            }
-            const textElement = element.querySelector('span:not(.voice-status-icon)');
-            if (textElement) {
-                textElement.textContent = 'Voice control active';
-            }
-        } else {
-            element.classList.remove('active');
-            element.classList.add('muted');
-            const iconElement = element.querySelector('.voice-status-icon');
-            if (iconElement) {
-                iconElement.className = 'fas fa-microphone-slash voice-status-icon';
-            }
-            const textElement = element.querySelector('span:not(.voice-status-icon)');
-            if (textElement) {
-                textElement.textContent = 'Voice control muted';
-            }
-        }
-    });
-}
-
-/**
- * Initialize voice recognition system
- */
-function initializeVoiceRecognition() {
-    // Check if browser supports speech recognition
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        console.error('Speech recognition not supported in this browser');
-        showNotification('Voice control not supported in this browser', 'error');
-        return;
-    }
-    
-    // Initialize recognition based on browser support
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    
-    // Configure recognition
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = 'en-US';
-    
-    // Set up event handlers
-    recognition.onstart = function() {
-        console.log('Voice recognition started');
-    };
-    
-    recognition.onresult = function(event) {
-        const result = event.results[event.results.length - 1];
-        const transcript = result[0].transcript.trim().toLowerCase();
-        
-        // Check if this is a final result
-        if (result.isFinal) {
-            console.log('Final transcript:', transcript);
-            
-            // Check for wake word "alpha"
-            if (transcript.includes('alpha')) {
-                handleVoiceCommand(transcript);
-            }
-        }
-    };
-    
-    recognition.onerror = function(event) {
-        console.error('Speech recognition error:', event.error);
-        if (event.error === 'no-speech') {
-            // Restart recognition if no speech detected
-            recognition.stop();
-            setTimeout(() => {
-                if (voiceControlEnabled) {
-                    recognition.start();
-                }
-            }, 500);
-        }
-    };
-    
-    recognition.onend = function() {
-        console.log('Voice recognition ended');
-        // Restart recognition if still enabled
-        if (voiceControlEnabled) {
-            recognition.start();
-        }
-    };
-    
-    // Start recognition
-    try {
-        recognition.start();
-    } catch (e) {
-        console.error('Error starting speech recognition:', e);
-    }
-    
-    // Store reference to recognition object
-    window.alphaWolfRecognition = recognition;
-}
-
-/**
- * Stop voice recognition
- */
-function stopVoiceRecognition() {
-    if (window.alphaWolfRecognition) {
-        try {
-            window.alphaWolfRecognition.stop();
-        } catch (e) {
-            console.error('Error stopping speech recognition:', e);
-        }
+        voiceControlStatus.textContent = "Inactive";
+        voiceControlStatus.classList.add("inactive");
     }
 }
 
-/**
- * Display notification to the user
- */
-function showNotification(message, type = 'info') {
-    // Create notification container if it doesn't exist
-    let notificationContainer = document.getElementById('notification-container');
+// Display temporary feedback to user
+function showFeedback(message, type = 'info') {
+    // Check if feedback container exists, otherwise create it
+    let feedbackContainer = document.getElementById('voice-feedback-container');
     
-    if (!notificationContainer) {
-        notificationContainer = document.createElement('div');
-        notificationContainer.id = 'notification-container';
-        notificationContainer.style.position = 'fixed';
-        notificationContainer.style.top = '20px';
-        notificationContainer.style.right = '20px';
-        notificationContainer.style.zIndex = '9999';
-        document.body.appendChild(notificationContainer);
+    if (!feedbackContainer) {
+        feedbackContainer = document.createElement('div');
+        feedbackContainer.id = 'voice-feedback-container';
+        feedbackContainer.style.position = 'fixed';
+        feedbackContainer.style.bottom = '20px';
+        feedbackContainer.style.left = '20px';
+        feedbackContainer.style.zIndex = '9999';
+        document.body.appendChild(feedbackContainer);
     }
     
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.style.backgroundColor = 'rgba(15, 15, 25, 0.9)';
-    notification.style.border = '1px solid var(--border-color)';
-    notification.style.borderLeft = type === 'success' ? '4px solid #4ade80' : 
-                                    type === 'warning' ? '4px solid #fbbf24' : 
-                                    type === 'error' ? '4px solid #ef4444' : 
-                                    '4px solid #6ea8fe';
-    notification.style.color = '#fff';
-    notification.style.padding = '12px 20px';
-    notification.style.marginBottom = '10px';
-    notification.style.borderRadius = '5px';
-    notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-    notification.style.display = 'flex';
-    notification.style.alignItems = 'center';
-    notification.style.transition = 'all 0.3s ease';
-    notification.style.transform = 'translateX(100%)';
-    notification.style.opacity = '0';
+    // Create feedback element
+    const feedback = document.createElement('div');
+    feedback.classList.add('voice-feedback', `voice-feedback-${type}`);
+    feedback.style.padding = '10px 15px';
+    feedback.style.borderRadius = '5px';
+    feedback.style.marginTop = '10px';
+    feedback.style.backgroundColor = 'rgba(20, 20, 30, 0.9)';
+    feedback.style.color = '#fff';
+    feedback.style.border = `1px solid var(--${type}-color, #4f46e5)`;
+    feedback.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+    feedback.style.fontFamily = "'Share Tech Mono', monospace";
+    feedback.style.transition = 'all 0.3s ease';
+    feedback.style.opacity = '0';
+    feedback.style.transform = 'translateY(20px)';
     
-    // Add icon based on notification type
+    // Create icon based on type
     const icon = document.createElement('i');
-    icon.className = type === 'success' ? 'fas fa-check-circle' : 
-                    type === 'warning' ? 'fas fa-exclamation-triangle' : 
-                    type === 'error' ? 'fas fa-times-circle' : 
-                    'fas fa-info-circle';
-    icon.style.marginRight = '10px';
-    icon.style.fontSize = '1.25rem';
-    icon.style.color = type === 'success' ? '#4ade80' : 
-                      type === 'warning' ? '#fbbf24' : 
-                      type === 'error' ? '#ef4444' : 
-                      '#6ea8fe';
+    switch (type) {
+        case 'success':
+            icon.className = 'fas fa-check-circle';
+            icon.style.color = 'var(--success-color, #10b981)';
+            break;
+        case 'warning':
+            icon.className = 'fas fa-exclamation-triangle';
+            icon.style.color = 'var(--warning-color, #f59e0b)';
+            break;
+        case 'error':
+            icon.className = 'fas fa-times-circle';
+            icon.style.color = 'var(--danger-color, #ef4444)';
+            break;
+        default:
+            icon.className = 'fas fa-info-circle';
+            icon.style.color = 'var(--info-color, #3b82f6)';
+    }
     
-    notification.appendChild(icon);
+    icon.style.marginRight = '8px';
+    feedback.appendChild(icon);
     
-    // Add message
-    const messageElement = document.createElement('span');
-    messageElement.textContent = message;
-    notification.appendChild(messageElement);
+    // Add text
+    const text = document.createTextNode(message);
+    feedback.appendChild(text);
     
-    // Add to container
-    notificationContainer.appendChild(notification);
+    // Add to container and animate in
+    feedbackContainer.appendChild(feedback);
     
-    // Animate in
+    // Trigger animation
     setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-        notification.style.opacity = '1';
+        feedback.style.opacity = '1';
+        feedback.style.transform = 'translateY(0)';
     }, 10);
     
-    // Remove after 5 seconds
+    // Remove after timeout
     setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        notification.style.opacity = '0';
+        feedback.style.opacity = '0';
+        feedback.style.transform = 'translateY(20px)';
         
-        // Remove from DOM after animation
         setTimeout(() => {
-            notificationContainer.removeChild(notification);
+            if (feedback.parentNode === feedbackContainer) {
+                feedbackContainer.removeChild(feedback);
+            }
         }, 300);
-    }, 5000);
+    }, 3000);
 }
+
+// Initialize when DOM content is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("AlphaWolf system initializing...");
+    
+    // Initialize UI components
+    initVoiceControl();
+    
+    console.log("AlphaWolf system initialized");
+});

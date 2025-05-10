@@ -1,52 +1,92 @@
 [
   {
-    "text": "Regular physical activity, even mild movement like walking, can help maintain cognitive function.",
-    "category": "health",
+    "id": 1,
+    "topic_id": 1,
+    "fact": "Alzheimer's disease is the most common cause of dementia, accounting for 60-80% of cases.",
     "source": "Alzheimer's Association"
   },
   {
-    "text": "The Mediterranean diet, rich in fruits, vegetables, and healthy fats, may help reduce the risk of cognitive decline.",
-    "category": "nutrition",
+    "id": 2,
+    "topic_id": 1,
+    "fact": "Early-onset Alzheimer's affects people younger than 65 and represents less than 10% of all people with Alzheimer's.",
     "source": "National Institute on Aging"
   },
   {
-    "text": "Social engagement and regular interaction with others can help maintain cognitive health.",
-    "category": "social",
-    "source": "Dementia Care Central"
+    "id": 3,
+    "topic_id": 2,
+    "fact": "Dementia is not a specific disease but rather a general term for the impaired ability to remember, think, or make decisions.",
+    "source": "CDC"
   },
   {
-    "text": "Mental stimulation through puzzles, reading, and learning new skills can help maintain brain health.",
-    "category": "cognitive",
-    "source": "Alzheimer's Society"
+    "id": 4,
+    "topic_id": 5,
+    "fact": "Regular physical activity, a heart-healthy diet, and social engagement may help reduce the risk of cognitive decline.",
+    "source": "World Health Organization"
   },
   {
-    "text": "Quality sleep is important for brain health and may help clear abnormal proteins associated with Alzheimer's disease.",
-    "category": "health",
-    "source": "Sleep Foundation"
-  },
-  {
-    "text": "Music therapy can improve mood and trigger positive memories in people with dementia.",
-    "category": "therapy",
-    "source": "American Music Therapy Association"
-  },
-  {
-    "text": "Reminiscence therapy using personal items, photos, and familiar songs can help maintain identity and improve mood.",
-    "category": "therapy",
-    "source": "Dementia UK"
-  },
-  {
-    "text": "Hydration is important for brain function. Dehydration can worsen confusion and cognitive symptoms.",
-    "category": "nutrition",
+    "id": 5,
+    "topic_id": 4,
+    "fact": "While there is no cure for Alzheimer's disease, there are medications that can temporarily improve or stabilize symptoms.",
     "source": "Mayo Clinic"
   },
   {
-    "text": "Creating a daily routine can help reduce anxiety and confusion for people with dementia.",
-    "category": "daily_living",
+    "id": 6,
+    "topic_id": 3,
+    "fact": "More than 11 million Americans provide unpaid care for people with Alzheimer's or other dementias.",
     "source": "Alzheimer's Association"
   },
   {
-    "text": "Pet therapy can help reduce agitation and improve social interaction in people with dementia.",
-    "category": "therapy",
-    "source": "National Center for Biotechnology Information"
+    "id": 7,
+    "topic_id": 7,
+    "fact": "Establishing a regular daily routine can help reduce confusion and anxiety in people with dementia.",
+    "source": "Dementia Care Central"
+  },
+  {
+    "id": 8,
+    "topic_id": 8,
+    "fact": "GPS tracking devices can help caregivers monitor the location of someone with dementia who might wander.",
+    "source": "National Institute on Aging"
+  },
+  {
+    "id": 9,
+    "topic_id": 9,
+    "fact": "Six out of 10 people with dementia will wander at some point during their disease progression.",
+    "source": "Alzheimer's Association"
+  },
+  {
+    "id": 10,
+    "topic_id": 10,
+    "fact": "Using simple, clear language and maintaining eye contact can improve communication with someone who has dementia.",
+    "source": "American Speech-Language-Hearing Association"
+  },
+  {
+    "id": 11,
+    "topic_id": 6,
+    "fact": "Scientists have identified several distinct subtypes of Alzheimer's disease, which may require different treatment approaches.",
+    "source": "National Institute on Aging"
+  },
+  {
+    "id": 12,
+    "topic_id": 1,
+    "fact": "The brain changes of Alzheimer's may begin 20 years or more before symptoms appear.",
+    "source": "Alzheimer's Association"
+  },
+  {
+    "id": 13,
+    "topic_id": 5,
+    "fact": "Higher levels of education appear to be somewhat protective against Alzheimer's, possibly by building cognitive reserve.",
+    "source": "Journal of Alzheimer's Disease"
+  },
+  {
+    "id": 14,
+    "topic_id": 8,
+    "fact": "Virtual reality programs are being used to help train caregivers by simulating the experience of having dementia.",
+    "source": "Dementia Research Centre"
+  },
+  {
+    "id": 15,
+    "topic_id": 7,
+    "fact": "Music therapy can help reduce agitation and improve mood in people with dementia, even in advanced stages.",
+    "source": "Journal of Music Therapy"
   }
 ]

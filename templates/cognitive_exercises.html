@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+
+{% block title %}Cognitive Exercises - AlphaWolf{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="cyber-heading cyber-title-gradient">Cognitive Exercises</h1>
+        <div>
+            <a href="{{ url_for('home') }}" class="btn cyber-btn-outline">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
+    
+    <div class="processor-bar mb-4"></div>
+    
+    <!-- Filter Controls -->
+    <div class="cyber-card mb-4">
+        <div class="cyber-card-header">
+            <h5 class="mb-0">Filter Exercises</h5>
+        </div>
+        <div class="cyber-card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <label class="cyber-label">Difficulty</label>
+                    <select class="form-select cyber-input">
+                        <option value="all">All Difficulties</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <label class="cyber-label">Category</label>
+                    <select class="form-select cyber-input">
+                        <option value="all">All Categories</option>
+                        <option value="memory">Memory</option>
+                        <option value="attention">Attention</option>
+                        <option value="problem-solving">Problem Solving</option>
+                        <option value="language">Language</option>
+                        <option value="visual">Visual Processing</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="cyber-label">Duration</label>
+                    <select class="form-select cyber-input">
+                        <option value="all">All Durations</option>
+                        <option value="short">Short (< 5 min)</option>
+                        <option value="medium">Medium (5-15 min)</option>
+                        <option value="long">Long (> 15 min)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Exercise Grid -->
+    <div class="row g-4">
+        <!-- Memory Exercise Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="exercise-card p-0 h-100 cyber-hover">
+                <div class="position-relative">
+                    <div class="bg-primary bg-gradient py-4 text-center">
+                        <i class="fas fa-brain fa-3x text-white"></i>
+                    </div>
+                    <span class="exercise-difficulty difficulty-easy">Easy</span>
+                </div>
+                <div class="p-3">
+                    <h4>Pattern Memory</h4>
+                    <p class="text-muted mb-3">Remember and recreate patterns of increasing complexity.</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="cyber-badge"><i class="far fa-clock me-1"></i> 5 min</span>
+                        <span class="cyber-badge cyber-badge-primary"><i class="fas fa-tag me-1"></i> Memory</span>
+                    </div>
+                    <div class="cyber-progress mb-3">
+                        <div class="progress-bar progress-bar-animated" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-grid">
+                        <a href="#" class="btn cyber-btn">
+                            <i class="fas fa-play me-2"></i>Start Exercise
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Attention Exercise Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="exercise-card p-0 h-100 cyber-hover">
+                <div class="position-relative">
+                    <div class="bg-info bg-gradient py-4 text-center">
+                        <i class="fas fa-eye fa-3x text-white"></i>
+                    </div>
+                    <span class="exercise-difficulty difficulty-medium">Medium</span>
+                </div>
+                <div class="p-3">
+                    <h4>Focus Finder</h4>
+                    <p class="text-muted mb-3">Identify specific items among distractions with increasing difficulty.</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="cyber-badge"><i class="far fa-clock me-1"></i> 10 min</span>
+                        <span class="cyber-badge cyber-badge-info"><i class="fas fa-tag me-1"></i> Attention</span>
+                    </div>
+                    <div class="cyber-progress mb-3">
+                        <div class="progress-bar progress-bar-animated" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-grid">
+                        <a href="#" class="btn cyber-btn">
+                            <i class="fas fa-play me-2"></i>Start Exercise
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Problem Solving Exercise Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="exercise-card p-0 h-100 cyber-hover">
+                <div class="position-relative">
+                    <div class="bg-warning bg-gradient py-4 text-center">
+                        <i class="fas fa-puzzle-piece fa-3x text-white"></i>
+                    </div>
+                    <span class="exercise-difficulty difficulty-hard">Hard</span>
+                </div>
+                <div class="p-3">
+                    <h4>Logic Puzzles</h4>
+                    <p class="text-muted mb-3">Solve a series of interactive logic puzzles with increasing complexity.</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="cyber-badge"><i class="far fa-clock me-1"></i> 15 min</span>
+                        <span class="cyber-badge cyber-badge-warning"><i class="fas fa-tag me-1"></i> Problem Solving</span>
+                    </div>
+                    <div class="cyber-progress mb-3">
+                        <div class="progress-bar progress-bar-animated" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-grid">
+                        <a href="#" class="btn cyber-btn">
+                            <i class="fas fa-play me-2"></i>Start Exercise
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Language Exercise Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="exercise-card p-0 h-100 cyber-hover">
+                <div class="position-relative">
+                    <div class="bg-success bg-gradient py-4 text-center">
+                        <i class="fas fa-comment-alt fa-3x text-white"></i>
+                    </div>
+                    <span class="exercise-difficulty difficulty-medium">Medium</span>
+                </div>
+                <div class="p-3">
+                    <h4>Word Association</h4>
+                    <p class="text-muted mb-3">Connect related words and build semantic networks to strengthen language recall.</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="cyber-badge"><i class="far fa-clock me-1"></i> 8 min</span>
+                        <span class="cyber-badge cyber-badge-success"><i class="fas fa-tag me-1"></i> Language</span>
+                    </div>
+                    <div class="cyber-progress mb-3">
+                        <div class="progress-bar progress-bar-animated" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-grid">
+                        <a href="#" class="btn cyber-btn">
+                            <i class="fas fa-play me-2"></i>Start Exercise
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Visual Exercise Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="exercise-card p-0 h-100 cyber-hover">
+                <div class="position-relative">
+                    <div class="bg-danger bg-gradient py-4 text-center">
+                        <i class="fas fa-image fa-3x text-white"></i>
+                    </div>
+                    <span class="exercise-difficulty difficulty-easy">Easy</span>
+                </div>
+                <div class="p-3">
+                    <h4>Visual Memory</h4>
+                    <p class="text-muted mb-3">Observe and recall images to strengthen visual memory and processing.</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="cyber-badge"><i class="far fa-clock me-1"></i> 7 min</span>
+                        <span class="cyber-badge cyber-badge-danger"><i class="fas fa-tag me-1"></i> Visual</span>
+                    </div>
+                    <div class="cyber-progress mb-3">
+                        <div class="progress-bar progress-bar-animated" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-grid">
+                        <a href="#" class="btn cyber-btn">
+                            <i class="fas fa-play me-2"></i>Start Exercise
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Spatial Exercise Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="exercise-card p-0 h-100 cyber-hover">
+                <div class="position-relative">
+                    <div class="bg-primary bg-gradient py-4 text-center">
+                        <i class="fas fa-cube fa-3x text-white"></i>
+                    </div>
+                    <span class="exercise-difficulty difficulty-hard">Hard</span>
+                </div>
+                <div class="p-3">
+                    <h4>Spatial Orientation</h4>
+                    <p class="text-muted mb-3">Navigate virtual environments to improve spatial awareness and orientation.</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="cyber-badge"><i class="far fa-clock me-1"></i> 12 min</span>
+                        <span class="cyber-badge cyber-badge-primary"><i class="fas fa-tag me-1"></i> Spatial</span>
+                    </div>
+                    <div class="cyber-progress mb-3">
+                        <div class="progress-bar progress-bar-animated" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-grid">
+                        <a href="#" class="btn cyber-btn">
+                            <i class="fas fa-play me-2"></i>Start Exercise
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Progress Section -->
+    <div class="cyber-card mt-5">
+        <div class="cyber-card-header">
+            <h5 class="mb-0">Your Progress</h5>
+        </div>
+        <div class="cyber-card-body">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="cyber-title-gradient" style="font-size: 3.5rem; font-weight: bold;">78%</div>
+                        <p class="text-muted">Weekly Completion Rate</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="stat-value">12</div>
+                        <p class="text-muted">Exercises Completed</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="d-flex justify-content-center mb-2">
+                            <span class="me-2 cyber-badge cyber-badge-success">
+                                <i class="fas fa-arrow-up me-1"></i>15%
+                            </span>
+                            <span class="cyber-text">Memory Score</span>
+                        </div>
+                        <div class="d-flex justify-content-center mb-2">
+                            <span class="me-2 cyber-badge cyber-badge-warning">
+                                <i class="fas fa-arrow-up me-1"></i>7%
+                            </span>
+                            <span class="cyber-text">Attention Score</span>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <span class="me-2 cyber-badge cyber-badge-success">
+                                <i class="fas fa-arrow-up me-1"></i>12%
+                            </span>
+                            <span class="cyber-text">Language Score</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

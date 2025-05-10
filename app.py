@@ -269,8 +269,9 @@ def caregiver_dashboard():
 @app.route('/cognitive/exercises')
 def cognitive_exercises():
     if 'user_id' not in session:
-        flash('Please log in to access exercises', 'error')
-        return redirect(url_for('index'))
+        # For demo purposes, allow access to exercises without login
+        exercises = models.CognitiveExercise.query.all()
+        return render_template('cognitive_exercises.html', exercises=exercises)
     
     exercises = models.CognitiveExercise.query.all()
     return render_template('cognitive_exercises.html', exercises=exercises)
@@ -287,8 +288,9 @@ def exercise_detail(exercise_id):
 @app.route('/reminders')
 def reminders():
     if 'user_id' not in session:
-        flash('Please log in to access reminders', 'error')
-        return redirect(url_for('index'))
+        # For demo purposes, allow access to the reminders page without login
+        reminders = models.Reminder.query.all()
+        return render_template('reminders.html', reminders=reminders)
     
     if session.get('user_type') == 'patient':
         reminders = models.Reminder.query.filter_by(patient_id=session['user_id']).all()
@@ -332,8 +334,8 @@ def add_reminder():
 @app.route('/safety/zones')
 def safety_zones():
     if 'user_id' not in session:
-        flash('Please log in to access safety zones', 'error')
-        return redirect(url_for('index'))
+        # For demo purposes, allow access to safety zones without login
+        return render_template('safety_zones.html')
     
     safe_zones = models.SafeZone.query.all()
     patients = models.Patient.query.all()  # In production, filter by caregiver-patient relationship

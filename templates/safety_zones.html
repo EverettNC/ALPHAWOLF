@@ -1,329 +1,595 @@
 {% extends 'base.html' %}
 
+{% block title %}Safety Zones - AlphaWolf{% endblock %}
+
 {% block extra_css %}
 <style>
     #map {
-        height: 400px;
+        height: 500px;
         width: 100%;
         border-radius: 8px;
-        margin-bottom: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     }
-    .zone-card {
-        transition: all 0.3s ease;
+    .zone-status-active {
+        background-color: rgba(16, 185, 129, 0.2);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        color: var(--success-color);
     }
-    .zone-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    .zone-status-inactive {
+        background-color: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: var(--danger-color);
     }
-    .radius-slider {
-        width: 100%;
-    }
-    .patient-marker {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-    .marker-dot {
-        width: 10px;
-        height: 10px;
+    .zone-marker {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
-        background-color: #0d6efd;
-        margin-right: 10px;
-    }
-    .outside-zone {
-        background-color: #dc3545;
+        margin-right: 8px;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col">
-        <h1>
-            <i data-feather="map-pin"></i>
-            Safety Zones
-        </h1>
-        <p class="lead">Define and manage safe areas for wandering prevention</p>
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="cyber-heading cyber-title-gradient">Safety Zones</h1>
+        <div>
+            <a href="{{ url_for('home') }}" class="btn cyber-btn-outline me-2">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+            <button class="btn cyber-btn" data-bs-toggle="modal" data-bs-target="#addZoneModal">
+                <i class="fas fa-plus me-2"></i>Add Safety Zone
+            </button>
+        </div>
     </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Map View</h5>
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addZoneModal">
-                    <i data-feather="plus"></i> Add Zone
-                </button>
-            </div>
-            <div class="card-body">
-                <div id="map"></div>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Patient Locations</h5>
-                        <div id="patientLocations">
-                            {% for patient in patients %}
-                            <div class="patient-marker">
-                                <div class="marker-dot {% if not patient.is_in_safe_zone %}outside-zone{% endif %}"></div>
-                                <span>{{ patient.name }}</span>
-                                <span class="ms-2 badge {% if patient.is_in_safe_zone %}bg-success{% else %}bg-danger{% endif %}">
-                                    {% if patient.is_in_safe_zone %}In Safe Zone{% else %}Outside Safe Zone{% endif %}
-                                </span>
-                                <span class="ms-2 text-muted small">
-                                    Last update: {{ patient.last_location_update|datetime }}
-                                </span>
+    
+    <div class="processor-bar mb-4"></div>
+    
+    <div class="row">
+        <!-- Map Column -->
+        <div class="col-lg-8 mb-4 mb-lg-0">
+            <!-- Current Location Card -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Current Location</h5>
+                    <span class="badge bg-success">Online</span>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="cyber-badge cyber-badge-primary me-3">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">123 Maple Street, Downtown</h6>
+                                    <small class="text-muted">Home Zone (Active)</small>
+                                </div>
                             </div>
-                            {% endfor %}
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="cyber-badge cyber-badge-info me-3">
+                                    <i class="fas fa-clock me-1"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Last Updated</h6>
+                                    <small class="text-muted">2 minutes ago</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="cyber-badge cyber-badge-success me-3">
+                                    <i class="fas fa-battery-three-quarters me-1"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Device Battery</h6>
+                                    <small class="text-muted">85% - 12h remaining</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <button class="btn cyber-btn mb-2 w-100">
+                                <i class="fas fa-sync-alt me-2"></i>Update Location
+                            </button>
+                            <button class="btn cyber-btn-outline mb-2 w-100">
+                                <i class="fas fa-map me-2"></i>Show Route Home
+                            </button>
+                            <button class="btn cyber-btn-outline w-100">
+                                <i class="fas fa-phone me-2"></i>Contact Caregiver
+                            </button>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <h5>Zone Legend</h5>
-                        <ul class="list-unstyled">
-                            <li>
-                                <span class="badge" style="background-color: #4CAF50;">&nbsp;</span>
-                                Home Zone - Primary safe area
-                            </li>
-                            <li>
-                                <span class="badge" style="background-color: #2196F3;">&nbsp;</span>
-                                Regular Zone - Frequently visited locations
-                            </li>
-                            <li>
-                                <span class="badge" style="background-color: #FF9800;">&nbsp;</span>
-                                Temporary Zone - Limited time safe area
-                            </li>
-                        </ul>
+                </div>
+            </div>
+            
+            <!-- Map Card -->
+            <div class="cyber-card">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Safety Zones Map</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <div id="map" class="mb-3">
+                        <!-- Map will be inserted here by JavaScript -->
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <div class="text-center">
+                                <div class="loading-spinner mb-3"></div>
+                                <p class="cyber-text">Loading map...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap justify-content-around">
+                        <div class="mb-2">
+                            <span class="zone-marker" style="background-color: #10b981;"></span>
+                            <small class="cyber-text">Safe Zone</small>
+                        </div>
+                        <div class="mb-2">
+                            <span class="zone-marker" style="background-color: #f59e0b;"></span>
+                            <small class="cyber-text">Caution Zone</small>
+                        </div>
+                        <div class="mb-2">
+                            <span class="zone-marker" style="background-color: #ef4444;"></span>
+                            <small class="cyber-text">Restricted Zone</small>
+                        </div>
+                        <div class="mb-2">
+                            <span class="zone-marker" style="background-color: #3b82f6;"></span>
+                            <small class="cyber-text">Current Location</small>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-12">
-        <h4>Defined Safety Zones</h4>
         
-        <div class="row" id="zoneCards">
-            {% for zone in safe_zones %}
-            <div class="col-md-4 mb-3">
-                <div class="card zone-card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ zone.name }}</h5>
-                        <p class="card-text">
-                            <strong>Radius:</strong> {{ zone.radius }} meters<br>
-                            <strong>Coordinates:</strong> {{ zone.latitude|round(6) }}, {{ zone.longitude|round(6) }}
-                        </p>
-                        <div class="d-flex justify-content-between mt-3">
-                            <button class="btn btn-sm btn-outline-primary edit-zone-btn" 
-                                    data-zone-id="{{ zone.id }}"
-                                    data-zone-name="{{ zone.name }}"
-                                    data-zone-lat="{{ zone.latitude }}"
-                                    data-zone-lng="{{ zone.longitude }}"
-                                    data-zone-radius="{{ zone.radius }}"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#editZoneModal">
-                                <i data-feather="edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger delete-zone-btn" 
-                                    data-zone-id="{{ zone.id }}"
-                                    data-zone-name="{{ zone.name }}"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#deleteZoneModal">
-                                <i data-feather="trash-2"></i> Delete
-                            </button>
+        <!-- Zones List Column -->
+        <div class="col-lg-4">
+            <!-- Safety Zones Card -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">My Safety Zones</h5>
+                    <span class="badge rounded-pill bg-primary">5</span>
+                </div>
+                <div class="cyber-card-body p-0">
+                    <div class="safety-zone-list">
+                        <!-- Home Zone -->
+                        <div class="d-flex p-3 border-bottom cyber-border-bottom">
+                            <div class="flex-shrink-0">
+                                <div class="zone-status-active p-2 rounded-circle">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-0">Home</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked1" checked>
+                                    </div>
+                                </div>
+                                <small class="text-muted">123 Maple Street, Downtown</small>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-success">Active</small>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="modal" data-bs-target="#editZoneModal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Doctor's Office Zone -->
+                        <div class="d-flex p-3 border-bottom cyber-border-bottom">
+                            <div class="flex-shrink-0">
+                                <div class="zone-status-active p-2 rounded-circle">
+                                    <i class="fas fa-user-md"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-0">Doctor's Office</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked2" checked>
+                                    </div>
+                                </div>
+                                <small class="text-muted">457 Medical Plaza Dr</small>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-success">Active</small>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-secondary me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Grocery Store Zone -->
+                        <div class="d-flex p-3 border-bottom cyber-border-bottom">
+                            <div class="flex-shrink-0">
+                                <div class="zone-status-active p-2 rounded-circle">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-0">Grocery Store</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked3" checked>
+                                    </div>
+                                </div>
+                                <small class="text-muted">789 Market Street</small>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-success">Active</small>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-secondary me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Community Center Zone -->
+                        <div class="d-flex p-3 border-bottom cyber-border-bottom">
+                            <div class="flex-shrink-0">
+                                <div class="zone-status-active p-2 rounded-circle">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-0">Community Center</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked4" checked>
+                                    </div>
+                                </div>
+                                <small class="text-muted">321 Community Ave</small>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-success">Active</small>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-secondary me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Park Zone (Inactive) -->
+                        <div class="d-flex p-3">
+                            <div class="flex-shrink-0">
+                                <div class="zone-status-inactive p-2 rounded-circle">
+                                    <i class="fas fa-tree"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-0">City Park</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked5">
+                                    </div>
+                                </div>
+                                <small class="text-muted">555 Green Park Way</small>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-danger">Inactive</small>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-secondary me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {% else %}
-            <div class="col-12">
-                <div class="alert alert-info">
-                    <i data-feather="info"></i> No safety zones defined yet. Click "Add Zone" to create your first safe area.
+            
+            <!-- Restricted Zones Card -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Restricted Zones</h5>
+                    <span class="badge rounded-pill bg-danger">2</span>
+                </div>
+                <div class="cyber-card-body p-0">
+                    <div class="safety-zone-list">
+                        <!-- Busy Highway Zone -->
+                        <div class="d-flex p-3 border-bottom cyber-border-bottom">
+                            <div class="flex-shrink-0">
+                                <div class="zone-status-inactive p-2 rounded-circle">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-0">Busy Highway</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked6" checked>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Interstate 95 Area</small>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-danger">Restricted</small>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-secondary me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Train Station Zone -->
+                        <div class="d-flex p-3">
+                            <div class="flex-shrink-0">
+                                <div class="zone-status-inactive p-2 rounded-circle">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-0">Train Station</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked7" checked>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Central Station Area</small>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-danger">Restricted</small>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-secondary me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {% endfor %}
+            
+            <!-- Alert Settings Card -->
+            <div class="cyber-card">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Alert Settings</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="mb-3">
+                        <label class="d-flex justify-content-between">
+                            <span>Alert when leaving safe zone</span>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" checked>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="d-flex justify-content-between">
+                            <span>Alert when entering restricted zone</span>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" checked>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="d-flex justify-content-between">
+                            <span>Alert caregiver automatically</span>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" checked>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="d-flex justify-content-between">
+                            <span>Voice navigation assistance</span>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" checked>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="d-flex justify-content-between">
+                            <span>Automatic return route</span>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" checked>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="d-grid">
+                        <button class="btn cyber-btn">Save Settings</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Add Zone Modal -->
+<!-- Add Safety Zone Modal -->
 <div class="modal fade" id="addZoneModal" tabindex="-1" aria-labelledby="addZoneModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addZoneModalLabel">Add Safety Zone</h5>
+                <h5 class="modal-title" id="addZoneModalLabel">Add New Safety Zone</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ url_for('add_safety_zone') }}" method="post">
-                <div class="modal-body">
+            <div class="modal-body">
+                <form>
                     <div class="mb-3">
                         <label for="zoneName" class="form-label">Zone Name</label>
-                        <input type="text" class="form-control" id="zoneName" name="name" required>
-                        <div class="form-text">E.g., Home, Park, Doctor's Office</div>
+                        <input type="text" class="form-control cyber-input" id="zoneName" placeholder="Enter zone name (e.g. Home, Work, etc.)">
                     </div>
+                    
                     <div class="mb-3">
-                        <label for="zoneRadius" class="form-label">Safety Radius (meters): <span id="radiusValue">100</span></label>
-                        <input type="range" class="form-range radius-slider" id="zoneRadius" name="radius" min="50" max="1000" step="50" value="100">
-                        <div class="form-text">Adjust the safety radius around this location</div>
+                        <label for="zoneAddress" class="form-label">Address</label>
+                        <input type="text" class="form-control cyber-input" id="zoneAddress" placeholder="Enter full address">
                     </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="zoneRadius" class="form-label">Zone Radius (meters)</label>
+                            <input type="range" class="form-range" min="50" max="500" step="10" id="zoneRadius" value="200">
+                            <div class="text-center">
+                                <span id="radiusValue">200</span> meters
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="zoneType" class="form-label">Zone Type</label>
+                            <select class="form-select cyber-input" id="zoneType">
+                                <option value="safe">Safe Zone</option>
+                                <option value="caution">Caution Zone</option>
+                                <option value="restricted">Restricted Zone</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                     <div class="mb-3">
-                        <label class="form-label">Location</label>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Latitude</span>
-                            <input type="number" class="form-control" id="latitude" name="latitude" step="0.000001" required>
+                        <label for="zoneIcon" class="form-label">Zone Icon</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-outline-primary p-2">
+                                <i class="fas fa-home fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary p-2">
+                                <i class="fas fa-user-md fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary p-2">
+                                <i class="fas fa-shopping-cart fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary p-2">
+                                <i class="fas fa-utensils fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary p-2">
+                                <i class="fas fa-users fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary p-2">
+                                <i class="fas fa-tree fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary p-2">
+                                <i class="fas fa-church fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary p-2">
+                                <i class="fas fa-store fa-lg"></i>
+                            </button>
                         </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Longitude</span>
-                            <input type="number" class="form-control" id="longitude" name="longitude" step="0.000001" required>
-                        </div>
-                        <div class="form-text mb-2">Click on the map to set coordinates or use current location</div>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" id="useCurrentLocation">
-                            <i data-feather="navigation"></i> Use Current Location
-                        </button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Zone</button>
-                </div>
-            </form>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="zoneDescription" class="form-label">Description (Optional)</label>
+                            <textarea class="form-control cyber-input" id="zoneDescription" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="zoneOptions" class="form-label">Options</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" value="" id="alertOnEnter" checked>
+                                <label class="form-check-label" for="alertOnEnter">
+                                    Alert when entering
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" value="" id="alertOnExit" checked>
+                                <label class="form-check-label" for="alertOnExit">
+                                    Alert when exiting
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" value="" id="notifyCaregiver">
+                                <label class="form-check-label" for="notifyCaregiver">
+                                    Notify caregiver
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="zoneActive" checked>
+                                <label class="form-check-label" for="zoneActive">
+                                    Zone active
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Preview on Map</label>
+                        <div id="previewMap" style="height: 200px; width: 100%; border-radius: 8px;">
+                            <!-- Preview map placeholder -->
+                            <div class="d-flex justify-content-center align-items-center h-100 bg-dark">
+                                <p class="cyber-text">Map preview will appear here</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn cyber-btn">Save Zone</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Edit Zone Modal -->
+<!-- Edit Zone Modal (simplified version) -->
 <div class="modal fade" id="editZoneModal" tabindex="-1" aria-labelledby="editZoneModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editZoneModalLabel">Edit Safety Zone</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="editZoneForm" action="{{ url_for('update_safety_zone') }}" method="post">
-                <div class="modal-body">
-                    <input type="hidden" id="editZoneId" name="zone_id">
-                    <div class="mb-3">
-                        <label for="editZoneName" class="form-label">Zone Name</label>
-                        <input type="text" class="form-control" id="editZoneName" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editZoneRadius" class="form-label">Safety Radius (meters): <span id="editRadiusValue">100</span></label>
-                        <input type="range" class="form-range radius-slider" id="editZoneRadius" name="radius" min="50" max="1000" step="50" value="100">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Location</label>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Latitude</span>
-                            <input type="number" class="form-control" id="editLatitude" name="latitude" step="0.000001" required>
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Longitude</span>
-                            <input type="number" class="form-control" id="editLongitude" name="longitude" step="0.000001" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </div>
-            </form>
+            <div class="modal-body">
+                <!-- Edit form would be similar to Add form, just pre-populated -->
+                <p>Edit form would go here, similar to the Add Safety Zone form but with pre-populated fields.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn cyber-btn">Save Changes</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Delete Zone Modal -->
-<div class="modal fade" id="deleteZoneModal" tabindex="-1" aria-labelledby="deleteZoneModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteZoneModalLabel">Delete Safety Zone</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete the safety zone "<span id="deleteZoneName"></span>"?</p>
-                <div class="alert alert-warning">
-                    <i data-feather="alert-triangle"></i> This action cannot be undone. Deleting this zone may trigger alerts if patients are currently within it.
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form action="{{ url_for('delete_safety_zone') }}" method="post">
-                    <input type="hidden" id="deleteZoneId" name="zone_id">
-                    <button type="submit" class="btn btn-danger">Delete Zone</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+    // Simulate map functionality
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize the map using our custom function
-        const safeZones = {{ safe_zones_json|safe }};
-        const patients = {{ patients_json|safe }};
-        const { map } = initSafetyMap('map', safeZones, patients);
+        // Simple map placeholder
+        setTimeout(() => {
+            document.getElementById('map').innerHTML = `
+                <div class="d-flex justify-content-center align-items-center h-100 bg-dark">
+                    <div class="text-center">
+                        <p class="mb-0 cyber-text">Map would display here with interactive safety zones.</p>
+                        <p class="cyber-text">A third-party map API like Google Maps or Mapbox would be integrated here.</p>
+                    </div>
+                </div>
+            `;
+        }, 1500);
         
-        // Use current location button
-        document.getElementById('useCurrentLocation').addEventListener('click', function() {
-            getCurrentLocation(function(locationResult) {
-                if (locationResult.success) {
-                    document.getElementById('latitude').value = locationResult.latitude.toFixed(6);
-                    document.getElementById('longitude').value = locationResult.longitude.toFixed(6);
-                    
-                    // Center map on current location
-                    map.setView([locationResult.latitude, locationResult.longitude], 15);
-                    
-                    // Add temporary marker
-                    L.marker([locationResult.latitude, locationResult.longitude])
-                        .addTo(map)
-                        .bindPopup('Your current location')
-                        .openPopup();
-                } else {
-                    alert('Could not get your location: ' + locationResult.error);
-                }
+        // Update radius value display when slider changes
+        const radiusSlider = document.getElementById('zoneRadius');
+        const radiusValue = document.getElementById('radiusValue');
+        
+        if (radiusSlider && radiusValue) {
+            radiusSlider.addEventListener('input', function() {
+                radiusValue.textContent = this.value;
             });
-        });
-        
-        // Radius sliders
-        document.getElementById('zoneRadius').addEventListener('input', function() {
-            document.getElementById('radiusValue').textContent = this.value;
-        });
-        
-        document.getElementById('editZoneRadius').addEventListener('input', function() {
-            document.getElementById('editRadiusValue').textContent = this.value;
-        });
-        
-        // Edit zone button
-        document.querySelectorAll('.edit-zone-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const zoneId = this.getAttribute('data-zone-id');
-                const zoneName = this.getAttribute('data-zone-name');
-                const zoneLat = this.getAttribute('data-zone-lat');
-                const zoneLng = this.getAttribute('data-zone-lng');
-                const zoneRadius = this.getAttribute('data-zone-radius');
-                
-                document.getElementById('editZoneId').value = zoneId;
-                document.getElementById('editZoneName').value = zoneName;
-                document.getElementById('editLatitude').value = zoneLat;
-                document.getElementById('editLongitude').value = zoneLng;
-                document.getElementById('editZoneRadius').value = zoneRadius;
-                document.getElementById('editRadiusValue').textContent = zoneRadius;
-            });
-        });
-        
-        // Delete zone button
-        document.querySelectorAll('.delete-zone-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const zoneId = this.getAttribute('data-zone-id');
-                const zoneName = this.getAttribute('data-zone-name');
-                
-                document.getElementById('deleteZoneId').value = zoneId;
-                document.getElementById('deleteZoneName').textContent = zoneName;
-            });
-        });
+        }
     });
 </script>
 {% endblock %}

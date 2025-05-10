@@ -1,0 +1,566 @@
+{% extends 'base.html' %}
+
+{% block title %}Voice Settings - AlphaWolf{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="cyber-heading cyber-title-gradient">Voice Settings</h1>
+        <div>
+            <a href="{{ url_for('home') }}" class="btn cyber-btn-outline">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
+    
+    <div class="processor-bar mb-4"></div>
+    
+    <div class="row">
+        <!-- Voice Control Settings -->
+        <div class="col-lg-8">
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Voice Control</h5>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="voiceControlToggle" checked>
+                        <label class="form-check-label" for="voiceControlToggle">Enabled</label>
+                    </div>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="mb-4">
+                        <label for="wakewordSensitivity" class="form-label d-flex justify-content-between">
+                            <span>Wake Word Sensitivity</span>
+                            <span class="badge bg-primary" id="sensitivityValue">75%</span>
+                        </label>
+                        <input type="range" class="form-range" min="0" max="100" step="5" id="wakewordSensitivity" value="75">
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Less Sensitive</small>
+                            <small class="text-muted">More Sensitive</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="voiceSpeed" class="form-label d-flex justify-content-between">
+                            <span>Voice Response Speed</span>
+                            <span class="badge bg-primary" id="speedValue">Normal</span>
+                        </label>
+                        <input type="range" class="form-range" min="0" max="4" step="1" id="voiceSpeed" value="2">
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Slower</small>
+                            <small class="text-muted">Faster</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="voiceVolume" class="form-label d-flex justify-content-between">
+                            <span>Voice Volume</span>
+                            <span class="badge bg-primary" id="volumeValue">80%</span>
+                        </label>
+                        <input type="range" class="form-range" min="0" max="100" step="5" id="voiceVolume" value="80">
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Quieter</small>
+                            <small class="text-muted">Louder</small>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="voiceGender" class="form-label">Voice Type</label>
+                            <select class="form-select cyber-input" id="voiceGender">
+                                <option value="female">Female</option>
+                                <option value="male">Male</option>
+                                <option value="neutral" selected>Gender Neutral</option>
+                                <option value="custom">Custom Voice</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="voiceAccent" class="form-label">Voice Accent</label>
+                            <select class="form-select cyber-input" id="voiceAccent">
+                                <option value="american" selected>American</option>
+                                <option value="british">British</option>
+                                <option value="australian">Australian</option>
+                                <option value="indian">Indian</option>
+                                <option value="spanish">Spanish</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Test Voice</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control cyber-input" id="testVoiceInput" placeholder="Enter text to test voice" value="Hello, I am AlphaWolf, your cognitive assistant.">
+                            <button class="btn cyber-btn" id="testVoiceBtn">
+                                <i class="fas fa-play me-2"></i>Test
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button class="btn cyber-btn" id="saveVoiceSettingsBtn">
+                            <i class="fas fa-save me-2"></i>Save Voice Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Voice Commands</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <h6>Available Voice Commands</h6>
+                                <p class="text-muted small">These are the commands AlphaWolf responds to.</p>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm cyber-btn-outline" data-bs-toggle="modal" data-bs-target="#addCommandModal">
+                                    <i class="fas fa-plus me-1"></i>Add Custom Command
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Command</th>
+                                        <th>Action</th>
+                                        <th width="100">Status</th>
+                                        <th width="100">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-primary me-2">System</span>"Alpha Wolf"</td>
+                                        <td>Wake word to activate voice recognition</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-primary me-2">System</span>"Go to Home"</td>
+                                        <td>Navigate to home page</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-primary me-2">System</span>"Start Exercises"</td>
+                                        <td>Navigate to cognitive exercises</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-primary me-2">System</span>"Show Reminders"</td>
+                                        <td>Navigate to reminders page</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-primary me-2">System</span>"Show Safety Zones"</td>
+                                        <td>Navigate to safety zones page</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-primary me-2">System</span>"Volume Up"</td>
+                                        <td>Increase system volume</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-primary me-2">System</span>"Volume Down"</td>
+                                        <td>Decrease system volume</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-info me-2">Custom</span>"Where am I?"</td>
+                                        <td>Show current location information</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-info me-2">Custom</span>"Call my caregiver"</td>
+                                        <td>Initiate call to primary caregiver</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-info me-2">Custom</span>"What time is my appointment?"</td>
+                                        <td>Check today's appointment schedule</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Voice Training & Sidebar -->
+        <div class="col-lg-4">
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Voice Recognition Training</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="text-center mb-4">
+                        <div class="cyber-badge-large cyber-badge-primary mb-3">
+                            <i class="fas fa-microphone-alt fa-2x"></i>
+                        </div>
+                        <h6>Recognition Accuracy</h6>
+                        <div class="cyber-progress mb-2">
+                            <div class="progress-bar progress-bar-animated" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <p class="text-muted small">Improve accuracy by training your voice profile.</p>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button class="btn cyber-btn-outline">
+                            <i class="fas fa-brain me-2"></i>Start Voice Training
+                        </button>
+                        <button class="btn cyber-btn-outline">
+                            <i class="fas fa-sync-alt me-2"></i>Recalibrate Microphone
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Voice Access Settings</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="voiceAccessToggle" checked>
+                        <label class="form-check-label" for="voiceAccessToggle">
+                            <strong>Voice Control Accessibility</strong>
+                        </label>
+                        <p class="text-muted small">Enable enhanced voice control for accessibility.</p>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="wakewordOnlyToggle" checked>
+                        <label class="form-check-label" for="wakewordOnlyToggle">
+                            <strong>Require Wake Word</strong>
+                        </label>
+                        <p class="text-muted small">Only respond to commands after the wake word.</p>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="voiceFeedbackToggle" checked>
+                        <label class="form-check-label" for="voiceFeedbackToggle">
+                            <strong>Voice Command Feedback</strong>
+                        </label>
+                        <p class="text-muted small">Provide audible confirmation of recognized commands.</p>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="continuousListeningToggle">
+                        <label class="form-check-label" for="continuousListeningToggle">
+                            <strong>Continuous Listening</strong>
+                        </label>
+                        <p class="text-muted small">Listen continuously without requiring wake word each time.</p>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="voicePrivacyToggle">
+                        <label class="form-check-label" for="voicePrivacyToggle">
+                            <strong>High Privacy Mode</strong>
+                        </label>
+                        <p class="text-muted small">Disable cloud processing for voice commands (reduces accuracy).</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cyber-card">
+                <div class="cyber-card-header">
+                    <h5 class="mb-0">Voice Mimicry Settings</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <p class="text-muted mb-3">Voice Mimicry allows AlphaWolf to speak using a voice that sounds familiar to you.</p>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="mimicryToggle">
+                        <label class="form-check-label" for="mimicryToggle">
+                            <strong>Enable Voice Mimicry</strong>
+                        </label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="voiceModel" class="form-label">Voice Model</label>
+                        <select class="form-select cyber-input" id="voiceModel" disabled>
+                            <option selected>No voice models available</option>
+                        </select>
+                        <div class="form-text">Record voice samples to create a mimicry model.</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button class="btn cyber-btn-outline mb-2" id="recordVoiceBtn" disabled>
+                            <i class="fas fa-microphone-alt me-2"></i>Record Voice Samples
+                        </button>
+                        <div class="form-text text-center">This feature requires caregiver authorization</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Custom Command Modal -->
+<div class="modal fade" id="addCommandModal" tabindex="-1" aria-labelledby="addCommandModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCommandModalLabel">Add Custom Voice Command</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="commandPhrase" class="form-label">Command Phrase</label>
+                        <input type="text" class="form-control cyber-input" id="commandPhrase" placeholder="Enter the phrase to trigger this command">
+                        <div class="form-text">Example: "What's the weather today?"</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="commandAction" class="form-label">Command Action</label>
+                        <select class="form-select cyber-input" id="commandAction">
+                            <option value="" selected disabled>Select an action</option>
+                            <option value="navigate">Navigate to Page</option>
+                            <option value="function">Call Function</option>
+                            <option value="response">Verbal Response</option>
+                            <option value="api">External API Call</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="commandResponse" class="form-label">Response or Action</label>
+                        <textarea class="form-control cyber-input" id="commandResponse" rows="3" placeholder="Enter the response text or action details"></textarea>
+                        <div class="form-text">For verbal responses, enter the text. For actions, provide details.</div>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" value="" id="requireConfirmation">
+                        <label class="form-check-label" for="requireConfirmation">
+                            Require confirmation before executing
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn cyber-btn">Save Command</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update displayed values for sliders
+        function updateSliderValues() {
+            // Sensitivity slider
+            const sensitivitySlider = document.getElementById('wakewordSensitivity');
+            const sensitivityValue = document.getElementById('sensitivityValue');
+            if (sensitivitySlider && sensitivityValue) {
+                sensitivityValue.textContent = sensitivitySlider.value + '%';
+                sensitivitySlider.addEventListener('input', function() {
+                    sensitivityValue.textContent = this.value + '%';
+                });
+            }
+            
+            // Speed slider
+            const speedSlider = document.getElementById('voiceSpeed');
+            const speedValue = document.getElementById('speedValue');
+            if (speedSlider && speedValue) {
+                const speedLabels = ['Very Slow', 'Slow', 'Normal', 'Fast', 'Very Fast'];
+                speedValue.textContent = speedLabels[speedSlider.value];
+                speedSlider.addEventListener('input', function() {
+                    speedValue.textContent = speedLabels[this.value];
+                });
+            }
+            
+            // Volume slider
+            const volumeSlider = document.getElementById('voiceVolume');
+            const volumeValue = document.getElementById('volumeValue');
+            if (volumeSlider && volumeValue) {
+                volumeValue.textContent = volumeSlider.value + '%';
+                volumeSlider.addEventListener('input', function() {
+                    volumeValue.textContent = this.value + '%';
+                });
+            }
+        }
+        
+        // Test voice button functionality
+        const testVoiceBtn = document.getElementById('testVoiceBtn');
+        if (testVoiceBtn) {
+            testVoiceBtn.addEventListener('click', function() {
+                const testText = document.getElementById('testVoiceInput').value;
+                if (testText) {
+                    // In a real implementation, this would trigger text-to-speech
+                    console.log('Testing voice with text:', testText);
+                    alert('Voice test: ' + testText);
+                    // Here you would call the TTS engine to speak the text
+                }
+            });
+        }
+        
+        // Mimicry toggle functionality
+        const mimicryToggle = document.getElementById('mimicryToggle');
+        const voiceModel = document.getElementById('voiceModel');
+        const recordVoiceBtn = document.getElementById('recordVoiceBtn');
+        
+        if (mimicryToggle && voiceModel && recordVoiceBtn) {
+            mimicryToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    // Enable voice mimicry controls
+                    voiceModel.disabled = false;
+                    recordVoiceBtn.disabled = false;
+                } else {
+                    // Disable voice mimicry controls
+                    voiceModel.disabled = true;
+                    recordVoiceBtn.disabled = true;
+                }
+            });
+        }
+        
+        // Voice control toggle functionality
+        const voiceControlToggle = document.getElementById('voiceControlToggle');
+        if (voiceControlToggle) {
+            voiceControlToggle.addEventListener('change', function() {
+                // Here you would enable/disable the voice control system
+                console.log('Voice control enabled:', this.checked);
+                localStorage.setItem('alphawolf-voice-enabled', this.checked);
+            });
+            
+            // Initialize toggle from local storage
+            const savedState = localStorage.getItem('alphawolf-voice-enabled');
+            if (savedState !== null) {
+                voiceControlToggle.checked = savedState === 'true';
+            }
+        }
+        
+        // Save settings button
+        const saveVoiceSettingsBtn = document.getElementById('saveVoiceSettingsBtn');
+        if (saveVoiceSettingsBtn) {
+            saveVoiceSettingsBtn.addEventListener('click', function() {
+                // Gather all settings
+                const settings = {
+                    voiceEnabled: document.getElementById('voiceControlToggle').checked,
+                    sensitivity: document.getElementById('wakewordSensitivity').value,
+                    speed: document.getElementById('voiceSpeed').value,
+                    volume: document.getElementById('voiceVolume').value,
+                    gender: document.getElementById('voiceGender').value,
+                    accent: document.getElementById('voiceAccent').value,
+                    accessibilityEnabled: document.getElementById('voiceAccessToggle').checked,
+                    requireWakeWord: document.getElementById('wakewordOnlyToggle').checked,
+                    voiceFeedback: document.getElementById('voiceFeedbackToggle').checked,
+                    continuousListening: document.getElementById('continuousListeningToggle').checked,
+                    highPrivacy: document.getElementById('voicePrivacyToggle').checked,
+                    mimicryEnabled: document.getElementById('mimicryToggle').checked
+                };
+                
+                // Save to localStorage (in a real app, would save to server)
+                localStorage.setItem('alphawolf-voice-settings', JSON.stringify(settings));
+                console.log('Voice settings saved:', settings);
+                
+                // Show success message
+                alert('Voice settings saved successfully!');
+            });
+        }
+        
+        // Initialize sliders
+        updateSliderValues();
+        
+        // Load any saved settings
+        const savedSettings = localStorage.getItem('alphawolf-voice-settings');
+        if (savedSettings) {
+            try {
+                const settings = JSON.parse(savedSettings);
+                
+                // Apply saved settings to UI controls
+                if (document.getElementById('voiceControlToggle')) 
+                    document.getElementById('voiceControlToggle').checked = settings.voiceEnabled;
+                if (document.getElementById('wakewordSensitivity')) 
+                    document.getElementById('wakewordSensitivity').value = settings.sensitivity;
+                if (document.getElementById('voiceSpeed')) 
+                    document.getElementById('voiceSpeed').value = settings.speed;
+                if (document.getElementById('voiceVolume')) 
+                    document.getElementById('voiceVolume').value = settings.volume;
+                if (document.getElementById('voiceGender')) 
+                    document.getElementById('voiceGender').value = settings.gender;
+                if (document.getElementById('voiceAccent')) 
+                    document.getElementById('voiceAccent').value = settings.accent;
+                if (document.getElementById('voiceAccessToggle')) 
+                    document.getElementById('voiceAccessToggle').checked = settings.accessibilityEnabled;
+                if (document.getElementById('wakewordOnlyToggle')) 
+                    document.getElementById('wakewordOnlyToggle').checked = settings.requireWakeWord;
+                if (document.getElementById('voiceFeedbackToggle')) 
+                    document.getElementById('voiceFeedbackToggle').checked = settings.voiceFeedback;
+                if (document.getElementById('continuousListeningToggle')) 
+                    document.getElementById('continuousListeningToggle').checked = settings.continuousListening;
+                if (document.getElementById('voicePrivacyToggle')) 
+                    document.getElementById('voicePrivacyToggle').checked = settings.highPrivacy;
+                if (document.getElementById('mimicryToggle')) {
+                    document.getElementById('mimicryToggle').checked = settings.mimicryEnabled;
+                    // Trigger change event to update dependent controls
+                    document.getElementById('mimicryToggle').dispatchEvent(new Event('change'));
+                }
+                
+                // Update displayed values
+                updateSliderValues();
+                
+            } catch (error) {
+                console.error('Error loading saved voice settings:', error);
+            }
+        }
+    });
+</script>
+{% endblock %}

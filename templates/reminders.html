@@ -1,0 +1,579 @@
+{% extends 'base.html' %}
+
+{% block title %}Reminders - AlphaWolf{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="cyber-heading cyber-title-gradient">Reminders</h1>
+        <div>
+            <a href="{{ url_for('home') }}" class="btn cyber-btn-outline me-2">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+            <button class="btn cyber-btn" data-bs-toggle="modal" data-bs-target="#addReminderModal">
+                <i class="fas fa-plus me-2"></i>Add Reminder
+            </button>
+        </div>
+    </div>
+    
+    <div class="processor-bar mb-4"></div>
+    
+    <!-- Reminder Categories Tabs -->
+    <ul class="nav nav-tabs mb-4" id="reminderTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
+                All <span class="badge rounded-pill bg-primary ms-2">8</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="today-tab" data-bs-toggle="tab" data-bs-target="#today" type="button" role="tab" aria-controls="today" aria-selected="false">
+                Today <span class="badge rounded-pill bg-primary ms-2">3</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="false">
+                Upcoming <span class="badge rounded-pill bg-primary ms-2">5</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="false">
+                Completed <span class="badge rounded-pill bg-success ms-2">12</span>
+            </button>
+        </li>
+    </ul>
+    
+    <!-- Reminder Tab Content -->
+    <div class="tab-content" id="reminderTabContent">
+        <!-- All Reminders Tab -->
+        <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- Today's Header -->
+                    <h5 class="cyber-text mb-3">Today - May 10, 2025</h5>
+                    
+                    <!-- Today's Reminders -->
+                    <div class="cyber-card mb-4">
+                        <div class="cyber-card-body p-0">
+                            <!-- Medicine Reminder -->
+                            <div class="d-flex align-items-center p-3 border-bottom cyber-border-bottom">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" value="" id="reminder1">
+                                    <label class="form-check-label" for="reminder1"></label>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">Take Morning Medication</h5>
+                                    <p class="text-muted mb-0 small">8:00 AM - Daily</p>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="cyber-badge cyber-badge-primary me-2">
+                                        <i class="fas fa-pills me-1"></i>Medicine
+                                    </span>
+                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a>
+                                        <a class="dropdown-item" href="#"><i class="fas fa-bell me-2"></i>Adjust Alerts</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Appointment Reminder -->
+                            <div class="d-flex align-items-center p-3 border-bottom cyber-border-bottom">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" value="" id="reminder2">
+                                    <label class="form-check-label" for="reminder2"></label>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">Doctor's Appointment</h5>
+                                    <p class="text-muted mb-0 small">2:30 PM - Dr. Williams - Neurology Check-up</p>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="cyber-badge cyber-badge-info me-2">
+                                        <i class="fas fa-user-md me-1"></i>Appointment
+                                    </span>
+                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a>
+                                        <a class="dropdown-item" href="#"><i class="fas fa-bell me-2"></i>Adjust Alerts</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Exercise Reminder -->
+                            <div class="d-flex align-items-center p-3">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" value="" id="reminder3">
+                                    <label class="form-check-label" for="reminder3"></label>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">Evening Cognitive Exercises</h5>
+                                    <p class="text-muted mb-0 small">7:00 PM - 15 minutes session</p>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="cyber-badge cyber-badge-success me-2">
+                                        <i class="fas fa-brain me-1"></i>Exercise
+                                    </span>
+                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a>
+                                        <a class="dropdown-item" href="#"><i class="fas fa-bell me-2"></i>Adjust Alerts</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tomorrow's Header -->
+                    <h5 class="cyber-text mb-3">Tomorrow - May 11, 2025</h5>
+                    
+                    <!-- Tomorrow's Reminders -->
+                    <div class="cyber-card mb-4">
+                        <div class="cyber-card-body p-0">
+                            <!-- Medicine Reminder -->
+                            <div class="d-flex align-items-center p-3 border-bottom cyber-border-bottom">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" value="" id="reminder4" disabled>
+                                    <label class="form-check-label" for="reminder4"></label>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">Take Morning Medication</h5>
+                                    <p class="text-muted mb-0 small">8:00 AM - Daily</p>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="cyber-badge cyber-badge-primary me-2">
+                                        <i class="fas fa-pills me-1"></i>Medicine
+                                    </span>
+                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a>
+                                        <a class="dropdown-item" href="#"><i class="fas fa-bell me-2"></i>Adjust Alerts</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Social Reminder -->
+                            <div class="d-flex align-items-center p-3">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" value="" id="reminder5" disabled>
+                                    <label class="form-check-label" for="reminder5"></label>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">Family Video Call</h5>
+                                    <p class="text-muted mb-0 small">5:30 PM - Weekly Sunday call with family</p>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="cyber-badge cyber-badge-warning me-2">
+                                        <i class="fas fa-users me-1"></i>Social
+                                    </span>
+                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a>
+                                        <a class="dropdown-item" href="#"><i class="fas fa-bell me-2"></i>Adjust Alerts</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Upcoming Header -->
+                    <h5 class="cyber-text mb-3">Upcoming</h5>
+                    
+                    <!-- Upcoming Reminders -->
+                    <div class="cyber-card">
+                        <div class="cyber-card-body p-0">
+                            <!-- Later Reminders -->
+                            <div class="d-flex align-items-center p-3 border-bottom cyber-border-bottom">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" value="" id="reminder6" disabled>
+                                    <label class="form-check-label" for="reminder6"></label>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">Memory Group Meeting</h5>
+                                    <p class="text-muted mb-0 small">May 15, 2025 - 10:00 AM - Community Center</p>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="cyber-badge cyber-badge-danger me-2">
+                                        <i class="fas fa-calendar-alt me-1"></i>Event
+                                    </span>
+                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a>
+                                        <a class="dropdown-item" href="#"><i class="fas fa-bell me-2"></i>Adjust Alerts</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Haircut Reminder -->
+                            <div class="d-flex align-items-center p-3 border-bottom cyber-border-bottom">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" value="" id="reminder7" disabled>
+                                    <label class="form-check-label" for="reminder7"></label>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">Haircut Appointment</h5>
+                                    <p class="text-muted mb-0 small">May 20, 2025 - 11:30 AM - Downtown Salon</p>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="cyber-badge cyber-badge-info me-2">
+                                        <i class="fas fa-cut me-1"></i>Personal
+                                    </span>
+                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a>
+                                        <a class="dropdown-item" href="#"><i class="fas fa-bell me-2"></i>Adjust Alerts</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bill Reminder -->
+                            <div class="d-flex align-items-center p-3">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" value="" id="reminder8" disabled>
+                                    <label class="form-check-label" for="reminder8"></label>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">Utility Bill Payment</h5>
+                                    <p class="text-muted mb-0 small">May 25, 2025 - Electricity & Water</p>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="cyber-badge cyber-badge-warning me-2">
+                                        <i class="fas fa-file-invoice-dollar me-1"></i>Bill
+                                    </span>
+                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a>
+                                        <a class="dropdown-item" href="#"><i class="fas fa-bell me-2"></i>Adjust Alerts</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <!-- Calendar Card -->
+                    <div class="cyber-card mb-4">
+                        <div class="cyber-card-header">
+                            <h5 class="mb-0">Calendar</h5>
+                        </div>
+                        <div class="cyber-card-body text-center p-0">
+                            <div class="p-3">
+                                <h4 class="mb-3">May 2025</h4>
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Su</th>
+                                            <th>Mo</th>
+                                            <th>Tu</th>
+                                            <th>We</th>
+                                            <th>Th</th>
+                                            <th>Fr</th>
+                                            <th>Sa</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-muted">28</td>
+                                            <td class="text-muted">29</td>
+                                            <td class="text-muted">30</td>
+                                            <td>1</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>6</td>
+                                            <td>7</td>
+                                            <td>8</td>
+                                            <td>9</td>
+                                            <td class="bg-primary text-white">10</td>
+                                            <td class="bg-info bg-opacity-25">11</td>
+                                        </tr>
+                                        <tr>
+                                            <td>12</td>
+                                            <td>13</td>
+                                            <td>14</td>
+                                            <td class="bg-danger bg-opacity-25">15</td>
+                                            <td>16</td>
+                                            <td>17</td>
+                                            <td>18</td>
+                                        </tr>
+                                        <tr>
+                                            <td>19</td>
+                                            <td class="bg-info bg-opacity-25">20</td>
+                                            <td>21</td>
+                                            <td>22</td>
+                                            <td>23</td>
+                                            <td>24</td>
+                                            <td class="bg-warning bg-opacity-25">25</td>
+                                        </tr>
+                                        <tr>
+                                            <td>26</td>
+                                            <td>27</td>
+                                            <td>28</td>
+                                            <td>29</td>
+                                            <td>30</td>
+                                            <td>31</td>
+                                            <td class="text-muted">1</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-flex border-top cyber-border-top p-2 justify-content-around">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2" style="width:10px; height:10px; border-radius:50%; background-color: var(--primary-color);"></div>
+                                    <small>Today</small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2" style="width:10px; height:10px; border-radius:50%; background-color: var(--info-color); opacity: 0.3;"></div>
+                                    <small>Appointment</small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2" style="width:10px; height:10px; border-radius:50%; background-color: var(--danger-color); opacity: 0.3;"></div>
+                                    <small>Event</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Categories Card -->
+                    <div class="cyber-card mb-4">
+                        <div class="cyber-card-header">
+                            <h5 class="mb-0">Categories</h5>
+                        </div>
+                        <div class="cyber-card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-pills me-2 text-primary"></i>
+                                        <span>Medicine</span>
+                                    </div>
+                                    <span class="badge rounded-pill bg-primary">2</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user-md me-2 text-info"></i>
+                                        <span>Appointments</span>
+                                    </div>
+                                    <span class="badge rounded-pill bg-info">2</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-brain me-2 text-success"></i>
+                                        <span>Exercises</span>
+                                    </div>
+                                    <span class="badge rounded-pill bg-success">1</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-calendar-alt me-2 text-danger"></i>
+                                        <span>Events</span>
+                                    </div>
+                                    <span class="badge rounded-pill bg-danger">1</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-users me-2 text-warning"></i>
+                                        <span>Social</span>
+                                    </div>
+                                    <span class="badge rounded-pill bg-warning">1</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-file-invoice-dollar me-2 text-warning"></i>
+                                        <span>Bills</span>
+                                    </div>
+                                    <span class="badge rounded-pill bg-warning">1</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Add Card -->
+                    <div class="cyber-card">
+                        <div class="cyber-card-header">
+                            <h5 class="mb-0">Quick Add</h5>
+                        </div>
+                        <div class="cyber-card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn cyber-btn-outline" data-bs-toggle="modal" data-bs-target="#addReminderModal">
+                                    <i class="fas fa-pills me-2"></i>Medicine Reminder
+                                </button>
+                                <button class="btn cyber-btn-outline" data-bs-toggle="modal" data-bs-target="#addReminderModal">
+                                    <i class="fas fa-user-md me-2"></i>Appointment
+                                </button>
+                                <button class="btn cyber-btn-outline" data-bs-toggle="modal" data-bs-target="#addReminderModal">
+                                    <i class="fas fa-brain me-2"></i>Exercise Session
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Other Tabs (simplified for brevity) -->
+        <div class="tab-pane fade" id="today" role="tabpanel" aria-labelledby="today-tab">
+            <div class="cyber-card">
+                <div class="cyber-card-body">
+                    <h5>Today's Reminders</h5>
+                    <p>This tab would show only today's reminders.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-pane fade" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+            <div class="cyber-card">
+                <div class="cyber-card-body">
+                    <h5>Upcoming Reminders</h5>
+                    <p>This tab would show only upcoming reminders.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+            <div class="cyber-card">
+                <div class="cyber-card-body">
+                    <h5>Completed Reminders</h5>
+                    <p>This tab would show completed reminders.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Reminder Modal -->
+<div class="modal fade" id="addReminderModal" tabindex="-1" aria-labelledby="addReminderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addReminderModalLabel">Add New Reminder</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="reminderTitle" class="form-label">Title</label>
+                        <input type="text" class="form-control cyber-input" id="reminderTitle" placeholder="Enter reminder title">
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="reminderDate" class="form-label">Date</label>
+                            <input type="date" class="form-control cyber-input" id="reminderDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="reminderTime" class="form-label">Time</label>
+                            <input type="time" class="form-control cyber-input" id="reminderTime">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="reminderDescription" class="form-label">Description</label>
+                        <textarea class="form-control cyber-input" id="reminderDescription" rows="3" placeholder="Enter additional details"></textarea>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="reminderCategory" class="form-label">Category</label>
+                            <select class="form-select cyber-input" id="reminderCategory">
+                                <option value="medicine">Medicine</option>
+                                <option value="appointment">Appointment</option>
+                                <option value="exercise">Exercise</option>
+                                <option value="event">Event</option>
+                                <option value="social">Social</option>
+                                <option value="bill">Bill</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="reminderRecurrence" class="form-label">Recurrence</label>
+                            <select class="form-select cyber-input" id="reminderRecurrence">
+                                <option value="none">Never (one-time)</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekdays">Weekdays</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="custom">Custom...</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Notifications</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="notifyOnTime" checked>
+                                <label class="form-check-label" for="notifyOnTime">
+                                    On time
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="notify5min">
+                                <label class="form-check-label" for="notify5min">
+                                    5 minutes before
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="notify30min">
+                                <label class="form-check-label" for="notify30min">
+                                    30 minutes before
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="notify1hr">
+                                <label class="form-check-label" for="notify1hr">
+                                    1 hour before
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="notifyCaregiver">
+                                <label class="form-check-label" for="notifyCaregiver">
+                                    Notify caregiver
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn cyber-btn">Save Reminder</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

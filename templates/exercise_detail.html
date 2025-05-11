@@ -1,0 +1,1045 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ exercise.name }} - AlphaWolf Cognitive Exercise{% endblock %}
+
+{% block extra_head %}
+<style>
+  .exercise-container {
+    min-height: 400px;
+  }
+  
+  .exercise-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+  }
+  
+  .spinner {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .timer-bar {
+    height: 10px;
+    transition: width 0.1s linear;
+  }
+  
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  
+  .memory-card {
+    aspect-ratio: 1;
+    perspective: 1000px;
+    cursor: pointer;
+  }
+  
+  .memory-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+  
+  .memory-card.flipped .memory-card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .memory-card-front, .memory-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+  }
+  
+  .memory-card-front {
+    background: var(--cyber-accent-gradient);
+  }
+  
+  .memory-card-back {
+    transform: rotateY(180deg);
+    background-color: var(--cyber-background-secondary);
+    font-size: 1.5rem;
+  }
+  
+  .question-container {
+    margin-bottom: 2rem;
+  }
+  
+  .option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+  }
+  
+  .option-btn:hover {
+    transform: translateX(5px);
+  }
+  
+  .option-btn.selected {
+    border-color: var(--cyber-accent);
+    background-color: rgba(var(--cyber-accent-rgb), 0.1);
+  }
+  
+  .option-btn.correct {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+  
+  .option-btn.incorrect {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+  
+  .feedback-container {
+    display: none;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--cyber-background-secondary);
+  }
+  
+  .exercise-complete {
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  @media (max-width: 767.98px) {
+    .card-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (max-width: 575.98px) {
+    .card-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="cyber-heading cyber-title-gradient">{{ exercise.name }}</h1>
+    <div>
+      <a href="{{ url_for('cognitive_exercises') }}" class="btn cyber-btn-outline">
+        <i class="fas fa-arrow-left me-2"></i>Back to Exercises
+      </a>
+    </div>
+  </div>
+  
+  <div class="processor-bar mb-4"></div>
+  
+  <!-- Exercise Info -->
+  <div class="cyber-card mb-4">
+    <div class="cyber-card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Exercise Information</h5>
+        <span class="cyber-badge cyber-badge-primary">{{ exercise.type|capitalize }}</span>
+      </div>
+    </div>
+    <div class="cyber-card-body">
+      <p>{{ exercise.description }}</p>
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+          <span class="cyber-badge me-2">
+            <i class="fas fa-signal me-1"></i>{{ exercise.difficulty|capitalize }}
+          </span>
+          <span class="cyber-badge">
+            <i class="far fa-clock me-1"></i>5-10 minutes
+          </span>
+        </div>
+        <div>
+          <button id="startExerciseBtn" class="btn cyber-btn">
+            <i class="fas fa-play me-2"></i>Start Exercise
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Exercise Container -->
+  <div class="cyber-card">
+    <div class="cyber-card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Exercise Activity</h5>
+        <div id="exercise-timer" class="cyber-badge cyber-badge-warning d-none">
+          <i class="fas fa-stopwatch me-1"></i><span id="timer-value">0:00</span>
+        </div>
+      </div>
+    </div>
+    <div class="cyber-card-body">
+      <!-- Initial State -->
+      <div id="exercise-initial" class="text-center py-5">
+        <div class="exercise-icon mb-4">
+          <i class="fas {{ 'fa-brain' if exercise.type == 'memory' else 'fa-puzzle-piece' if exercise.type == 'problem' else 'fa-comment-alt' if exercise.type == 'language' else 'fa-eye' }} fa-4x cyber-title-gradient"></i>
+        </div>
+        <h3 class="mb-4">Ready to improve your {{ exercise.type }} skills?</h3>
+        <p class="mb-4">This exercise will help strengthen your cognitive abilities and track your progress over time.</p>
+        <button id="startExerciseBtnMain" class="btn cyber-btn btn-lg">
+          <i class="fas fa-play me-2"></i>Start Now
+        </button>
+      </div>
+      
+      <!-- Loading State -->
+      <div id="exercise-loading" class="exercise-loading d-none">
+        <div class="spinner-border text-primary spinner mb-3" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="text-center">Loading exercise content...</p>
+      </div>
+      
+      <!-- Memory Match Exercise -->
+      <div id="memory-match-exercise" class="d-none">
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Find the matching pairs</h4>
+          <div>
+            <span class="cyber-badge me-2">
+              <i class="fas fa-layer-group me-1"></i><span id="pairs-found">0</span>/<span id="total-pairs">0</span> pairs
+            </span>
+            <span class="cyber-badge">
+              <i class="fas fa-sync-alt me-1"></i><span id="moves-count">0</span> moves
+            </span>
+          </div>
+        </div>
+        
+        <div class="cyber-progress mb-4">
+          <div id="timer-bar" class="timer-bar progress-bar" style="width: 100%;"></div>
+        </div>
+        
+        <div id="memory-cards" class="card-grid">
+          <!-- Cards will be generated here -->
+        </div>
+      </div>
+      
+      <!-- Sequence Recall Exercise -->
+      <div id="sequence-recall-exercise" class="d-none">
+        <div class="mb-4">
+          <h4 class="mb-0">Remember the sequence</h4>
+          <p class="text-muted">Watch carefully and then reproduce the sequence in order</p>
+        </div>
+        
+        <div id="sequence-display" class="text-center mb-4">
+          <div id="sequence-items" class="d-flex justify-content-center gap-3 mb-4">
+            <!-- Sequence items will appear here -->
+          </div>
+          
+          <div id="sequence-prompt" class="cyber-card-inset mb-4 p-4">
+            <h3 class="cyber-gradient-text">Ready?</h3>
+            <p>The sequence will be shown shortly. Pay attention!</p>
+          </div>
+        </div>
+        
+        <div id="sequence-input" class="d-none">
+          <h4 class="mb-3">Now, reproduce the sequence:</h4>
+          <div id="sequence-input-items" class="d-flex justify-content-center flex-wrap gap-3 mb-4">
+            <!-- Input buttons will be generated here -->
+          </div>
+          
+          <div id="sequence-answer" class="d-flex justify-content-center gap-2 py-3 mb-4">
+            <!-- User's answer sequence will be shown here -->
+          </div>
+          
+          <div class="d-flex justify-content-center">
+            <button id="check-sequence-btn" class="btn cyber-btn mx-2">
+              <i class="fas fa-check me-2"></i>Check Answer
+            </button>
+            <button id="clear-sequence-btn" class="btn cyber-btn-outline mx-2">
+              <i class="fas fa-trash me-2"></i>Clear
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Word Recall Exercise -->
+      <div id="word-recall-exercise" class="d-none">
+        <div class="mb-4">
+          <h4 class="mb-0">Remember the words</h4>
+          <p class="text-muted">Memorize the words shown and select them from the options later</p>
+        </div>
+        
+        <div id="words-display" class="text-center mb-4">
+          <div id="words-list" class="cyber-card-inset mb-4 p-4">
+            <!-- Words will be displayed here -->
+          </div>
+        </div>
+        
+        <div id="words-selection" class="d-none">
+          <h4 class="mb-3">Select all the words that were shown:</h4>
+          <div id="word-options" class="row">
+            <!-- Word options will be generated here -->
+          </div>
+          
+          <div class="d-flex justify-content-center mt-4">
+            <button id="check-words-btn" class="btn cyber-btn">
+              <i class="fas fa-check me-2"></i>Check Answers
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Results / Feedback -->
+      <div id="exercise-feedback" class="feedback-container d-none">
+        <h4 class="mb-3">Exercise Results</h4>
+        <div class="row">
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="text-center">
+              <div class="cyber-title-gradient display-4 mb-2" id="score-display">0%</div>
+              <p class="text-muted">Score</p>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="text-center">
+              <div class="display-6 mb-2" id="time-display">0:00</div>
+              <p class="text-muted">Completion Time</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-center">
+              <div class="display-6 mb-2" id="accuracy-display">0/0</div>
+              <p class="text-muted">Accuracy</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4 text-center" id="feedback-message">
+          <!-- Feedback text will go here -->
+        </div>
+        
+        <div class="d-flex justify-content-center mt-4">
+          <button id="retry-btn" class="btn cyber-btn mx-2">
+            <i class="fas fa-redo me-2"></i>Try Again
+          </button>
+          <a href="{{ url_for('cognitive_exercises') }}" class="btn cyber-btn-outline mx-2">
+            <i class="fas fa-th-large me-2"></i>More Exercises
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Exercise data
+    const exerciseId = {{ exercise.id }};
+    const exerciseType = "{{ exercise.type }}";
+    let exerciseData = null;
+    let exerciseStartTime = 0;
+    let exerciseTimer = null;
+    let exerciseSeconds = 0;
+    
+    // DOM elements
+    const startBtn = document.getElementById('startExerciseBtn');
+    const startBtnMain = document.getElementById('startExerciseBtnMain');
+    const initialView = document.getElementById('exercise-initial');
+    const loadingView = document.getElementById('exercise-loading');
+    const timerElement = document.getElementById('exercise-timer');
+    const timerValue = document.getElementById('timer-value');
+    const feedbackView = document.getElementById('exercise-feedback');
+    const retryBtn = document.getElementById('retry-btn');
+    
+    // Exercise-specific elements
+    const memoryMatchView = document.getElementById('memory-match-exercise');
+    const sequenceRecallView = document.getElementById('sequence-recall-exercise');
+    const wordRecallView = document.getElementById('word-recall-exercise');
+    
+    // Initialize
+    function init() {
+      // Event listeners for start buttons
+      startBtn.addEventListener('click', startExercise);
+      startBtnMain.addEventListener('click', startExercise);
+      retryBtn.addEventListener('click', resetExercise);
+      
+      // Add exercise-specific initializations
+      if (exerciseType === 'memory') {
+        initMemoryMatchExercise();
+      } else if (exerciseType === 'pattern') {
+        initSequenceRecallExercise();
+      } else if (exerciseType === 'language') {
+        initWordRecallExercise();
+      }
+    }
+    
+    // Start exercise
+    function startExercise() {
+      // Hide initial view and show loading
+      initialView.classList.add('d-none');
+      loadingView.classList.remove('d-none');
+      
+      // Simulate loading (would normally fetch from server)
+      setTimeout(() => {
+        // Generate exercise data based on type
+        if (exerciseType === 'memory') {
+          exerciseData = generateMemoryMatchExercise();
+          startMemoryMatchExercise(exerciseData);
+        } else if (exerciseType === 'pattern') {
+          exerciseData = generateSequenceRecallExercise();
+          startSequenceRecallExercise(exerciseData);
+        } else if (exerciseType === 'language') {
+          exerciseData = generateWordRecallExercise();
+          startWordRecallExercise(exerciseData);
+        } else {
+          // Default to memory match
+          exerciseData = generateMemoryMatchExercise();
+          startMemoryMatchExercise(exerciseData);
+        }
+        
+        // Hide loading view
+        loadingView.classList.add('d-none');
+        
+        // Start timer
+        startTimer();
+      }, 1500);
+    }
+    
+    // Timer functions
+    function startTimer() {
+      exerciseStartTime = Date.now();
+      exerciseSeconds = 0;
+      timerElement.classList.remove('d-none');
+      
+      exerciseTimer = setInterval(() => {
+        exerciseSeconds++;
+        const minutes = Math.floor(exerciseSeconds / 60);
+        const seconds = exerciseSeconds % 60;
+        timerValue.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+    
+    function stopTimer() {
+      clearInterval(exerciseTimer);
+      return exerciseSeconds;
+    }
+    
+    // Reset exercise
+    function resetExercise() {
+      // Reset views
+      feedbackView.classList.add('d-none');
+      initialView.classList.remove('d-none');
+      
+      // Reset exercise-specific views
+      memoryMatchView.classList.add('d-none');
+      sequenceRecallView.classList.add('d-none');
+      wordRecallView.classList.add('d-none');
+      
+      // Reset timer
+      timerElement.classList.add('d-none');
+      clearInterval(exerciseTimer);
+    }
+    
+    // Show results
+    function showResults(score, time, accuracy) {
+      // Update result elements
+      document.getElementById('score-display').textContent = `${Math.round(score * 100)}%`;
+      document.getElementById('time-display').textContent = `${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, '0')}`;
+      document.getElementById('accuracy-display').textContent = accuracy;
+      
+      // Set feedback message based on score
+      const feedbackMsg = document.getElementById('feedback-message');
+      if (score >= 0.9) {
+        feedbackMsg.innerHTML = `<div class="alert alert-success">
+          <i class="fas fa-trophy me-2"></i>Excellent work! You have exceptional memory skills.
+        </div>`;
+      } else if (score >= 0.7) {
+        feedbackMsg.innerHTML = `<div class="alert alert-info">
+          <i class="fas fa-thumbs-up me-2"></i>Great job! Your memory is quite strong.
+        </div>`;
+      } else if (score >= 0.5) {
+        feedbackMsg.innerHTML = `<div class="alert alert-primary">
+          <i class="fas fa-check me-2"></i>Good effort! Regular practice will help improve your memory.
+        </div>`;
+      } else {
+        feedbackMsg.innerHTML = `<div class="alert alert-secondary">
+          <i class="fas fa-info-circle me-2"></i>Keep practicing! Memory skills improve with regular exercise.
+        </div>`;
+      }
+      
+      // Hide exercise views and show feedback
+      memoryMatchView.classList.add('d-none');
+      sequenceRecallView.classList.add('d-none');
+      wordRecallView.classList.add('d-none');
+      feedbackView.classList.remove('d-none');
+      
+      // Stop timer
+      timerElement.classList.add('d-none');
+      
+      // Save results to the server
+      saveExerciseResult(exerciseId, score * 100, time);
+    }
+    
+    // Save results to server
+    function saveExerciseResult(exerciseId, score, time) {
+      fetch('/api/exercise/result', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          exercise_id: exerciseId,
+          score: score,
+          completion_time: time
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    }
+    
+    // Memory Match Exercise
+    function initMemoryMatchExercise() {
+      // Any one-time initialization for memory match
+    }
+    
+    function generateMemoryMatchExercise() {
+      // Sample data generation
+      const categories = ['animals', 'fruits', 'colors', 'shapes'];
+      const category = categories[Math.floor(Math.random() * categories.length)];
+      
+      let items = [];
+      if (category === 'animals') {
+        items = ['dog', 'cat', 'horse', 'cow', 'sheep', 'pig'];
+      } else if (category === 'fruits') {
+        items = ['apple', 'banana', 'orange', 'grape', 'pear', 'cherry'];
+      } else if (category === 'colors') {
+        items = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+      } else {
+        items = ['circle', 'square', 'triangle', 'rectangle', 'diamond', 'star'];
+      }
+      
+      // For simplicity, use 6 pairs (12 cards)
+      const pairsCount = 6;
+      const selectedItems = items.slice(0, pairsCount);
+      
+      // Create card pairs
+      const cards = [];
+      for (let i = 0; i < selectedItems.length; i++) {
+        cards.push({ id: i * 2, value: selectedItems[i] });
+        cards.push({ id: i * 2 + 1, value: selectedItems[i] });
+      }
+      
+      // Shuffle cards
+      for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+      }
+      
+      return {
+        type: 'memory_match',
+        cards: cards,
+        pairsCount: pairsCount
+      };
+    }
+    
+    function startMemoryMatchExercise(data) {
+      memoryMatchView.classList.remove('d-none');
+      
+      // Update UI elements
+      document.getElementById('pairs-found').textContent = '0';
+      document.getElementById('total-pairs').textContent = data.pairsCount;
+      document.getElementById('moves-count').textContent = '0';
+      
+      // Generate cards
+      const memoryCards = document.getElementById('memory-cards');
+      memoryCards.innerHTML = '';
+      
+      data.cards.forEach(card => {
+        const cardElement = document.createElement('div');
+        cardElement.className = 'memory-card';
+        cardElement.dataset.id = card.id;
+        cardElement.dataset.value = card.value;
+        
+        cardElement.innerHTML = `
+          <div class="memory-card-inner">
+            <div class="memory-card-front">
+              <i class="fas fa-question fa-2x text-white"></i>
+            </div>
+            <div class="memory-card-back">
+              ${card.value}
+            </div>
+          </div>
+        `;
+        
+        cardElement.addEventListener('click', () => handleCardClick(cardElement));
+        memoryCards.appendChild(cardElement);
+      });
+      
+      // Initialize memory match state
+      window.memoryMatchState = {
+        flippedCards: [],
+        pairsFound: 0,
+        moves: 0,
+        canFlip: true
+      };
+    }
+    
+    function handleCardClick(card) {
+      const state = window.memoryMatchState;
+      
+      // If the card is already flipped or we're waiting, return
+      if (card.classList.contains('flipped') || !state.canFlip) {
+        return;
+      }
+      
+      // Flip the card
+      card.classList.add('flipped');
+      state.flippedCards.push(card);
+      
+      // If we have 2 flipped cards, check for a match
+      if (state.flippedCards.length === 2) {
+        state.moves++;
+        document.getElementById('moves-count').textContent = state.moves;
+        
+        const card1 = state.flippedCards[0];
+        const card2 = state.flippedCards[1];
+        
+        // Check if the cards match
+        if (card1.dataset.value === card2.dataset.value) {
+          // Match found
+          state.pairsFound++;
+          document.getElementById('pairs-found').textContent = state.pairsFound;
+          state.flippedCards = [];
+          
+          // Check if all pairs are found
+          if (state.pairsFound === parseInt(document.getElementById('total-pairs').textContent)) {
+            // Exercise complete
+            const totalTime = stopTimer();
+            const accuracy = `${state.pairsFound}/${document.getElementById('total-pairs').textContent}`;
+            const score = state.pairsFound / parseInt(document.getElementById('total-pairs').textContent);
+            
+            // Show results after a short delay
+            setTimeout(() => {
+              showResults(score, totalTime, accuracy);
+            }, 1000);
+          }
+        } else {
+          // No match, flip back after a delay
+          state.canFlip = false;
+          setTimeout(() => {
+            card1.classList.remove('flipped');
+            card2.classList.remove('flipped');
+            state.flippedCards = [];
+            state.canFlip = true;
+          }, 1000);
+        }
+      }
+    }
+    
+    // Sequence Recall Exercise
+    function initSequenceRecallExercise() {
+      // Any one-time initialization for sequence recall
+    }
+    
+    function generateSequenceRecallExercise() {
+      // Sample data generation
+      const sequenceTypes = ['digits', 'colors', 'shapes'];
+      const sequenceType = sequenceTypes[Math.floor(Math.random() * sequenceTypes.length)];
+      
+      let sequence = [];
+      const length = 5; // Medium difficulty
+      
+      if (sequenceType === 'digits') {
+        for (let i = 0; i < length; i++) {
+          sequence.push(Math.floor(Math.random() * 10).toString());
+        }
+      } else if (sequenceType === 'colors') {
+        const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+        for (let i = 0; i < length; i++) {
+          sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+        }
+      } else {
+        const shapes = ['circle', 'square', 'triangle', 'rectangle', 'diamond', 'star'];
+        for (let i = 0; i < length; i++) {
+          sequence.push(shapes[Math.floor(Math.random() * shapes.length)]);
+        }
+      }
+      
+      return {
+        type: 'sequence_recall',
+        sequence: sequence,
+        sequenceType: sequenceType
+      };
+    }
+    
+    function startSequenceRecallExercise(data) {
+      sequenceRecallView.classList.remove('d-none');
+      
+      const sequenceItems = document.getElementById('sequence-items');
+      const sequencePrompt = document.getElementById('sequence-prompt');
+      const sequenceInput = document.getElementById('sequence-input');
+      
+      // Initialize state
+      window.sequenceState = {
+        sequence: data.sequence,
+        userSequence: [],
+        sequenceType: data.sequenceType
+      };
+      
+      // Show countdown
+      sequencePrompt.innerHTML = `<h3 class="cyber-gradient-text">Ready?</h3>
+        <p>The sequence will be shown in 3 seconds!</p>`;
+      
+      setTimeout(() => {
+        sequencePrompt.innerHTML = `<h3 class="cyber-gradient-text">3</h3>`;
+        setTimeout(() => {
+          sequencePrompt.innerHTML = `<h3 class="cyber-gradient-text">2</h3>`;
+          setTimeout(() => {
+            sequencePrompt.innerHTML = `<h3 class="cyber-gradient-text">1</h3>`;
+            setTimeout(() => {
+              // Show sequence
+              displaySequence(data.sequence, data.sequenceType);
+            }, 1000);
+          }, 1000);
+        }, 1000);
+      }, 1000);
+    }
+    
+    function displaySequence(sequence, type) {
+      const sequenceItems = document.getElementById('sequence-items');
+      const sequencePrompt = document.getElementById('sequence-prompt');
+      
+      // Update prompt
+      sequencePrompt.innerHTML = `<h3 class="cyber-gradient-text">Memorize the sequence!</h3>
+        <p>You'll be asked to reproduce it in a moment.</p>`;
+      
+      // Display sequence
+      sequenceItems.innerHTML = '';
+      
+      sequence.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'cyber-card-inset p-3 text-center';
+        itemElement.style.minWidth = '60px';
+        
+        if (type === 'digits') {
+          itemElement.innerHTML = `<h3>${item}</h3>`;
+        } else if (type === 'colors') {
+          itemElement.innerHTML = `<div style="width: 40px; height: 40px; background-color: ${item}; border-radius: 50%; margin: 0 auto;"></div>`;
+        } else {
+          // Use shape icons
+          let icon = 'circle';
+          if (item === 'square') icon = 'square';
+          if (item === 'triangle') icon = 'play';  // Triangle-ish
+          if (item === 'rectangle') icon = 'square';
+          if (item === 'diamond') icon = 'gem';
+          if (item === 'star') icon = 'star';
+          
+          itemElement.innerHTML = `<i class="fas fa-${icon} fa-2x"></i>`;
+        }
+        
+        sequenceItems.appendChild(itemElement);
+      });
+      
+      // After display time, hide sequence and show input
+      setTimeout(() => {
+        sequenceItems.innerHTML = '';
+        sequencePrompt.innerHTML = `<h3 class="cyber-gradient-text">Now, reproduce the sequence!</h3>`;
+        
+        // Show input interface
+        showSequenceInput(sequence, type);
+      }, 5000);  // Show for 5 seconds
+    }
+    
+    function showSequenceInput(sequence, type) {
+      const sequenceInput = document.getElementById('sequence-input');
+      const inputItems = document.getElementById('sequence-input-items');
+      const answerDisplay = document.getElementById('sequence-answer');
+      const checkBtn = document.getElementById('check-sequence-btn');
+      const clearBtn = document.getElementById('clear-sequence-btn');
+      
+      // Show input section
+      sequenceInput.classList.remove('d-none');
+      
+      // Reset answer display
+      answerDisplay.innerHTML = '';
+      for (let i = 0; i < sequence.length; i++) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'cyber-card-inset p-3 text-center';
+        placeholder.style.minWidth = '60px';
+        placeholder.style.minHeight = '60px';
+        answerDisplay.appendChild(placeholder);
+      }
+      
+      // Create input buttons
+      inputItems.innerHTML = '';
+      
+      let options = [];
+      if (type === 'digits') {
+        options = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+      } else if (type === 'colors') {
+        options = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'brown'];
+      } else {
+        options = ['circle', 'square', 'triangle', 'rectangle', 'diamond', 'star'];
+      }
+      
+      options.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'cyber-btn-outline m-1';
+        button.style.minWidth = '60px';
+        
+        if (type === 'digits') {
+          button.textContent = option;
+        } else if (type === 'colors') {
+          button.innerHTML = `<div style="width: 30px; height: 30px; background-color: ${option}; border-radius: 50%; margin: 0 auto;"></div>`;
+        } else {
+          // Use shape icons
+          let icon = 'circle';
+          if (option === 'square') icon = 'square';
+          if (option === 'triangle') icon = 'play';  // Triangle-ish
+          if (option === 'rectangle') icon = 'square';
+          if (option === 'diamond') icon = 'gem';
+          if (option === 'star') icon = 'star';
+          
+          button.innerHTML = `<i class="fas fa-${icon}"></i>`;
+        }
+        
+        button.addEventListener('click', () => addToSequence(option, type));
+        inputItems.appendChild(button);
+      });
+      
+      // Set up event listeners for check and clear buttons
+      checkBtn.addEventListener('click', checkSequence);
+      clearBtn.addEventListener('click', clearSequence);
+      
+      // Initialize user sequence
+      window.sequenceState.userSequence = [];
+    }
+    
+    function addToSequence(item, type) {
+      const state = window.sequenceState;
+      const answerDisplay = document.getElementById('sequence-answer');
+      
+      // Add to user sequence if not full
+      if (state.userSequence.length < state.sequence.length) {
+        state.userSequence.push(item);
+        
+        // Update display
+        const itemElements = answerDisplay.querySelectorAll('div');
+        const index = state.userSequence.length - 1;
+        
+        if (type === 'digits') {
+          itemElements[index].innerHTML = `<h3>${item}</h3>`;
+        } else if (type === 'colors') {
+          itemElements[index].innerHTML = `<div style="width: 40px; height: 40px; background-color: ${item}; border-radius: 50%; margin: 0 auto;"></div>`;
+        } else {
+          // Use shape icons
+          let icon = 'circle';
+          if (item === 'square') icon = 'square';
+          if (item === 'triangle') icon = 'play';
+          if (item === 'rectangle') icon = 'square';
+          if (item === 'diamond') icon = 'gem';
+          if (item === 'star') icon = 'star';
+          
+          itemElements[index].innerHTML = `<i class="fas fa-${icon} fa-2x"></i>`;
+        }
+      }
+    }
+    
+    function clearSequence() {
+      const state = window.sequenceState;
+      const answerDisplay = document.getElementById('sequence-answer');
+      
+      // Clear user sequence
+      state.userSequence = [];
+      
+      // Reset display
+      const itemElements = answerDisplay.querySelectorAll('div');
+      itemElements.forEach(element => {
+        element.innerHTML = '';
+      });
+    }
+    
+    function checkSequence() {
+      const state = window.sequenceState;
+      
+      // Only check if the sequence is complete
+      if (state.userSequence.length === state.sequence.length) {
+        // Count correct items
+        let correctCount = 0;
+        for (let i = 0; i < state.sequence.length; i++) {
+          if (state.userSequence[i] === state.sequence[i]) {
+            correctCount++;
+          }
+        }
+        
+        // Calculate score and show results
+        const totalTime = stopTimer();
+        const accuracy = `${correctCount}/${state.sequence.length}`;
+        const score = correctCount / state.sequence.length;
+        
+        showResults(score, totalTime, accuracy);
+      } else {
+        alert('Please complete the sequence before checking.');
+      }
+    }
+    
+    // Word Recall Exercise
+    function initWordRecallExercise() {
+      // Any one-time initialization for word recall
+    }
+    
+    function generateWordRecallExercise() {
+      // Sample data generation
+      const categories = ['animals', 'food', 'household', 'nature', 'city'];
+      const category = categories[Math.floor(Math.random() * categories.length)];
+      
+      let allWords = [];
+      if (category === 'animals') {
+        allWords = ['dog', 'cat', 'horse', 'cow', 'sheep', 'pig', 'lion', 'tiger', 'bear', 'fox', 'wolf', 'deer'];
+      } else if (category === 'food') {
+        allWords = ['apple', 'bread', 'cheese', 'milk', 'pasta', 'rice', 'chicken', 'beef', 'carrot', 'potato', 'tomato', 'banana'];
+      } else if (category === 'household') {
+        allWords = ['chair', 'table', 'lamp', 'sofa', 'bed', 'pillow', 'blanket', 'mirror', 'clock', 'vase', 'picture', 'carpet'];
+      } else if (category === 'nature') {
+        allWords = ['tree', 'flower', 'river', 'mountain', 'lake', 'forest', 'beach', 'sky', 'cloud', 'rain', 'snow', 'wind'];
+      } else {
+        allWords = ['building', 'street', 'car', 'bus', 'park', 'store', 'school', 'house', 'office', 'bridge', 'road', 'sidewalk'];
+      }
+      
+      // Shuffle and select words
+      const shuffled = [...allWords].sort(() => 0.5 - Math.random());
+      const targetWords = shuffled.slice(0, 8);  // 8 words to remember
+      
+      // Create options (all target words + some distractors)
+      const distractors = shuffled.slice(8, 16);  // 8 distractors
+      const allOptions = [...targetWords, ...distractors].sort(() => 0.5 - Math.random());
+      
+      return {
+        type: 'word_recall',
+        words: targetWords,
+        options: allOptions,
+        category: category
+      };
+    }
+    
+    function startWordRecallExercise(data) {
+      wordRecallView.classList.remove('d-none');
+      
+      const wordsDisplay = document.getElementById('words-display');
+      const wordsList = document.getElementById('words-list');
+      const wordsSelection = document.getElementById('words-selection');
+      
+      // Initialize state
+      window.wordRecallState = {
+        targetWords: data.words,
+        selectedWords: [],
+        category: data.category
+      };
+      
+      // Display words to memorize
+      wordsList.innerHTML = `
+        <h3 class="mb-4">Memorize these ${data.category} words:</h3>
+        <div class="row row-cols-2 row-cols-md-4 g-3">
+          ${data.words.map(word => `
+            <div class="col">
+              <div class="cyber-card-inset p-3">
+                <h4 class="mb-0">${word}</h4>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      
+      // After display time, hide words and show selection
+      setTimeout(() => {
+        wordsDisplay.classList.add('d-none');
+        
+        // Generate word options
+        const wordOptions = document.getElementById('word-options');
+        wordOptions.innerHTML = '';
+        
+        data.options.forEach(word => {
+          const col = document.createElement('div');
+          col.className = 'col-6 col-md-3 mb-3';
+          
+          const button = document.createElement('button');
+          button.className = 'btn cyber-btn-outline option-btn w-100';
+          button.textContent = word;
+          button.dataset.word = word;
+          
+          button.addEventListener('click', () => toggleWordSelection(button));
+          
+          col.appendChild(button);
+          wordOptions.appendChild(col);
+        });
+        
+        // Set up check button
+        const checkBtn = document.getElementById('check-words-btn');
+        checkBtn.addEventListener('click', checkWordRecall);
+        
+        // Show selection view
+        wordsSelection.classList.remove('d-none');
+      }, 10000);  // Show for 10 seconds
+    }
+    
+    function toggleWordSelection(button) {
+      const state = window.wordRecallState;
+      const word = button.dataset.word;
+      
+      if (button.classList.contains('selected')) {
+        // Deselect
+        button.classList.remove('selected');
+        state.selectedWords = state.selectedWords.filter(w => w !== word);
+      } else {
+        // Select
+        button.classList.add('selected');
+        state.selectedWords.push(word);
+      }
+    }
+    
+    function checkWordRecall() {
+      const state = window.wordRecallState;
+      
+      // Count correctly recalled words
+      let correctCount = 0;
+      let falsePositives = 0;
+      
+      // Check true positives (correct recalls)
+      state.selectedWords.forEach(word => {
+        if (state.targetWords.includes(word)) {
+          correctCount++;
+        } else {
+          falsePositives++;
+        }
+      });
+      
+      // Calculate false negatives (missed words)
+      const missedWords = state.targetWords.filter(word => !state.selectedWords.includes(word)).length;
+      
+      // Calculate score based on true positives minus penalties for errors
+      const maxScore = state.targetWords.length;
+      const rawScore = correctCount - (falsePositives * 0.5);  // Penalty for false positives
+      const normalizedScore = Math.max(0, rawScore) / maxScore;
+      
+      // Show results
+      const totalTime = stopTimer();
+      const accuracy = `${correctCount}/${state.targetWords.length}`;
+      
+      showResults(normalizedScore, totalTime, accuracy);
+    }
+    
+    // Initialize
+    init();
+  });
+</script>
+{% endblock %}

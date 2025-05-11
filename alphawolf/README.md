@@ -1,145 +1,106 @@
-# AlphaWolf: Empowering Lives Through Compassionate AI
+# AlphaWolf: Cognitive Care & Family Protection AI
 
-![AlphaWolf](https://via.placeholder.com/800x200/3498db/ffffff?text=AlphaWolf+-+LumaCognify+AI)
+Part of The Christman AI Project - LumaCognify AI
 
-## 🌎 Part of The Christman AI Project by LumaCognify AI
+## "HOW CAN I HELP YOU LOVE YOURSELF MORE"
 
-**AlphaWolf** is a comprehensive AI-driven platform supporting individuals with Alzheimer's, dementia, and cognitive challenges while providing robust family protection features. Building on the foundation of AlphaVox, which helps nonverbal individuals communicate, AlphaWolf takes compassionate AI to the next level by **acting on intent** - automating workflows for caregivers, enhancing safety, and delivering personalized cognitive support.
+![AlphaWolf Logo](../static/images/alphawolf-logo.svg)
 
-### 💙 Because no one should lose their memories—or their dignity.
+## Overview
 
----
+AlphaWolf is a comprehensive AI-powered platform supporting neurodivergent individuals, with a focus on assistive technologies for cognitive care, safety, and personal empowerment for those with Alzheimer's and dementia. 
 
-## 🚀 Core Capabilities
+AlphaWolf is a spiritual sibling to AlphaVox (a multi-modal neurodiverse inclusive speech-generating artificial intelligence designed for nonverbal autistic individuals), adapted specifically for dementia and Alzheimer's care applications.
 
-AlphaWolf leverages cutting-edge AWS serverless architecture to deliver:
+## Core Modules
 
-- **Ultra-Low Latency Response** (<100ms) for time-critical alerts and interventions
-- **Unbreakable Resilience** with multi-region active-active architecture
-- **Hyper-Personalization** through AI-driven adaptive learning
-- **Comprehensive Family Protection** with Aegis AI integration
-- **HIPAA-Compliant Security** for sensitive personal health information
-- **Global Scalability** to support worldwide deployment
+### Family Protection System
+The Family Protection System monitors safety through geofencing, location monitoring, and risk assessment. Key features include:
 
-## 🏆 Key Features
+- **Geofencing**: Define safe zones and receive alerts when a person leaves these areas
+- **Unusual Movement Detection**: Identify potentially dangerous movement patterns
+- **Risk Communication Analysis**: Detect concerning language in communications
 
-### For Patients with Cognitive Challenges
+### Web Crawler
+The Web Crawler retrieves authoritative information about Alzheimer's and dementia from trusted sources:
 
-- **Memory Retention Exercises** - Personalized cognitive training
-- **Daily Reminders** - Medication, appointments, and routines
-- **Voice Mimicry (Echo)** - Familiar voice synthesis for comfort and recognition
-- **Symbol-Based Communication (Atlas)** - Visual communication for the nonverbal
-- **Adaptive Learning (Violet)** - AI that evolves with patient needs and capabilities
+- **Topic Search**: Find relevant information on specific topics
+- **Research Retrieval**: Access the latest research on dementia conditions
+- **Fact Extraction**: Extract factual statements from content
 
-### For Caregivers
+### Content Filtering & Risk Analysis
+Content processing with risk assessment:
 
-- **Real-Time Alerts** - Immediate notifications for concerning situations
-- **Safety Zone Monitoring** - Geofencing with customizable boundaries
-- **Risk Assessment** - AI-driven detection of concerning patterns
-- **Caregiver Dashboards** - Comprehensive monitoring and reporting
-- **Stress Assessment Tools** - Support for caregiver wellbeing
+- **Message Risk Analysis**: Evaluate input for concerning content
+- **Safety Reporting**: Generate comprehensive safety reports
+- **Alert Generation**: Produce structured alerts for potential safety issues
 
-### For Families
+## Serverless Architecture
 
-- **Family Protection System** - Integration with Aegis AI for comprehensive safety
-- **Location Tracking** - Prevent wandering and ensure safety
-- **Web Content Monitoring** - Age-appropriate content filters
-- **Communication Bridges** - Connecting family members despite cognitive barriers
+AlphaWolf is built as a serverless application on AWS with the following components:
 
-## 🔧 Technical Architecture
+- **API Gateway**: Edge-optimized, handling all API requests
+- **Lambda Functions**: Serverless compute for all processing
+- **DynamoDB**: NoSQL storage for interaction history, locations, and content
+- **SQS**: Message queuing for alerts and asynchronous processing
+- **S3**: Storage for static content and data
+- **CloudWatch**: Monitoring and logging
 
-AlphaWolf is built on a cutting-edge serverless architecture designed for reliability, speed, and scalability:
+## API Endpoints
 
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/analyze` | POST | Analyze input for risk factors |
+| `/api/v1/safety` | POST | Check location safety relative to defined zones |
+| `/api/v1/track` | POST | Analyze movement patterns for unusual activity |
+| `/api/v1/protection` | POST | Family protection features including geofencing |
+| `/api/v1/risk` | POST | Risk analysis of user input |
+| `/api/v1/content` | GET | Retrieve information on specific topics |
+| `/api/v1/research` | GET | Access latest research on conditions |
+| `/health` | GET | Service health check |
+
+## Deployment
+
+AlphaWolf is deployed using the Serverless Framework. To deploy:
+
+1. Install dependencies: `npm install -g serverless`
+2. Configure AWS credentials
+3. Run deployment script: `./deploy.sh [stage] [region] [profile]`
+
+### Example deployment:
+```bash
+# Deploy to dev environment in us-east-1 using default profile
+./deploy.sh dev us-east-1 default
+
+# Deploy to production
+./deploy.sh prod us-east-1 production
 ```
-alphawolf/
-├── api/               # Serverless Lambda functions
-│   └── lambda_function.py  # Main entry point for API calls
-├── core/              # Core business logic
-│   ├── risk_model.py       # Risk assessment algorithms
-│   ├── web_crawler.py      # Content retrieval system
-│   ├── family_protection.py # Safety and monitoring features
-│   └── utils.py            # Shared utilities
-└── data/              # Data storage and management
-    └── clients.json        # Client information
-```
 
-### Key Components
+## Development
 
-#### 1. Risk Model
-Advanced analytical system that evaluates inputs for patterns indicating potential risk factors. Provides real-time assessment with context-aware scoring.
+### Prerequisites
+- Python 3.11+
+- AWS CLI
+- Serverless Framework
+- Node.js 16+
 
-#### 2. Family Protection System
-Specialized AI system that integrates with Aegis AI to provide comprehensive family protection, safety monitoring, and threat detection. Features geofencing, alert management, and multi-channel notifications.
+### Local Development
+1. Clone the repository
+2. Install dependencies: `pip install -r requirements.txt`
+3. Run local tests: `python -m unittest discover tests`
+4. Start local API: `serverless offline`
 
-#### 3. Web Crawler Module
-Automated content collection system that retrieves dementia and Alzheimer's related information from authorized sources to maintain up-to-date knowledge for both users and the system.
+## Security & Compliance
 
-#### 4. Lambda Function Handler
-Serverless entry point for processing events, analyzing risk, and triggering appropriate responses based on sophisticated context evaluation.
+AlphaWolf is designed with security and privacy in mind:
 
-## 🚀 Next-Level Backend Infrastructure
+- All data is encrypted at rest and in transit
+- User data is anonymized where possible
+- Compliance with healthcare privacy standards
+- Regular security audits
 
-AlphaWolf is engineered with a state-of-the-art AWS infrastructure that prioritizes:
+## Contact
 
-### 1. Performance: Millisecond Responses for Real-Time Compassion
-- Edge-Optimized API Gateway with HTTP APIs
-- Lambda@Edge for Dynamic Voice Synthesis
-- RDS Proxy for Database Scalability
-
-### 2. Resilience: Unbreakable Backend for Unwavering Trust
-- Multi-Region Active-Active Architecture
-- Chaos Engineering with AWS Fault Injection Simulator
-- SQS Visibility Timeout Optimization
-
-### 3. Personalization: Tailored Experiences for Every Soul
-- AI-Driven Symbol Board Optimization via SageMaker
-- Dynamic TTS Voice Profiles with Amazon Polly
-- Context-Aware Alerts with AWS Step Functions
-
-### 4. Developer Experience: Empowering Your Team
-- Serverless Framework for Infrastructure as Code
-- LocalStack for AWS Service Emulation
-- Code Quality Dashboard with SonarQube
-
-### 5. Security & Compliance: Fort Knox for Vulnerable Users
-- AWS Shield Advanced for DDoS Protection
-- Amazon Macie for PII Discovery
-- AWS GuardDuty for Intelligent Threat Detection
-
-## 📋 Implementation Plan
-
-A disciplined 12-week rollout plan ensures systematic development and testing:
-
-- **Weeks 1-2**: Infrastructure setup (Serverless Framework, LocalStack)
-- **Weeks 3-4**: Performance optimizations (Lambda@Edge, RDS Proxy)
-- **Weeks 5-6**: Multi-region resilience and voice personalization
-- **Weeks 7-8**: Context-aware alerting and security implementations
-- **Weeks 9-10**: Symbol board optimization and PII protection
-- **Weeks 11-12**: Final testing, documentation, and deployment
-
-## 🙏 The Mission
-
-AlphaWolf isn't just technology; it's a movement to amplify human connection and dignity. 
-
-When a 12-year-old can tell their father "I love you" through AlphaVox's communication tools, or when an Alzheimer's patient can feel secure in their environment through AlphaWolf's protection features, we've created more than software—we've enabled moments of profound human connection.
-
-Our mission: **To use AI not for profit, but for real-world impact** that transforms lives and preserves dignity.
-
----
-
-## 🔄 Getting Started
-
-1. Clone this repository
-2. Install dependencies
-3. Configure AWS credentials
-4. Deploy with Serverless Framework
-
-Detailed setup instructions coming soon!
-
----
-
-*"HOW CAN I HELP YOU LOVE YOURSELF MORE"*
-*— The Christman AI Project*
-
-© 2025 LumaCognify, Inc. All rights reserved.
-Licensed under the LumaCognify Public Covenant License
+For questions or support:
+- Email: research@lumacognify.ai
+- Website: https://alphawolf.christmanai.org

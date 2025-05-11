@@ -1,537 +1,758 @@
-###############################################################################
-# AlphaWolf - LumaCognify AI
-# Part of The Christman AI Project
-#
-# WEB CRAWLER
-# Automated content collection system that retrieves and processes information
-# from authorized sources to maintain up-to-date knowledge for both users and the system.
-###############################################################################
+"""
+AlphaWolf Web Crawler
+Part of The Christman AI Project - LumaCognify AI
 
-import json
-import logging
+This module provides web crawling capabilities for retrieving authoritative
+information about Alzheimer's and dementia from trusted sources.
+
+"HOW CAN I HELP YOU LOVE YOURSELF MORE"
+"""
+
 import os
-import time
-from datetime import datetime
-from typing import Dict, List, Any, Optional
+import logging
+import datetime
 import hashlib
+import json
+import re
+import time
+from typing import Dict, List, Any, Optional, Tuple
+from urllib.parse import urlparse, urljoin
+
+try:
+    import trafilatura
+    from trafilatura.settings import use_config
+    from trafilatura import fetch_url
+except ImportError:
+    # Define placeholder if trafilatura is not available
+    def fetch_url(url):
+        return None
+        
+    def extract(html):
+        return "Content extraction not available"
 
 # Configure logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+
+# Constants
+DEFAULT_USER_AGENT = "AlphaWolf-ResearchBot/1.0 (LumaCognify AI; research@lumacognify.ai; +https://alphawolf.christmanai.org/bot.html)"
+AUTHORITATIVE_DOMAINS = [
+    # Health organizations
+    "nih.gov", "alz.org", "alzheimers.org.uk", "who.int", "cdc.gov", "alzforum.org",
+    "dementia.org", "nia.nih.gov", "alzheimers.gov", "alzheimersresearchuk.org",
+    # Academic institutions
+    "edu", "ac.uk", "harvard.edu", "stanford.edu", "mayo.edu", "hopkinsmedicine.org",
+    "ucl.ac.uk", "oxfordhealth.nhs.uk", "thelancet.com", "nejm.org", "jamanetwork.com",
+    # Reputable health websites
+    "mayoclinic.org", "webmd.com", "clevelandclinic.org", "hopkinsmedicine.org", 
+    "medlineplus.gov", "healthline.com", "medicalnewstoday.com"
+]
+
+# Crawler configuration
+DEFAULT_CONFIG = {
+    "max_depth": 3,
+    "pages_per_source": 10,
+    "crawl_delay": 2.0,  # Seconds between requests to same domain
+    "timeout": 30,
+    "max_content_length": 500000,  # ~500KB
+    "respect_robots": True,
+    "only_authoritative": True,
+    "cache_days": 7  # Cache retrieved content for this many days
+}
 
 class WebCrawler:
     """
-    Web Crawler - Content collection and processing system
-    
-    Retrieves information from authorized sources about dementia, Alzheimer's,
-    and related topics to keep the knowledge base current and relevant.
+    AlphaWolf web crawler for retrieving information from authoritative sources
     """
     
-    def __init__(self, config_path: Optional[str] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None, cache_dir: Optional[str] = None):
         """
-        Initialize the Web Crawler.
+        Initialize the web crawler
         
-        Args:
-            config_path: Optional path to configuration file
+        Parameters:
+        - config: Optional configuration dictionary
+        - cache_dir: Directory to store cached content
         """
-        self.sources = []
-        self.crawl_history = {}
-        self.content_cache = {}
+        self.config = {**DEFAULT_CONFIG, **(config or {})}
+        self.cache_dir = cache_dir or os.path.join(os.path.dirname(__file__), "..", "data", "crawler_cache")
         
-        # Load configuration
-        self._load_config(config_path)
+        # Create cache directory if it doesn't exist
+        os.makedirs(self.cache_dir, exist_ok=True)
         
-        logger.info("Web Crawler initialized")
-    
-    def _load_config(self, config_path: Optional[str] = None):
-        """
-        Load crawler configuration.
+        # Domain-specific crawl delays to avoid overloading servers
+        self.domain_access_times = {}
         
-        Args:
-            config_path: Optional path to configuration file
-        """
+        # Generate a unique instance ID for logging
+        instance_hash = hashlib.md5(str(datetime.datetime.utcnow().timestamp()).encode()).hexdigest()[:8]
+        self.instance_id = f"web_crawler_{instance_hash}"
+        
+        # Initialize trafilatura config if available
         try:
-            # Default config path if none provided
-            if config_path is None:
-                config_path = os.path.join(
-                    os.path.dirname(os.path.dirname(__file__)),
-                    'data',
-                    'crawler_config.json'
-                )
+            self.trafilatura_config = use_config()
+            self.trafilatura_config.set("DEFAULT", "USER_AGENT", DEFAULT_USER_AGENT)
+        except (NameError, AttributeError):
+            self.trafilatura_config = None
             
-            # Check if config file exists
-            if not os.path.exists(config_path):
-                logger.warning(f"No configuration file found at {config_path}. Using default sources.")
-                self._set_default_sources()
-                return
-            
-            # Load config
-            with open(config_path, 'r') as f:
-                config = json.load(f)
-            
-            # Set sources from config
-            self.sources = config.get('sources', [])
-            
-            # Load crawl history if available
-            history_path = os.path.join(
-                os.path.dirname(config_path),
-                'crawler_history.json'
-            )
-            
-            if os.path.exists(history_path):
-                with open(history_path, 'r') as f:
-                    self.crawl_history = json.load(f)
-            
-            logger.info(f"Loaded {len(self.sources)} sources from configuration")
-            
-        except Exception as e:
-            logger.error(f"Error loading configuration: {str(e)}")
-            self._set_default_sources()
-    
-    def _set_default_sources(self):
-        """Set default sources for crawling."""
-        self.sources = [
-            {
-                "name": "Alzheimer's Association",
-                "url": "https://www.alz.org/",
-                "type": "organization",
-                "topics": ["alzheimer's", "dementia", "caregiving", "research"],
-                "priority": 1,
-                "frequency": "weekly"
-            },
-            {
-                "name": "National Institute on Aging",
-                "url": "https://www.nia.nih.gov/health/alzheimers",
-                "type": "government",
-                "topics": ["alzheimer's", "dementia", "aging", "research"],
-                "priority": 1,
-                "frequency": "weekly"
-            },
-            {
-                "name": "Mayo Clinic - Dementia",
-                "url": "https://www.mayoclinic.org/diseases-conditions/dementia/symptoms-causes/syc-20352013",
-                "type": "medical",
-                "topics": ["dementia", "symptoms", "treatment", "prevention"],
-                "priority": 2,
-                "frequency": "monthly"
-            },
-            {
-                "name": "Dementia Society of America",
-                "url": "https://www.dementiasociety.org/",
-                "type": "organization",
-                "topics": ["dementia", "support", "caregiving", "education"],
-                "priority": 2,
-                "frequency": "monthly"
-            },
-            {
-                "name": "AARP - Caregiving",
-                "url": "https://www.aarp.org/caregiving/",
-                "type": "organization",
-                "topics": ["caregiving", "aging", "family care", "resources"],
-                "priority": 3,
-                "frequency": "monthly"
-            }
-        ]
-    
-    def crawl(self, topic: Optional[str] = None, force_refresh: bool = False) -> Dict[str, Any]:
-        """
-        Crawl sources for content.
+        logger.info(f"WebCrawler initialized with ID {self.instance_id}")
         
-        Args:
-            topic: Optional topic filter
-            force_refresh: Force refresh regardless of last crawl time
-            
+    def search_topic(self, 
+                    topic: str, 
+                    subtopics: Optional[List[str]] = None, 
+                    max_results: int = 10) -> List[Dict[str, Any]]:
+        """
+        Search for information on a specific topic
+        
+        Parameters:
+        - topic: The main topic to search for
+        - subtopics: Optional list of subtopics to narrow the search
+        - max_results: Maximum number of results to return
+        
         Returns:
-            Dict with crawl results
-        """
-        start_time = time.time()
-        results = {
-            'sources_processed': 0,
-            'new_content': 0,
-            'updated_content': 0,
-            'errors': 0,
-            'topics': set(),
-            'content': []
-        }
-        
-        # Filter sources by topic if specified
-        sources_to_crawl = self.sources
-        if topic:
-            sources_to_crawl = [s for s in self.sources if topic.lower() in [t.lower() for t in s.get('topics', [])]]
-        
-        logger.info(f"Beginning crawl of {len(sources_to_crawl)} sources" + (f" for topic '{topic}'" if topic else ""))
-        
-        # Process each source
-        for source in sources_to_crawl:
-            source_name = source.get('name', 'Unknown')
-            source_url = source.get('url', '')
-            
-            if not source_url:
-                logger.warning(f"Skipping source '{source_name}' with no URL")
-                continue
-            
-            # Check if we need to refresh this source
-            if not force_refresh and not self._should_refresh(source):
-                logger.info(f"Skipping source '{source_name}' - recently crawled")
-                continue
-            
-            logger.info(f"Crawling source: {source_name} ({source_url})")
-            
-            try:
-                # In a production system, this would use a proper web crawler
-                # For this demo, we'll simulate the crawl process
-                content = self._simulate_crawl(source)
-                
-                # Process and store the content
-                content_hash = hashlib.md5(json.dumps(content).encode()).hexdigest()
-                source_id = hashlib.md5(source_url.encode()).hexdigest()
-                
-                # Check if content is new or updated
-                is_new = source_id not in self.content_cache
-                is_updated = not is_new and self.content_cache.get(source_id, {}).get('hash') != content_hash
-                
-                # Store in cache
-                self.content_cache[source_id] = {
-                    'hash': content_hash,
-                    'content': content,
-                    'last_updated': datetime.utcnow().isoformat() + "Z"
-                }
-                
-                # Update crawl history
-                self.crawl_history[source_id] = {
-                    'last_crawl': datetime.utcnow().isoformat() + "Z",
-                    'success': True,
-                    'source_name': source_name,
-                    'source_url': source_url
-                }
-                
-                # Update results
-                results['sources_processed'] += 1
-                if is_new:
-                    results['new_content'] += 1
-                elif is_updated:
-                    results['updated_content'] += 1
-                
-                for topic in source.get('topics', []):
-                    results['topics'].add(topic)
-                
-                # Add content to results
-                results['content'].append({
-                    'source_name': source_name,
-                    'source_url': source_url,
-                    'timestamp': datetime.utcnow().isoformat() + "Z",
-                    'topics': source.get('topics', []),
-                    'is_new': is_new,
-                    'is_updated': is_updated,
-                    'content': content
-                })
-                
-            except Exception as e:
-                logger.error(f"Error crawling source '{source_name}': {str(e)}")
-                results['errors'] += 1
-                
-                # Update crawl history with error
-                source_id = hashlib.md5(source_url.encode()).hexdigest()
-                self.crawl_history[source_id] = {
-                    'last_crawl': datetime.utcnow().isoformat() + "Z",
-                    'success': False,
-                    'error': str(e),
-                    'source_name': source_name,
-                    'source_url': source_url
-                }
-        
-        # Convert topics set to list for JSON serialization
-        results['topics'] = list(results['topics'])
-        
-        # Calculate duration
-        duration = time.time() - start_time
-        results['duration_seconds'] = duration
-        
-        logger.info(f"Crawl completed in {duration:.2f}s: {results['sources_processed']} sources, "
-                   f"{results['new_content']} new, {results['updated_content']} updated, "
-                   f"{results['errors']} errors")
-        
-        # Save crawl history
-        self._save_history()
-        
-        return results
-    
-    def _should_refresh(self, source: Dict[str, Any]) -> bool:
-        """
-        Determine if a source should be refreshed based on frequency and last crawl time.
-        
-        Args:
-            source: Source configuration
-            
-        Returns:
-            True if the source should be refreshed
-        """
-        source_url = source.get('url', '')
-        if not source_url:
-            return False
-        
-        # Get source ID
-        source_id = hashlib.md5(source_url.encode()).hexdigest()
-        
-        # If no crawl history, definitely refresh
-        if source_id not in self.crawl_history:
-            return True
-        
-        # Get last crawl time
-        last_crawl_str = self.crawl_history[source_id].get('last_crawl')
-        if not last_crawl_str:
-            return True
-        
-        try:
-            # Parse last crawl time
-            last_crawl = datetime.fromisoformat(last_crawl_str.rstrip('Z'))
-            
-            # Get current time
-            now = datetime.utcnow()
-            
-            # Calculate time since last crawl
-            time_since_crawl = (now - last_crawl).total_seconds()
-            
-            # Determine refresh frequency in seconds
-            frequency = source.get('frequency', 'weekly')
-            
-            if frequency == 'hourly':
-                refresh_seconds = 3600
-            elif frequency == 'daily':
-                refresh_seconds = 86400
-            elif frequency == 'weekly':
-                refresh_seconds = 604800
-            elif frequency == 'monthly':
-                refresh_seconds = 2592000
-            else:
-                refresh_seconds = 604800  # Default to weekly
-            
-            # Consider source priority (higher priority = more frequent)
-            priority = source.get('priority', 2)
-            refresh_seconds = int(refresh_seconds / priority)
-            
-            # Return whether it's time to refresh
-            return time_since_crawl >= refresh_seconds
-            
-        except Exception as e:
-            logger.error(f"Error checking refresh time: {str(e)}")
-            return True  # Default to refresh on error
-    
-    def _simulate_crawl(self, source: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Simulate crawling a source for content.
-        In a production system, this would use a proper web crawler.
-        
-        Args:
-            source: Source configuration
-            
-        Returns:
-            Dict with crawled content
-        """
-        # In a real system, this would fetch and process real web content
-        # For this demo, we'll return simulated content
-        
-        source_type = source.get('type', 'unknown')
-        topics = source.get('topics', [])
-        source_name = source.get('name', 'Unknown')
-        
-        # Sample article templates by source type
-        templates = {
-            'organization': [
-                {
-                    'title': 'Understanding {topic} for Families and Caregivers',
-                    'content': 'This comprehensive guide helps families understand {topic} and provides practical tips for daily care.',
-                    'tags': ['guide', 'family', 'tips']
-                },
-                {
-                    'title': 'New Research on {topic} Treatment Options',
-                    'content': 'Recent studies have shown promising results for {topic} treatments focusing on early intervention.',
-                    'tags': ['research', 'treatment', 'innovation']
-                }
-            ],
-            'government': [
-                {
-                    'title': 'National Guidelines for {topic} Management',
-                    'content': 'The latest health guidelines recommend an integrated approach to {topic} care including medication, therapy, and lifestyle modifications.',
-                    'tags': ['guidelines', 'official', 'health policy']
-                },
-                {
-                    'title': '{topic} Research Funding Opportunities',
-                    'content': 'New grants available for researchers studying innovative approaches to {topic} care and treatment.',
-                    'tags': ['funding', 'research', 'grants']
-                }
-            ],
-            'medical': [
-                {
-                    'title': 'Clinical Trial Results: {topic} Intervention Study',
-                    'content': 'A recent phase III trial showed significant improvement in {topic} symptoms with the new treatment approach.',
-                    'tags': ['clinical', 'research', 'treatment']
-                },
-                {
-                    'title': 'Diagnostic Advances in {topic}',
-                    'content': 'New diagnostic techniques enable earlier and more accurate detection of {topic}, potentially improving treatment outcomes.',
-                    'tags': ['diagnosis', 'technology', 'early detection']
-                }
-            ]
-        }
-        
-        # Get templates for this source type, or use generic templates
-        source_templates = templates.get(source_type, templates['organization'])
-        
-        # Generate simulated articles based on topics
-        articles = []
-        for topic in topics:
-            # Pick a template 
-            template = source_templates[hash(topic + source_name) % len(source_templates)]
-            
-            # Create an article from the template
-            article = {
-                'title': template['title'].replace('{topic}', topic.title()),
-                'content': template['content'].replace('{topic}', topic),
-                'topic': topic,
-                'tags': template['tags'] + [topic],
-                'publish_date': datetime.utcnow().isoformat() + "Z",
-                'url': f"{source.get('url', 'https://example.com')}/{topic.replace(' ', '-')}"
-            }
-            
-            articles.append(article)
-        
-        # Simulate content extraction with common elements
-        return {
-            'articles': articles,
-            'source': source_name,
-            'extracted_on': datetime.utcnow().isoformat() + "Z",
-            'topics': topics,
-            'article_count': len(articles)
-        }
-    
-    def _save_history(self):
-        """Save crawl history to file."""
-        try:
-            # Determine history path
-            history_path = os.path.join(
-                os.path.dirname(os.path.dirname(__file__)),
-                'data',
-                'crawler_history.json'
-            )
-            
-            # Ensure directory exists
-            os.makedirs(os.path.dirname(history_path), exist_ok=True)
-            
-            # Save history
-            with open(history_path, 'w') as f:
-                json.dump(self.crawl_history, f, indent=2)
-            
-            logger.info(f"Saved crawl history for {len(self.crawl_history)} sources")
-            
-        except Exception as e:
-            logger.error(f"Error saving crawl history: {str(e)}")
-    
-    def get_content_for_topic(self, topic: str, max_age_days: int = 30) -> List[Dict[str, Any]]:
-        """
-        Get cached content for a specific topic.
-        
-        Args:
-            topic: Topic to retrieve content for
-            max_age_days: Maximum age of content in days
-            
-        Returns:
-            List of content items matching the topic
+        - List of information items with metadata
         """
         results = []
-        max_age_seconds = max_age_days * 86400
-        now = datetime.utcnow()
+        search_terms = [topic]
         
-        for source_id, cache_item in self.content_cache.items():
-            content = cache_item.get('content', {})
-            last_updated_str = cache_item.get('last_updated')
+        if subtopics:
+            search_terms.extend([f"{topic} {subtopic}" for subtopic in subtopics])
             
-            # Skip if no content or too old
-            if not content or not last_updated_str:
-                continue
-            
+        logger.info(f"Searching for topics: {search_terms}")
+        
+        # Start URLs for major authoritative sources
+        start_urls = [
+            f"https://www.alz.org/search?searchtext={topic.replace(' ', '+')}",
+            f"https://www.nia.nih.gov/search?search={topic.replace(' ', '+')}",
+            f"https://www.alzheimers.gov/search?query={topic.replace(' ', '+')}",
+            f"https://www.mayoclinic.org/search/search-results?q={topic.replace(' ', '+')}"
+        ]
+        
+        # Process each start URL
+        for url in start_urls:
+            if len(results) >= max_results:
+                break
+                
             try:
-                last_updated = datetime.fromisoformat(last_updated_str.rstrip('Z'))
-                age_seconds = (now - last_updated).total_seconds()
+                domain = urlparse(url).netloc
                 
-                if age_seconds > max_age_seconds:
-                    continue
+                # Respect crawl delay
+                self._respect_crawl_delay(domain)
                 
-                # Check if this content is for the requested topic
-                source_topics = content.get('topics', [])
-                if topic.lower() in [t.lower() for t in source_topics]:
-                    results.append({
-                        'source': content.get('source', 'Unknown'),
-                        'articles': content.get('articles', []),
-                        'last_updated': last_updated_str,
-                        'age_days': int(age_seconds / 86400),
-                        'source_id': source_id
-                    })
+                # Try to get from cache first
+                cached_content = self._get_from_cache(url)
+                if cached_content:
+                    logger.info(f"Using cached content for {url}")
+                    links = self._extract_links(cached_content, url)
+                else:
+                    # Fetch the search results page
+                    logger.info(f"Fetching search results from {url}")
+                    html = fetch_url(url, config=self.trafilatura_config)
+                    
+                    if not html:
+                        logger.warning(f"Failed to fetch {url}")
+                        continue
+                        
+                    # Extract links from search results
+                    links = self._extract_links(html, url)
+                    
+                    # Save to cache
+                    self._save_to_cache(url, html)
+                
+                # Process each link
+                for link in links[:self.config["pages_per_source"]]:
+                    if len(results) >= max_results:
+                        break
+                        
+                    try:
+                        # Respect crawl delay
+                        link_domain = urlparse(link).netloc
+                        self._respect_crawl_delay(link_domain)
+                        
+                        # Only process authoritative domains if configured
+                        if self.config["only_authoritative"] and not self._is_authoritative(link_domain):
+                            logger.info(f"Skipping non-authoritative domain: {link_domain}")
+                            continue
+                        
+                        # Try to get from cache first
+                        content_info = self._get_content_from_cache(link)
+                        
+                        if not content_info:
+                            # Fetch and extract content
+                            logger.info(f"Fetching content from {link}")
+                            html = fetch_url(link, config=self.trafilatura_config)
+                            
+                            if not html:
+                                logger.warning(f"Failed to fetch {link}")
+                                continue
+                                
+                            # Extract main content
+                            content = trafilatura.extract(html, include_comments=False, include_tables=True)
+                            
+                            if not content or len(content.strip()) < 100:
+                                logger.warning(f"No significant content extracted from {link}")
+                                continue
+                                
+                            # Extract metadata
+                            metadata = trafilatura.metadata.extract_metadata(html, url=link)
+                            
+                            # Create content info
+                            content_info = {
+                                "url": link,
+                                "title": metadata.title if metadata else self._extract_title(html),
+                                "authors": metadata.author if metadata else None,
+                                "date": metadata.date if metadata else None,
+                                "content": content,
+                                "source": link_domain,
+                                "retrieved": datetime.datetime.utcnow().isoformat()
+                            }
+                            
+                            # Save to cache
+                            self._save_content_to_cache(link, content_info)
+                            
+                        # Add to results
+                        results.append(content_info)
+                        
+                    except Exception as e:
+                        logger.error(f"Error processing link {link}: {e}")
+                        continue
+                        
             except Exception as e:
-                logger.error(f"Error processing cached content: {str(e)}")
+                logger.error(f"Error processing start URL {url}: {e}")
+                continue
+                
+        # Add search metadata
+        for result in results:
+            result["topic"] = topic
+            result["relevance_score"] = self._calculate_relevance(result["content"], topic, subtopics)
+            
+        # Sort by relevance
+        results.sort(key=lambda x: x.get("relevance_score", 0), reverse=True)
         
-        return results
+        logger.info(f"Retrieved {len(results)} results for topic '{topic}'")
+        return results[:max_results]
     
-    def get_source_status(self) -> Dict[str, Any]:
+    def get_latest_research(self, 
+                           condition: str, 
+                           max_results: int = 5, 
+                           max_age_days: int = 90) -> List[Dict[str, Any]]:
         """
-        Get status of all crawled sources.
+        Get latest research on a specific condition
+        
+        Parameters:
+        - condition: The medical condition to search for (e.g., "Alzheimer's")
+        - max_results: Maximum number of results to return
+        - max_age_days: Maximum age of research in days
         
         Returns:
-            Dict with source status information
+        - List of research papers/articles with metadata
         """
-        results = {
-            'sources': [],
-            'total_sources': len(self.sources),
-            'crawled_sources': len(self.crawl_history),
-            'total_content_items': sum(len(s.get('content', {}).get('articles', [])) 
-                                      for s in self.content_cache.values())
-        }
+        results = []
         
-        # Add details for each source
-        for source in self.sources:
-            source_url = source.get('url', '')
-            source_id = hashlib.md5(source_url.encode()).hexdigest() if source_url else None
+        # Research-specific sources
+        research_urls = [
+            f"https://pubmed.ncbi.nlm.nih.gov/?term={condition.replace(' ', '+')}",
+            f"https://alzforum.org/search?term={condition.replace(' ', '+')}",
+            f"https://www.alzheimersresearchuk.org/search?term={condition.replace(' ', '+')}"
+        ]
+        
+        # Process each research URL
+        for url in research_urls:
+            if len(results) >= max_results:
+                break
+                
+            try:
+                domain = urlparse(url).netloc
+                
+                # Respect crawl delay
+                self._respect_crawl_delay(domain)
+                
+                # Try to get from cache first
+                cached_content = self._get_from_cache(url)
+                if cached_content:
+                    logger.info(f"Using cached content for {url}")
+                    links = self._extract_links(cached_content, url)
+                else:
+                    # Fetch the search results page
+                    logger.info(f"Fetching research results from {url}")
+                    html = fetch_url(url, config=self.trafilatura_config)
+                    
+                    if not html:
+                        logger.warning(f"Failed to fetch {url}")
+                        continue
+                        
+                    # Extract links from search results
+                    links = self._extract_links(html, url)
+                    
+                    # Save to cache
+                    self._save_to_cache(url, html)
+                
+                # Process each link
+                for link in links[:self.config["pages_per_source"]]:
+                    if len(results) >= max_results:
+                        break
+                        
+                    try:
+                        # Respect crawl delay
+                        link_domain = urlparse(link).netloc
+                        self._respect_crawl_delay(link_domain)
+                        
+                        # Try to get from cache first
+                        content_info = self._get_content_from_cache(link)
+                        
+                        if not content_info:
+                            # Fetch and extract content
+                            logger.info(f"Fetching research from {link}")
+                            html = fetch_url(link, config=self.trafilatura_config)
+                            
+                            if not html:
+                                logger.warning(f"Failed to fetch {link}")
+                                continue
+                                
+                            # Extract main content
+                            content = trafilatura.extract(html, include_comments=False, include_tables=True)
+                            
+                            if not content or len(content.strip()) < 100:
+                                logger.warning(f"No significant content extracted from {link}")
+                                continue
+                                
+                            # Extract metadata
+                            metadata = trafilatura.metadata.extract_metadata(html, url=link)
+                            
+                            # Create content info
+                            content_info = {
+                                "url": link,
+                                "title": metadata.title if metadata else self._extract_title(html),
+                                "authors": metadata.author if metadata else None,
+                                "date": metadata.date if metadata else None,
+                                "content": content,
+                                "source": link_domain,
+                                "retrieved": datetime.datetime.utcnow().isoformat(),
+                                "is_research": True
+                            }
+                            
+                            # Save to cache
+                            self._save_content_to_cache(link, content_info)
+                            
+                        # Check if research is recent enough
+                        if content_info.get("date"):
+                            try:
+                                pub_date = datetime.datetime.fromisoformat(content_info["date"].replace('Z', '+00:00'))
+                                age_days = (datetime.datetime.utcnow() - pub_date).days
+                                
+                                if age_days > max_age_days:
+                                    logger.info(f"Skipping older research: {content_info.get('title')} ({age_days} days old)")
+                                    continue
+                            except (ValueError, TypeError):
+                                # If date can't be parsed, include it anyway
+                                pass
+                        
+                        # Add to results
+                        content_info["condition"] = condition
+                        content_info["relevance_score"] = self._calculate_relevance(content_info["content"], condition)
+                        results.append(content_info)
+                        
+                    except Exception as e:
+                        logger.error(f"Error processing research link {link}: {e}")
+                        continue
+                        
+            except Exception as e:
+                logger.error(f"Error processing research URL {url}: {e}")
+                continue
+                
+        # Sort by date (newest first), then by relevance
+        results.sort(key=lambda x: (x.get("date", ""), x.get("relevance_score", 0)), reverse=True)
+        
+        logger.info(f"Retrieved {len(results)} recent research items for condition '{condition}'")
+        return results[:max_results]
+    
+    def extract_facts(self, 
+                     content: Dict[str, Any], 
+                     max_facts: int = 10) -> List[Dict[str, Any]]:
+        """
+        Extract factual information from content
+        
+        Parameters:
+        - content: Content dictionary with text and metadata
+        - max_facts: Maximum number of facts to extract
+        
+        Returns:
+        - List of extracted facts with metadata
+        """
+        facts = []
+        text = content.get("content", "")
+        
+        # Simple fact extraction based on paragraph breaks
+        # In a real implementation, this would use ML or LLM to extract facts
+        paragraphs = text.split('\n\n')
+        
+        for i, paragraph in enumerate(paragraphs):
+            paragraph = paragraph.strip()
             
-            source_status = {
-                'name': source.get('name', 'Unknown'),
-                'url': source_url,
-                'type': source.get('type', 'unknown'),
-                'topics': source.get('topics', []),
-                'priority': source.get('priority', 2),
-                'frequency': source.get('frequency', 'weekly')
+            # Skip short paragraphs and those that don't have factual indicators
+            if len(paragraph) < 30 or not self._looks_factual(paragraph):
+                continue
+                
+            # Create fact entry
+            fact = {
+                "text": paragraph,
+                "source_url": content.get("url"),
+                "source_title": content.get("title"),
+                "source_domain": content.get("source"),
+                "extracted": datetime.datetime.utcnow().isoformat(),
+                "confidence": self._assess_fact_confidence(paragraph, content.get("source", ""))
             }
             
-            # Add crawl history if available
-            if source_id and source_id in self.crawl_history:
-                history = self.crawl_history[source_id]
-                source_status.update({
-                    'last_crawl': history.get('last_crawl', 'Never'),
-                    'last_success': history.get('success', False),
-                    'last_error': history.get('error') if not history.get('success', False) else None
-                })
-            else:
-                source_status.update({
-                    'last_crawl': 'Never',
-                    'last_success': None,
-                    'last_error': None
-                })
+            facts.append(fact)
             
-            # Add cache status if available
-            if source_id and source_id in self.content_cache:
-                cache = self.content_cache[source_id]
-                content = cache.get('content', {})
-                source_status.update({
-                    'last_updated': cache.get('last_updated', 'Never'),
-                    'content_hash': cache.get('hash'),
-                    'article_count': len(content.get('articles', []))
-                })
-            else:
-                source_status.update({
-                    'last_updated': 'Never',
-                    'content_hash': None,
-                    'article_count': 0
-                })
-            
-            results['sources'].append(source_status)
+            if len(facts) >= max_facts:
+                break
+                
+        logger.info(f"Extracted {len(facts)} facts from content: {content.get('title')}")
+        return facts
+    
+    def _respect_crawl_delay(self, domain: str) -> None:
+        """
+        Respect crawl delay for domains
         
-        return results
+        Parameters:
+        - domain: The domain to check
+        """
+        now = time.time()
+        
+        if domain in self.domain_access_times:
+            last_access_time = self.domain_access_times[domain]
+            elapsed = now - last_access_time
+            
+            # Use default crawl delay
+            delay = self.config["crawl_delay"]
+            
+            # Enforce minimum wait time
+            if elapsed < delay:
+                wait_time = delay - elapsed
+                logger.debug(f"Waiting {wait_time:.2f}s for {domain}")
+                time.sleep(wait_time)
+                
+        # Update access time
+        self.domain_access_times[domain] = time.time()
+        
+    def _is_authoritative(self, domain: str) -> bool:
+        """
+        Check if a domain is authoritative
+        
+        Parameters:
+        - domain: The domain to check
+        
+        Returns:
+        - True if authoritative, False otherwise
+        """
+        return any(auth_domain in domain for auth_domain in AUTHORITATIVE_DOMAINS)
+        
+    def _extract_links(self, html: str, base_url: str) -> List[str]:
+        """
+        Extract links from HTML
+        
+        Parameters:
+        - html: The HTML content
+        - base_url: The base URL for resolving relative links
+        
+        Returns:
+        - List of extracted links
+        """
+        links = []
+        
+        # Simple regex-based link extraction
+        # In a real implementation, use a proper HTML parser
+        href_pattern = re.compile(r'href=["\'](.*?)["\']')
+        matches = href_pattern.findall(html)
+        
+        for match in matches:
+            try:
+                # Resolve relative URLs
+                absolute_url = urljoin(base_url, match)
+                
+                # Skip non-HTTP URLs
+                if not absolute_url.startswith(('http://', 'https://')):
+                    continue
+                    
+                # Skip URLs with fragments
+                if '#' in absolute_url:
+                    absolute_url = absolute_url.split('#')[0]
+                    
+                # Skip URLs with query parameters (simplified)
+                if '?' in absolute_url:
+                    absolute_url = absolute_url.split('?')[0]
+                    
+                # Skip duplicate links
+                if absolute_url not in links:
+                    links.append(absolute_url)
+            except Exception:
+                continue
+                
+        return links
+        
+    def _extract_title(self, html: str) -> str:
+        """
+        Extract title from HTML
+        
+        Parameters:
+        - html: The HTML content
+        
+        Returns:
+        - Extracted title or "Unknown Title"
+        """
+        title_match = re.search(r'<title>(.*?)</title>', html, re.IGNORECASE | re.DOTALL)
+        
+        if title_match:
+            return title_match.group(1).strip()
+        
+        return "Unknown Title"
+        
+    def _calculate_relevance(self, 
+                            content: str, 
+                            topic: str, 
+                            subtopics: Optional[List[str]] = None) -> float:
+        """
+        Calculate relevance score of content to topic
+        
+        Parameters:
+        - content: The content text
+        - topic: The main topic
+        - subtopics: Optional list of subtopics
+        
+        Returns:
+        - Relevance score from 0.0 to 1.0
+        """
+        if not content:
+            return 0.0
+            
+        content_lower = content.lower()
+        topic_lower = topic.lower()
+        
+        # Basic relevance based on keyword frequency
+        topic_count = content_lower.count(topic_lower)
+        
+        # Normalize by content length
+        content_length = len(content_lower)
+        base_score = min(1.0, (topic_count * 1000) / content_length)
+        
+        # Add subtopic relevance
+        if subtopics:
+            subtopic_score = 0.0
+            
+            for subtopic in subtopics:
+                subtopic_lower = subtopic.lower()
+                subtopic_count = content_lower.count(subtopic_lower)
+                subtopic_score += min(1.0, (subtopic_count * 500) / content_length)
+                
+            # Average the subtopic scores and combine with base score
+            subtopic_score = subtopic_score / len(subtopics)
+            final_score = (base_score * 0.7) + (subtopic_score * 0.3)
+        else:
+            final_score = base_score
+            
+        return round(final_score, 2)
+        
+    def _looks_factual(self, text: str) -> bool:
+        """
+        Check if text looks like a factual statement
+        
+        Parameters:
+        - text: The text to check
+        
+        Returns:
+        - True if likely factual, False otherwise
+        """
+        # Check length (facts are usually not too short or too long)
+        if len(text) < 30 or len(text) > 500:
+            return False
+            
+        # Check for factual indicators
+        factual_patterns = [
+            r'\b(?:is|are|was|were|has been|have been)\b',
+            r'\b(?:percent|percentage|study|research|found|discovered)\b',
+            r'\b(?:according to|research shows|evidence suggests)\b',
+            r'\d+%',
+            r'\d+ percent',
+            r'\b(?:in \d+|patients|symptoms|treatment|diagnosis)\b'
+        ]
+        
+        matches = 0
+        for pattern in factual_patterns:
+            if re.search(pattern, text, re.IGNORECASE):
+                matches += 1
+                
+        # If multiple factual patterns match, likely factual
+        return matches >= 2
+        
+    def _assess_fact_confidence(self, fact_text: str, source_domain: str) -> float:
+        """
+        Assess confidence in a fact based on text and source
+        
+        Parameters:
+        - fact_text: The fact text
+        - source_domain: The source domain
+        
+        Returns:
+        - Confidence score from 0.0 to 1.0
+        """
+        # Start with base confidence
+        confidence = 0.5
+        
+        # Adjust based on source authority
+        if self._is_authoritative(source_domain):
+            # Higher base confidence for authoritative sources
+            confidence += 0.2
+            
+        # Adjust based on text indicators
+        
+        # References to studies increase confidence
+        if re.search(r'\b(?:study|research|trial|according to)\b', fact_text, re.IGNORECASE):
+            confidence += 0.1
+            
+        # Statistical data increases confidence
+        if re.search(r'\d+(?:\.\d+)?%|\d+ percent', fact_text, re.IGNORECASE):
+            confidence += 0.1
+            
+        # Hedging language decreases confidence
+        if re.search(r'\b(?:may|might|could|possibly|perhaps)\b', fact_text, re.IGNORECASE):
+            confidence -= 0.1
+            
+        # Ensure confidence is between 0 and 1
+        return max(0.0, min(1.0, confidence))
+        
+    def _cache_path(self, url: str) -> str:
+        """
+        Generate cache file path for URL
+        
+        Parameters:
+        - url: The URL to generate cache path for
+        
+        Returns:
+        - Path to cache file
+        """
+        # Create URL hash
+        url_hash = hashlib.md5(url.encode()).hexdigest()
+        
+        return os.path.join(self.cache_dir, f"{url_hash}.html")
+        
+    def _content_cache_path(self, url: str) -> str:
+        """
+        Generate content cache file path for URL
+        
+        Parameters:
+        - url: The URL to generate cache path for
+        
+        Returns:
+        - Path to content cache file
+        """
+        # Create URL hash
+        url_hash = hashlib.md5(url.encode()).hexdigest()
+        
+        return os.path.join(self.cache_dir, f"{url_hash}.json")
+        
+    def _get_from_cache(self, url: str) -> Optional[str]:
+        """
+        Get HTML from cache if available and not expired
+        
+        Parameters:
+        - url: The URL to retrieve from cache
+        
+        Returns:
+        - Cached HTML or None if not available
+        """
+        cache_path = self._cache_path(url)
+        
+        if not os.path.exists(cache_path):
+            return None
+            
+        # Check if cache is expired
+        cache_time = os.path.getmtime(cache_path)
+        cache_age_days = (time.time() - cache_time) / (24 * 3600)
+        
+        if cache_age_days > self.config["cache_days"]:
+            logger.debug(f"Cache expired for {url}")
+            return None
+            
+        try:
+            with open(cache_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            logger.error(f"Error reading cache for {url}: {e}")
+            return None
+            
+    def _save_to_cache(self, url: str, html: str) -> None:
+        """
+        Save HTML to cache
+        
+        Parameters:
+        - url: The URL to cache
+        - html: The HTML content to cache
+        """
+        cache_path = self._cache_path(url)
+        
+        try:
+            with open(cache_path, 'w', encoding='utf-8') as f:
+                f.write(html)
+        except Exception as e:
+            logger.error(f"Error saving cache for {url}: {e}")
+            
+    def _get_content_from_cache(self, url: str) -> Optional[Dict[str, Any]]:
+        """
+        Get content from cache if available and not expired
+        
+        Parameters:
+        - url: The URL to retrieve from cache
+        
+        Returns:
+        - Cached content or None if not available
+        """
+        cache_path = self._content_cache_path(url)
+        
+        if not os.path.exists(cache_path):
+            return None
+            
+        # Check if cache is expired
+        cache_time = os.path.getmtime(cache_path)
+        cache_age_days = (time.time() - cache_time) / (24 * 3600)
+        
+        if cache_age_days > self.config["cache_days"]:
+            logger.debug(f"Content cache expired for {url}")
+            return None
+            
+        try:
+            with open(cache_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Error reading content cache for {url}: {e}")
+            return None
+            
+    def _save_content_to_cache(self, url: str, content: Dict[str, Any]) -> None:
+        """
+        Save content to cache
+        
+        Parameters:
+        - url: The URL to cache
+        - content: The content to cache
+        """
+        cache_path = self._content_cache_path(url)
+        
+        try:
+            with open(cache_path, 'w', encoding='utf-8') as f:
+                json.dump(content, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logger.error(f"Error saving content cache for {url}: {e}")
+
+
+# Create default instance
+default_crawler = WebCrawler()
+
+# Convenience functions
+def search_topic(topic, subtopics=None, max_results=10):
+    """Convenience function to search for information on a topic"""
+    return default_crawler.search_topic(topic, subtopics, max_results)
+
+def get_latest_research(condition, max_results=5, max_age_days=90):
+    """Convenience function to get latest research on a condition"""
+    return default_crawler.get_latest_research(condition, max_results, max_age_days)
+
+def extract_facts(content, max_facts=10):
+    """Convenience function to extract facts from content"""
+    return default_crawler.extract_facts(content, max_facts)

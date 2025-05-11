@@ -1,325 +1,335 @@
-###############################################################################
-# AlphaWolf - LumaCognify AI
-# Part of The Christman AI Project
-#
-# RISK MODEL
-# Advanced risk assessment system that evaluates input for potential
-# risk factors and provides real-time assessment with context-aware scoring.
-###############################################################################
+"""
+AlphaWolf Risk Analysis Model
+Part of The Christman AI Project - LumaCognify AI
 
+This module provides comprehensive risk analysis for user inputs in the AlphaWolf system.
+It evaluates text for various risk categories, considers contextual factors, and assesses
+overall safety for vulnerable users.
+
+"HOW CAN I HELP YOU LOVE YOURSELF MORE"
+"""
+
+import re
 import json
+import datetime
 import logging
-import os
-from datetime import datetime
-from typing import Dict, List, Any, Tuple, Optional
+from typing import Dict, List, Tuple, Any, Optional
+import hashlib
 
 # Configure logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
-# Risk categories and their weights
+# Risk categories
 RISK_CATEGORIES = {
-    'self_harm': 0.95,
-    'wandering': 0.85,
-    'medical_emergency': 0.90,
-    'confusion': 0.65,
-    'distress': 0.70,
-    'disorientation': 0.75,
-    'aggression': 0.80
-}
-
-# Contextual modifiers
-CONTEXT_MODIFIERS = {
-    'time_of_day': {
-        'night': 1.2,        # Increased risk at night
-        'evening': 1.1,
-        'morning': 0.9,
-        'afternoon': 0.8
+    "content": {
+        "description": "Content-related risks including self-harm, violence, or inappropriate content",
+        "weight": 1.0
     },
-    'location': {
-        'unknown': 1.3,      # Highest risk when location is unknown
-        'unfamiliar': 1.2,   # High risk in unfamiliar places
-        'public': 1.1,       # Elevated risk in public places
-        'home': 0.8,         # Lower risk at home
-        'safe_zone': 0.7     # Lowest risk in designated safe zones
+    "spam": {
+        "description": "Spam, repetitive, or automated messages",
+        "weight": 0.7
     },
-    'weather': {
-        'extreme': 1.25,     # Extreme weather increases risk
-        'poor': 1.15,        # Poor weather increases risk
-        'fair': 1.0,         # No modifier for fair weather
-        'good': 0.9          # Good weather slightly decreases risk
+    "location": {
+        "description": "Location information sharing that could enable exploitation",
+        "weight": 0.9
+    },
+    "identity": {
+        "description": "Sharing of personally identifiable information",
+        "weight": 0.8
+    },
+    "manipulation": {
+        "description": "Attempts to manipulate vulnerable individuals",
+        "weight": 1.0
+    },
+    "privacy": {
+        "description": "Risks related to privacy violations",
+        "weight": 0.85
     }
 }
 
-# Keywords that may indicate risk
-RISK_KEYWORDS = {
-    'self_harm': [
-        'hurt myself', 'end it all', 'not worth living', 'kill myself', 
-        'suicide', 'die', 'death', 'pain', 'pills', 'medication'
+# Risk term dictionaries
+RISK_TERMS = {
+    "content": [
+        "harm", "kill", "die", "suicide", "hurt", "dangerous", "weapon", "cut", "overdose",
+        "jump", "bridge", "poison", "attack", "violent", "abuse", "assault", "threat",
+        "shoot", "gun", "knife", "hit", "punch", "drown", "suffocate", "strangle"
     ],
-    'wandering': [
-        'lost', 'where am i', 'don\'t know where', 'unfamiliar', 'strange place',
-        'need to go', 'leave', 'walk', 'find', 'confused', 'way home'
+    "identity": [
+        "social security", "ssn", "credit card", "passport", "birth certificate", "license number",
+        "bank account", "routing number", "password", "pin", "address", "phone number",
+        "email address", "full name", "date of birth", "maiden name", "mother's maiden"
     ],
-    'medical_emergency': [
-        'pain', 'hurt', 'chest', 'breath', 'dizzy', 'fall', 'fell',
-        'blood', 'sick', 'help me', 'emergency', 'call doctor'
+    "manipulation": [
+        "secret", "don't tell", "promise not to", "don't share", "only you", "between us",
+        "urgent", "emergency", "immediate", "crisis", "hurry", "quick", "now", "immediately",
+        "trust me", "believe me", "obey", "command", "do as I say", "must follow"
     ],
-    'confusion': [
-        'confused', 'don\'t understand', 'what is', 'who are you',
-        'where am i', 'what day', 'what time', 'don\'t remember', 'forget'
-    ],
-    'distress': [
-        'scared', 'afraid', 'frightened', 'terrified', 'anxious',
-        'worried', 'upset', 'crying', 'sad', 'depressed', 'alone'
-    ],
-    'disorientation': [
-        'lost', 'don\'t know where', 'unfamiliar', 'strange place',
-        'where am i', 'how did i get here', 'what happened', 'time'
-    ],
-    'aggression': [
-        'angry', 'mad', 'hate', 'furious', 'rage', 'yell',
-        'hit', 'break', 'throw', 'destroy', 'fight'
+    "privacy": [
+        "spy", "track", "monitor", "surveillance", "watch", "follow", "camera", "record",
+        "listen", "microphone", "private", "confidential", "secret", "hide", "avoid"
     ]
 }
 
-def analyze_input(input_text: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
+# Time and context factors
+TIME_RISK_FACTORS = {
+    "night": {
+        "hours": (22, 6),  # 10 PM to 6 AM
+        "multiplier": 1.25
+    },
+    "early_morning": {
+        "hours": (2, 5),  # 2 AM to 5 AM
+        "multiplier": 1.5
+    }
+}
+
+# Location risk factors - would be integrated with actual geofencing
+LOCATION_RISK_FACTORS = {
+    "unknown": 1.3,
+    "outside_safe_zone": 1.2,
+    "approaching_boundary": 1.1,
+    "safe_zone": 1.0
+}
+
+class RiskAnalyzer:
     """
-    Analyzes text input for risk factors and provides a risk assessment.
-    
-    Args:
-        input_text: The text to analyze
-        context: Optional contextual information (time, location, etc.)
-    
-    Returns:
-        Dict containing risk score, factors, and context
+    The primary risk analysis engine for AlphaWolf
     """
-    if not input_text:
-        return {
-            'score': 0,
-            'factors': [],
-            'context': get_default_context() if context is None else context
+    
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        """
+        Initialize the risk analyzer with optional configuration
+        
+        Parameters:
+        - config: Configuration dictionary (optional)
+        """
+        self.config = config or {}
+        self.high_risk_threshold = self.config.get("high_risk_threshold", 0.7)
+        self.medium_risk_threshold = self.config.get("medium_risk_threshold", 0.4)
+        self.time_sensitivity = self.config.get("time_sensitivity", True)
+        self.location_sensitivity = self.config.get("location_sensitivity", True)
+        
+        # Generate a unique instance ID for logging
+        instance_hash = hashlib.md5(str(datetime.datetime.utcnow().timestamp()).encode()).hexdigest()[:8]
+        self.instance_id = f"risk_analyzer_{instance_hash}"
+        
+        logger.info(f"RiskAnalyzer initialized with ID {self.instance_id}")
+        
+    def analyze(self, text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Analyze text for risks with optional context
+        
+        Parameters:
+        - text: The text to analyze
+        - context: Optional context dictionary with time, location, user info, etc.
+        
+        Returns:
+        - Dictionary with risk analysis results
+        """
+        context = context or {}
+        text_lower = text.lower()
+        
+        # Start with basic text analysis
+        risk_score, categories = self._analyze_text(text_lower)
+        
+        # Apply contextual modifiers
+        if self.time_sensitivity:
+            risk_score = self._apply_time_factors(risk_score, context.get("timestamp"))
+            
+        if self.location_sensitivity:
+            risk_score = self._apply_location_factors(risk_score, context.get("location"))
+            
+        # Apply user vulnerability factors
+        user_vulnerability = context.get("user_vulnerability", 1.0)
+        risk_score *= user_vulnerability
+        
+        # Cap the risk score at 1.0
+        risk_score = min(risk_score, 1.0)
+        
+        # Determine risk level
+        risk_level = self._determine_risk_level(risk_score)
+        
+        # Create analysis result
+        result = {
+            "risk_score": round(risk_score, 2),
+            "risk_level": risk_level,
+            "risk_categories": categories,
+            "timestamp": datetime.datetime.utcnow().isoformat(),
+            "analyzer_id": self.instance_id
         }
-    
-    # Normalize input text for analysis
-    normalized_text = input_text.lower().strip()
-    
-    # Get or create context
-    ctx = get_default_context() if context is None else context
-    
-    # Identify risk factors
-    risk_factors = identify_risk_factors(normalized_text)
-    
-    # Calculate base score
-    base_score = calculate_base_score(risk_factors)
-    
-    # Apply contextual modifiers
-    final_score = apply_context_modifiers(base_score, ctx, risk_factors)
-    
-    # Prepare response
-    result = {
-        'score': final_score,
-        'factors': [{'category': cat, 'confidence': conf} for cat, conf in risk_factors],
-        'context': ctx
-    }
-    
-    # Log high-risk results
-    if final_score >= 80:
-        logger.warning(f"High risk detected (score: {final_score}). Factors: {risk_factors}")
-    
-    return result
-
-def identify_risk_factors(text: str) -> List[Tuple[str, float]]:
-    """
-    Identifies potential risk factors in the text.
-    
-    Args:
-        text: The normalized text to analyze
-    
-    Returns:
-        List of tuples containing (category, confidence)
-    """
-    risk_factors = []
-    
-    for category, keywords in RISK_KEYWORDS.items():
-        category_confidence = 0.0
         
-        for keyword in keywords:
-            if keyword in text:
-                # Calculate confidence based on keyword match and position
-                match_confidence = calculate_keyword_confidence(text, keyword)
-                category_confidence = max(category_confidence, match_confidence)
+        # Log high risk results
+        if risk_level != "low":
+            logger.warning(f"Risk detected: {risk_level} ({risk_score}) - Categories: {categories}")
+            
+        return result
+    
+    def _analyze_text(self, text: str) -> Tuple[float, List[str]]:
+        """
+        Perform basic text analysis for risk factors
         
-        if category_confidence > 0.1:  # Only include if above threshold
-            risk_factors.append((category, category_confidence))
-    
-    # Sort by confidence (descending)
-    risk_factors.sort(key=lambda x: x[1], reverse=True)
-    
-    return risk_factors
-
-def calculate_keyword_confidence(text: str, keyword: str) -> float:
-    """
-    Calculates confidence score for a keyword match.
-    
-    Args:
-        text: The text being analyzed
-        keyword: The matched keyword
-    
-    Returns:
-        Confidence score (0.0 to 1.0)
-    """
-    # Base confidence for any match
-    base_confidence = 0.65
-    
-    # Position modifier (earlier mentions might be more significant)
-    position = text.find(keyword)
-    text_length = len(text)
-    position_modifier = 1.0 - (position / text_length) * 0.3  # Slight modifier
-    
-    # Frequency modifier
-    occurrences = text.count(keyword)
-    frequency_modifier = min(1.0 + (occurrences - 1) * 0.1, 1.3)  # Cap at 30% boost
-    
-    # Length modifier (longer keywords might be more specific)
-    length_modifier = min(1.0 + (len(keyword) / 20), 1.2)  # Cap at 20% boost
-    
-    # Exact phrase vs part of another word
-    exactness_modifier = 1.2 if (
-        position == 0 or not text[position-1].isalpha()
-    ) and (
-        position + len(keyword) == len(text) or not text[position + len(keyword)].isalpha()
-    ) else 1.0
-    
-    # Calculate final confidence
-    confidence = base_confidence * position_modifier * frequency_modifier * length_modifier * exactness_modifier
-    
-    # Apply category weight
-    for category, keywords in RISK_KEYWORDS.items():
-        if keyword in keywords:
-            category_weight = RISK_CATEGORIES[category]
-            confidence *= category_weight
-            break
-    
-    return min(confidence, 1.0)  # Cap at 1.0
-
-def calculate_base_score(risk_factors: List[Tuple[str, float]]) -> float:
-    """
-    Calculates the base risk score from identified factors.
-    
-    Args:
-        risk_factors: List of (category, confidence) tuples
-    
-    Returns:
-        Base risk score
-    """
-    if not risk_factors:
-        return 0
-    
-    # Get highest confidence for each category
-    category_scores = {}
-    for category, confidence in risk_factors:
-        category_scores[category] = max(confidence, category_scores.get(category, 0))
-    
-    # Calculate weighted average of top three categories
-    category_weights = sorted([(cat, RISK_CATEGORIES[cat] * score) 
-                             for cat, score in category_scores.items()], 
-                            key=lambda x: x[1], reverse=True)
-    
-    if not category_weights:
-        return 0
-    
-    # Use diminishing weights for multiple factors (primary factor has most impact)
-    weights = [1.0, 0.7, 0.5]  # Weights for 1st, 2nd, 3rd top categories
-    
-    score_sum = 0
-    weight_sum = 0
-    
-    for i, (cat, weighted_score) in enumerate(category_weights[:3]):  # Consider top 3
-        factor_weight = weights[i] if i < len(weights) else 0.3
-        score_sum += weighted_score * factor_weight
-        weight_sum += factor_weight
-    
-    # Normalize to 0-100 scale
-    return min(round((score_sum / weight_sum) * 100), 100) if weight_sum > 0 else 0
-
-def apply_context_modifiers(base_score: float, context: Dict[str, Any], 
-                          risk_factors: List[Tuple[str, float]]) -> float:
-    """
-    Applies contextual modifiers to the base risk score.
-    
-    Args:
-        base_score: The calculated base risk score
-        context: Contextual information
-        risk_factors: Identified risk factors
-    
-    Returns:
-        Modified risk score
-    """
-    if base_score == 0:
-        return 0
-    
-    # Apply time of day modifier
-    time_modifier = CONTEXT_MODIFIERS['time_of_day'].get(context.get('time_of_day', 'afternoon'), 1.0)
-    
-    # Apply location modifier
-    location_modifier = CONTEXT_MODIFIERS['location'].get(context.get('location_type', 'unknown'), 1.0)
-    
-    # Apply weather modifier
-    weather_modifier = CONTEXT_MODIFIERS['weather'].get(context.get('weather', 'fair'), 1.0)
-    
-    # Special handling for specific risk combinations
-    combo_modifier = 1.0
-    categories = [cat for cat, _ in risk_factors]
-    
-    # Wandering + Confusion + Night is particularly high risk
-    if ('wandering' in categories and 'confusion' in categories and 
-        context.get('time_of_day') == 'night'):
-        combo_modifier = 1.5
-    
-    # Distress + Aggression combination increases risk
-    elif 'distress' in categories and 'aggression' in categories:
-        combo_modifier = 1.3
-    
-    # Apply historical context if available
-    historical_modifier = 1.0
-    if context.get('recent_incidents'):
-        recent = context.get('recent_incidents', [])
-        # Increase risk if similar recent incidents
-        for incident in recent:
-            incident_categories = incident.get('categories', [])
-            if any(cat in incident_categories for cat, _ in risk_factors):
-                historical_modifier = 1.5
+        Parameters:
+        - text: The text to analyze (already lowercase)
+        
+        Returns:
+        - Tuple of (risk_score, risk_categories)
+        """
+        risk_score = 0.0
+        categories = []
+        
+        # Check for risk terms in each category
+        for category, terms in RISK_TERMS.items():
+            for term in terms:
+                if term in text:
+                    # If found, add the category with its weight
+                    if category not in categories:
+                        categories.append(category)
+                        risk_score += RISK_CATEGORIES[category]["weight"] * 0.2
+        
+        # Additional heuristics
+        
+        # Check for excessive length (potential spam)
+        if len(text) > 1000:
+            if "spam" not in categories:
+                categories.append("spam")
+                risk_score += RISK_CATEGORIES["spam"]["weight"] * 0.1
+        
+        # Check for repetitive patterns
+        words = text.split()
+        if len(words) > 10:
+            unique_words = set(words)
+            repetition_ratio = len(unique_words) / len(words)
+            if repetition_ratio < 0.3:
+                if "spam" not in categories:
+                    categories.append("spam")
+                    risk_score += RISK_CATEGORIES["spam"]["weight"] * 0.2
+        
+        # Check for manipulation patterns
+        manipulation_patterns = [
+            r"(?:don't|do not|never) tell",
+            r"(?:don't|do not|never) share",
+            r"our little secret",
+            r"just between us",
+            r"promise (not to|you won't)"
+        ]
+        
+        for pattern in manipulation_patterns:
+            if re.search(pattern, text):
+                if "manipulation" not in categories:
+                    categories.append("manipulation")
+                    risk_score += RISK_CATEGORIES["manipulation"]["weight"] * 0.3
                 break
+        
+        return risk_score, categories
     
-    # Calculate final score with all modifiers
-    modified_score = base_score * time_modifier * location_modifier * weather_modifier * combo_modifier * historical_modifier
+    def _apply_time_factors(self, risk_score: float, timestamp: Optional[str] = None) -> float:
+        """
+        Apply time-based risk factors
+        
+        Parameters:
+        - risk_score: The current risk score
+        - timestamp: Optional timestamp string (ISO format), uses current time if None
+        
+        Returns:
+        - Adjusted risk score
+        """
+        if timestamp:
+            try:
+                dt = datetime.datetime.fromisoformat(timestamp)
+            except (ValueError, TypeError):
+                dt = datetime.datetime.utcnow()
+        else:
+            dt = datetime.datetime.utcnow()
+        
+        hour = dt.hour
+        
+        # Night time risk elevation
+        if TIME_RISK_FACTORS["night"]["hours"][0] <= hour or hour < TIME_RISK_FACTORS["night"]["hours"][1]:
+            risk_score *= TIME_RISK_FACTORS["night"]["multiplier"]
+            
+        # Early morning higher risk
+        if TIME_RISK_FACTORS["early_morning"]["hours"][0] <= hour < TIME_RISK_FACTORS["early_morning"]["hours"][1]:
+            risk_score *= TIME_RISK_FACTORS["early_morning"]["multiplier"]
+            
+        return risk_score
     
-    # Ensure score remains within 0-100 range
-    return min(round(modified_score), 100)
+    def _apply_location_factors(self, risk_score: float, location_info: Optional[Dict[str, Any]] = None) -> float:
+        """
+        Apply location-based risk factors
+        
+        Parameters:
+        - risk_score: The current risk score
+        - location_info: Optional location information dictionary
+        
+        Returns:
+        - Adjusted risk score
+        """
+        if not location_info:
+            return risk_score
+        
+        location_status = location_info.get("status", "unknown")
+        
+        if location_status in LOCATION_RISK_FACTORS:
+            risk_score *= LOCATION_RISK_FACTORS[location_status]
+        else:
+            # Unknown location status is higher risk
+            risk_score *= LOCATION_RISK_FACTORS["unknown"]
+            
+        return risk_score
+    
+    def _determine_risk_level(self, risk_score: float) -> str:
+        """
+        Determine the risk level based on the score
+        
+        Parameters:
+        - risk_score: Calculated risk score
+        
+        Returns:
+        - Risk level string: 'low', 'medium', or 'high'
+        """
+        if risk_score >= self.high_risk_threshold:
+            return "high"
+        elif risk_score >= self.medium_risk_threshold:
+            return "medium"
+        else:
+            return "low"
+            
+    def is_high_risk(self, risk_score: float) -> bool:
+        """
+        Check if a risk score is considered high risk
+        
+        Parameters:
+        - risk_score: The risk score to check
+        
+        Returns:
+        - True if high risk, False otherwise
+        """
+        return risk_score >= self.high_risk_threshold
+        
+    def is_medium_risk(self, risk_score: float) -> bool:
+        """
+        Check if a risk score is considered medium risk
+        
+        Parameters:
+        - risk_score: The risk score to check
+        
+        Returns:
+        - True if medium risk, False otherwise
+        """
+        return self.medium_risk_threshold <= risk_score < self.high_risk_threshold
 
-def get_default_context() -> Dict[str, Any]:
+
+# Singleton instance for easy import
+default_analyzer = RiskAnalyzer()
+
+def analyze_text(text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
-    Creates a default context when none is provided.
+    Convenience function to analyze text using the default analyzer
+    
+    Parameters:
+    - text: The text to analyze
+    - context: Optional context dictionary
     
     Returns:
-        Default context dictionary
+    - Risk analysis result dictionary
     """
-    # Get current hour to determine time of day
-    current_hour = datetime.now().hour
-    
-    if 5 <= current_hour < 12:
-        time_of_day = 'morning'
-    elif 12 <= current_hour < 17:
-        time_of_day = 'afternoon'
-    elif 17 <= current_hour < 22:
-        time_of_day = 'evening'
-    else:
-        time_of_day = 'night'
-    
-    return {
-        'time_of_day': time_of_day,
-        'location_type': 'unknown',
-        'weather': 'fair',
-        'recent_incidents': []
-    }
+    return default_analyzer.analyze(text, context)

@@ -1,0 +1,124 @@
+/* 
+  AlphaWolf Voice Recognition Styles
+  Part of The Christman AI Project
+  LumaCognify AI
+*/
+
+.microphone-permissions {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    font-family: 'Roboto', sans-serif;
+}
+
+.permissions-container {
+    background-color: #1a1a2e;
+    border: 1px solid #4f46e5;
+    border-radius: 8px;
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
+    color: #fff;
+    position: relative;
+}
+
+.permissions-container h3 {
+    color: #4f46e5;
+    font-family: 'Orbitron', sans-serif;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.permissions-container p {
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.permissions-container ol {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.permissions-container li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.permissions-container button {
+    margin-right: 10px;
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    transition: all 0.2s ease;
+}
+
+.permissions-container .btn-primary {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+}
+
+.permissions-container .btn-primary:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(67, 56, 202, 0.3);
+}
+
+.permissions-container .btn-secondary {
+    background-color: #334155;
+    border-color: #334155;
+}
+
+.permissions-container .btn-secondary:hover {
+    background-color: #475569;
+    border-color: #475569;
+}
+
+.voice-status-badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.voice-status-active {
+    background-color: #10b981;
+    color: #fff;
+}
+
+.voice-status-waiting {
+    background-color: #fbbf24;
+    color: #1a1a2e;
+}
+
+.voice-status-error {
+    background-color: #ef4444;
+    color: #fff;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.voice-active-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #10b981;
+    margin-right: 6px;
+    animation: pulse 1.5s infinite;
+}

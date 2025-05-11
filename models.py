@@ -1,3 +1,11 @@
+###############################################################################
+# AlphaWolf - LumaCognify AI
+# Part of The Christman AI Project
+#
+# MODELS MODULE
+# Database models and relationships for the AlphaWolf platform
+###############################################################################
+
 from app import db
 from datetime import datetime
 from flask_login import UserMixin

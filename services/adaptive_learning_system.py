@@ -1,3 +1,15 @@
+###############################################################################
+# AlphaWolf - LumaCognify AI
+# Part of The Christman AI Project
+#
+# ADAPTIVE LEARNING SYSTEM MODULE
+# Personalizes cognitive exercises and learning content based on patient 
+# performance, dynamically adjusting difficulty and focus areas for optimal 
+# cognitive stimulation.
+#
+# CodeName: Violet
+###############################################################################
+
 import logging
 import time
 import json

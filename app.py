@@ -1,3 +1,15 @@
+###############################################################################
+# AlphaWolf - LumaCognify AI
+# Part of The Christman AI Project
+#
+# A comprehensive AI-powered platform supporting neurodivergent individuals,
+# focusing on assistive technologies for cognitive care, safety, and personal 
+# empowerment for those with Alzheimer's and dementia.
+#
+# Copyright (c) 2025 LumaCognify, Inc. All rights reserved.
+# Licensed under the LumaCognify Public Covenant License
+###############################################################################
+
 import os
 import logging
 from datetime import datetime
@@ -152,7 +164,9 @@ scheduler_thread = threading.Thread(target=run_schedule)
 scheduler_thread.daemon = True
 scheduler_thread.start()
 
-# Routes
+# =====================================================================
+# ROUTES - Website navigation routes and handlers
+# =====================================================================
 @app.route('/')
 def index():
     """Minimal landing page for AlphaWolf"""

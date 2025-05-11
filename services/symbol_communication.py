@@ -1,3 +1,14 @@
+###############################################################################
+# AlphaWolf - LumaCognify AI
+# Part of The Christman AI Project
+#
+# SYMBOL COMMUNICATION MODULE
+# Symbol-based communication system for non-verbal users with dementia.
+# Enables expression through customizable symbol boards with images and icons.
+#
+# CodeName: Atlas
+###############################################################################
+
 import os
 import logging
 import json

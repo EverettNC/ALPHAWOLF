@@ -1,3 +1,14 @@
+###############################################################################
+# AlphaWolf - LumaCognify AI
+# Part of The Christman AI Project
+#
+# VOICE MIMICRY ENGINE MODULE
+# Enhanced voice system that analyzes, learns from, and mimics individual
+# patient voices for more personalized and effective communication.
+#
+# CodeName: Echo
+###############################################################################
+
 import os
 import logging
 import json

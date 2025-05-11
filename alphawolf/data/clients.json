@@ -1,0 +1,72 @@
+[
+  {
+    "client_id": "uuid-4450",
+    "name": "John Doe",
+    "age": 72,
+    "diagnosis": "Alzheimer's - Early Stage",
+    "emergency_contact": "+1-555-123-4567",
+    "caregiver_id": "cg-8901",
+    "location_tracking": true,
+    "risk_profile": {
+      "baseline_score": 15,
+      "last_assessment": "2025-05-09T15:30:00Z",
+      "high_risk_factors": ["wandering", "medication_adherence"],
+      "intervention_plan": "daily_check_in"
+    },
+    "session_history": [
+      {
+        "session_id": "sess-84913",
+        "start_time": "2025-05-10T23:40:00Z",
+        "end_time": "2025-05-10T23:45:00Z",
+        "input_count": 3,
+        "max_risk_score": 92,
+        "escalated": true
+      },
+      {
+        "session_id": "sess-84800",
+        "start_time": "2025-05-09T14:20:00Z",
+        "end_time": "2025-05-09T14:30:00Z",
+        "input_count": 7,
+        "max_risk_score": 45,
+        "escalated": false
+      }
+    ],
+    "preferences": {
+      "voice_type": "female",
+      "speech_rate": 0.8,
+      "interests": ["gardening", "classical_music", "cooking"],
+      "avoided_topics": ["family_loss"]
+    }
+  },
+  {
+    "client_id": "uuid-5678",
+    "name": "Mary Smith",
+    "age": 68,
+    "diagnosis": "Vascular Dementia - Moderate",
+    "emergency_contact": "+1-555-765-4321",
+    "caregiver_id": "cg-1234",
+    "location_tracking": true,
+    "risk_profile": {
+      "baseline_score": 25,
+      "last_assessment": "2025-05-08T09:15:00Z",
+      "high_risk_factors": ["falls", "disorientation"],
+      "intervention_plan": "supervised_activity"
+    },
+    "session_history": [
+      {
+        "session_id": "sess-83700",
+        "start_time": "2025-05-10T10:10:00Z",
+        "end_time": "2025-05-10T10:25:00Z",
+        "input_count": 12,
+        "max_risk_score": 63,
+        "escalated": false
+      }
+    ],
+    "preferences": {
+      "voice_type": "male",
+      "speech_rate": 0.9,
+      "interests": ["knitting", "jazz_music", "baking"],
+      "avoided_topics": ["current_politics"]
+    }
+  }
+]

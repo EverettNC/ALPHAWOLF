@@ -1,0 +1,183 @@
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+at t.value (https://db834e88-bd74-47cc-9c8f-683501bf9c97-00-2dnue98aswkf8.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://db834e88-bd74-47cc-9c8f-683501bf9c97-00-2dnue98aswkf8.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://db834e88-bd74-47cc-9c8f-683501bf9c97-00-2dnue98aswkf8.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://db834e88-bd74-47cc-9c8f-683501bf9c97-00-2dnue98aswkf8.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Error starting voice recognition: 
+DOMException {}
+
+Speech recognition error: not-allowed
+Welcome, Everett! Your AlphaWolf system has been initialized.
+AlphaWolf
+ Home
+ Learning
+ Caregivers
+ Memory Lane
+ Login
+Active
+Welcome to AlphaWolf
+Your AI-powered companion for Alzheimer's and dementia care
+
+"HOW CAN I HELP YOU LOVE YOURSELF MORE" - AlphaWolf is designed to empower individuals with cognitive challenges, enhance their safety, and promote dignity through AI technology that listens, adapts, and provides personalized support.
+
+ Voice control active
+Cognitive Enhancement
+Self-Optimizing
+Personalized cognitive exercises and memory reinforcement activities to help maintain brain function:
+
+Memory
+87%
+Attention
+92%
+Language
+78%
+Recognition
+85%
+Problem Solving
+73%
+Overall
+82%
+Safety Monitoring
+Protected
+Geofencing, location tracking, and safety alerts to protect against wandering and ensure safety:
+
+Today, 10:35 AM
+Safe zone check-in: Home
+Location confirmed within primary safe zone
+Today, 8:12 AM
+Approaching zone boundary
+Alert sent to caregiver: approaching eastern boundary
+Yesterday, 3:42 PM
+New safe zone added
+Caregiver added "Community Center" to safe zones
+Reminders
+Schedule and manage medication, appointments, and daily activities with voice-controlled reminders.
+
+4 active reminders
+Memory Lane
+Access cherished memories through photos, videos, and stories to strengthen cognitive connections.
+
+78 memories stored
+Learning Corner
+Discover the latest research and resources about Alzheimer's and dementia care practices.
+
+3 new articles
+Voice Commands
+AI-Powered
+AlphaWolf responds to these voice commands - simply say "Alpha" followed by:
+
+"tell me about today"
+"what's my schedule"
+"remind me to take medicine"
+"call my caregiver"
+"show my photos"
+"help me navigate home"
+"start cognitive exercises"
+"how am I doing today"
+Caregiver Connection
+Connected
+Keep caregivers informed with real-time insights and coordinated care:
+
+Caregiver
+Sarah Johnson
+Primary Caregiver
+
+Online
+Last check-in: Today, 9:45 AM
+Next appointment: Thursday, 2:00 PM
+Medication check: Complete
+© 2025 The Christman AI Project
+
+Powered by LumaCognify AI - AI That Empowers, Protects, and Redefines Humanity
+
+"How can I help you love yourself more?"
+
+ Adaptive Learning
+ Safety Monitoring
+ Voice Control
+ Caregiver Support
+LumaCognify Public Covenant License

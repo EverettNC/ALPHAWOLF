@@ -12,6 +12,9 @@
 
 import os
 import logging
+import json
+import threading
+import time
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -1365,6 +1368,83 @@ def memory_lane():
 def voice_control_help():
     """Documentation and help for voice control features."""
     return render_template('voice_control_help.html')
+
+@app.route('/process_voice_command', methods=['POST'])
+def process_voice_command():
+    """Process voice commands from frontend."""
+    # Extract command from request
+    data = request.json
+    if not data or 'command' not in data:
+        return jsonify({
+            'success': False,
+            'error': 'No command provided',
+            'response': 'I couldn\'t understand your command. Please try again.'
+        }), 400
+    
+    # Get the command
+    command = data['command'].lower().strip()
+    
+    # Log the incoming command
+    logging.info(f"Received voice command: {command}")
+    
+    # Command processing logic
+    response = {
+        'success': True,
+        'command': command,
+        'response': None,
+        'action': None
+    }
+    
+    # Process different commands
+    if any(phrase in command for phrase in ['hello', 'hi', 'hey']):
+        response['response'] = "Hello! I'm AlphaWolf, your cognitive care assistant. How may I help you today?"
+    
+    elif 'tell me about today' in command:
+        # Get today's date, time, and weather info
+        now = datetime.now()
+        date_info = now.strftime('%A, %B %d, %Y')
+        time_info = now.strftime('%I:%M %p')
+        
+        response['response'] = f"Today is {date_info} and the current time is {time_info}."
+        
+    elif any(phrase in command for phrase in ['schedule', 'reminders', 'appointments']):
+        # This would ideally pull from a database of actual reminders
+        reminders = [
+            "Take medication at 2:00 PM",
+            "Doctor's appointment tomorrow at 10:00 AM",
+            "Call your daughter at 5:00 PM"
+        ]
+        
+        if reminders:
+            response['response'] = "Here are your upcoming reminders: " + ". ".join(reminders)
+        else:
+            response['response'] = "You don't have any upcoming reminders scheduled."
+    
+    elif 'cognitive exercises' in command or 'start exercises' in command:
+        response['response'] = "I'm opening the cognitive exercises page for you."
+        response['action'] = {
+            'type': 'navigate', 
+            'url': url_for('cognitive_exercises')
+        }
+    
+    elif 'memory lane' in command or 'photos' in command:
+        response['response'] = "Opening your Memory Lane photo collection."
+        response['action'] = {
+            'type': 'navigate', 
+            'url': url_for('memory_lane')
+        }
+    
+    elif 'help' in command:
+        response['response'] = "I can help you with reminders, cognitive exercises, memory lane photos, or information about your day. What would you like to do?"
+    
+    else:
+        # Default response for unrecognized commands
+        response['response'] = "I'm not sure how to help with that. Try asking about today, your schedule, cognitive exercises, or memory lane photos."
+    
+    # Log the response
+    logging.info(f"Voice command response: {response['response']}")
+    
+    return jsonify(response)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

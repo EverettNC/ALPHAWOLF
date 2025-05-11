@@ -1,0 +1,21 @@
+{
+  "client_id": "test_client",
+  "created_at": "2025-05-11T01:40:00Z",
+  "features": {
+    "risk_analysis": true,
+    "family_protection": true,
+    "location_tracking": true,
+    "web_content": true
+  },
+  "preferences": {
+    "alert_threshold": 70,
+    "safety_radius": 100,
+    "language": "en",
+    "notification_channels": ["app", "email", "sms"]
+  },
+  "metadata": {
+    "name": "Test Client",
+    "type": "demo",
+    "created_by": "system"
+  }
+}

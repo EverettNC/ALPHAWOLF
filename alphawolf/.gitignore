@@ -1,0 +1,80 @@
+# AlphaWolf - LumaCognify AI
+# .gitignore file
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+.npm
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# AWS
+.aws/
+.aws-sam/
+samconfig.toml
+.chalice/
+.serverless/
+
+# Data files 
+data/event_logs/
+data/clients/
+*.db
+*.sqlite3
+
+# Cache
+.mypy_cache/
+.cache/
+.eslintcache
+.webpack/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Temporary files
+tmp/
+temp/
+*.log
+*.bak

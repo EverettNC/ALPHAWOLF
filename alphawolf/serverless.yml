@@ -1,0 +1,174 @@
+###############################################################################
+# AlphaWolf - LumaCognify AI
+# Part of The Christman AI Project
+#
+# SERVERLESS FRAMEWORK CONFIGURATION
+# Defines AWS Lambda functions, API endpoints, and resources for
+# the AlphaWolf serverless architecture
+###############################################################################
+
+service: alphawolf-backend 
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+          Resource: arn:aws:s3:::alphawolf-audio/*
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+          Resource: arn:aws:sqs:us-east-1:*:alphawolf-alerts
+  environment:
+    S3_BUCKET: alphawolf-audio
+    SQS_QUEUE: alphawolf-alerts
+    STAGE: ${opt:stage, 'dev'}
+
+functions:
+  processIntent:
+    handler: api/lambda_function.lambda_handler
+    description: 'Processes user intents and triggers appropriate responses'
+    events:
+      - httpApi:
+          path: /intents
+          method: POST
+    environment:
+      DB_HOST: ${ssm:/alphawolf/rds/endpoint}
+      DB_PASSWORD: ${ssm:/alphawolf/rds/password}
+  
+  analyzeRisk:
+    handler: api/risk_analyzer.lambda_handler
+    description: 'Analyzes input for safety risks and escalation needs'
+    events:
+      - httpApi:
+          path: /analyze
+          method: POST
+    environment:
+      RISK_THRESHOLD: 85
+  
+  safetyCheck:
+    handler: api/safety_check.lambda_handler
+    description: 'Verifies location against safety zones'
+    events:
+      - httpApi:
+          path: /safety
+          method: POST
+    environment:
+      SAFETY_RADIUS: 100
+
+  alertProcessor:
+    handler: api/alert_processor.lambda_handler
+    description: 'Processes alerts from the SQS queue'
+    events:
+      - sqs:
+          queueName: alphawolf-alerts
+          batchSize: 10
+    environment:
+      NOTIFICATION_ENDPOINT: ${ssm:/alphawolf/notification/endpoint}
+
+  webCrawler:
+    handler: api/crawler_handler.lambda_handler
+    description: 'Scheduled web crawler for gathering information'
+    events:
+      - schedule: 
+          rate: cron(0 3 * * ? *)
+          enabled: true
+    environment:
+      SOURCES_CONFIG: ${ssm:/alphawolf/crawler/sources}
+
+resources:
+  Resources:
+    AlertsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: alphawolf-alerts
+        VisibilityTimeout: 30
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt: [AlertsDLQ, Arn]
+          maxReceiveCount: 3
+    
+    AlertsDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: alphawolf-alerts-dlq
+    
+    AudioBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: alphawolf-audio
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: aws:kms
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders: ['*']
+              AllowedMethods: [GET]
+              AllowedOrigins: ['*']
+              MaxAge: 3000
+    
+    # DynamoDB Table for client profiles
+    ClientTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: alphawolf-clients
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: client_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: client_id
+            KeyType: HASH
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+    
+    # CloudWatch Alarms for critical metrics
+    APILatencyAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmName: AlphaWolf-API-Latency
+        AlarmDescription: Alert when API latency exceeds 100ms
+        MetricName: Latency
+        Namespace: AWS/ApiGateway
+        Statistic: Average
+        Period: 60
+        EvaluationPeriods: 1
+        Threshold: 100
+        ComparisonOperator: GreaterThanThreshold
+        TreatMissingData: notBreaching
+    
+    LambdaErrorsAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmName: AlphaWolf-Lambda-Errors
+        AlarmDescription: Alert when Lambda functions have errors
+        MetricName: Errors
+        Namespace: AWS/Lambda
+        Statistic: Sum
+        Period: 60
+        EvaluationPeriods: 1
+        Threshold: 1
+        ComparisonOperator: GreaterThanThreshold
+        TreatMissingData: notBreaching
+
+# Log retention configuration
+custom:
+  logRetentionInDays: 14
+
+plugins:
+  - serverless-python-requirements
+  - serverless-plugin-aws-alerts
+  - serverless-plugin-tracing

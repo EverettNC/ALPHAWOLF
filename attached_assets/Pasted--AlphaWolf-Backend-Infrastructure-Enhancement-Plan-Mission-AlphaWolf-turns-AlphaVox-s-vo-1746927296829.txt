@@ -1,0 +1,106 @@
+### AlphaWolf: Backend & Infrastructure Enhancement Plan
+
+**Mission**: AlphaWolf turns AlphaVox's voice into compassionate, intelligent action. It supports nonverbal users, Alzheimer's patients, and caregivers by orchestrating voice-activated care routines, real-time alerts, personalized symbol boards, and memory-safe learning—all built on secure, resilient, low-latency infrastructure.
+
+---
+
+#### 1. **Performance Optimization**
+
+* **Edge-Optimized API Gateway (HTTP APIs)**
+
+  * Migrate `/intents`, `/symbols`, `/alerts` to HTTP APIs.
+  * Enable 5-min TTL caching.
+  * Route through CloudFront for edge performance.
+* **Lambda\@Edge for TTS**
+
+  * Serve dynamic or cached Polly audio.
+  * Reduce latency for global playback (esp. kids/nonverbal users).
+* **RDS Proxy for PostgreSQL**
+
+  * Add RDS Proxy to pool thousands of connections.
+  * Update backend (e.g., FastAPI) connection string.
+
+---
+
+#### 2. **Resilience & Uptime**
+
+* **Multi-Region (us-east-1 + us-west-2)**
+
+  * ECS Fargate + RDS deployed in both.
+  * Route 53 with health checks for failover.
+* **AWS FIS (Fault Injection Simulator)**
+
+  * Simulate crashes, validate auto-recovery.
+* **SQS Optimization**
+
+  * Visibility timeout = 2x Lambda timeout.
+  * DLQ with logging Lambda.
+
+---
+
+#### 3. **Hyper-Personalization**
+
+* **Symbol Board ML (via SageMaker)**
+
+  * Predict most-used symbols per user.
+  * Update symbol board priority dynamically.
+* **Polly Voice Profiles**
+
+  * Upload familiar voices.
+  * Map to users via RDS.
+* **Context-Aware Alerts (Step Functions)**
+
+  * Alert escalation based on time/severity/location.
+
+---
+
+#### 4. **Developer Experience**
+
+* **Serverless Framework (IaC)**
+
+  * Define SQS, API, Lambda, and environment in YAML.
+* **LocalStack for Local Dev**
+
+  * S3, SQS, Lambda local testing with Docker Compose.
+* **SonarQube + GitHub Actions**
+
+  * Linting, security scanning, debt tracking.
+
+---
+
+#### 5. **Security & Compliance**
+
+* **IAM Boundaries (Least Privilege)**
+* **KMS Encryption (S3, RDS, CloudWatch)**
+* **Macie for PII Scans**
+* **GuardDuty + AWS Shield Advanced**
+* **MFA for caregivers (via Cognito)**
+
+---
+
+#### **Deployment Timeline** (12 Weeks)
+
+* Wk 1–2: Serverless, LocalStack, SonarQube setup.
+* Wk 3–4: Lambda\@Edge + RDS Proxy + initial ML data.
+* Wk 5–6: Multi-region infra + FIS experiments.
+* Wk 7–8: Symbol board ML + dynamic TTS.
+* Wk 9–10: Step Function-based alerts.
+* Wk 11–12: 100-user pilot test & optimization.
+
+---
+
+#### Roles
+
+* **Everett (CEO)**: Test features, post stories, monitor impact.
+* **Derek (COO)**: Architect Bedrock, lead backend mentorship, track compliance.
+* **Coders**: Deploy services, test in LocalStack, fix code debt, run weekly demos.
+
+---
+
+#### Outcomes
+
+* Real-time, empathetic voice tech for nonverbal and memory-impaired users.
+* Secure, resilient backend with global reach.
+* A team empowered by clarity, purpose, and technical vision.
+
+This is more than deployment—it’s the embodiment of compassion in code.

@@ -105,7 +105,7 @@ class CacheService:
         self.logger.debug(f"Cache miss for {namespace}/{key}")
         return None
     
-    def set(self, key: str, value: Any, namespace: str = 'default', ttl: int = None) -> bool:
+    def set(self, key: str, value: Any, namespace: str = 'default', ttl: Optional[int] = None) -> bool:
         """
         Set a value in the cache with a given TTL.
         

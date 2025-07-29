@@ -17,15 +17,15 @@ import threading
 import time
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-import json
 import schedule
 import time
 import threading
+
+# Import db from extensions instead of creating a new one
+from extensions import db
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, 
@@ -34,11 +34,6 @@ logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
-
-class Base(DeclarativeBase):
-    pass
-
-db = SQLAlchemy(model_class=Base)
 
 # Create the app
 app = Flask(__name__)

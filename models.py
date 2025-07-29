@@ -6,8 +6,8 @@
 # Database models and relationships for the AlphaWolf platform
 ###############################################################################
 
-from app import db
-from datetime import datetime
+from extensions import db
+from datetime import datetime, timezone
 from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
@@ -28,7 +28,7 @@ class Patient(UserMixin, db.Model):
     points = Column(Integer, default=0)  # Total points earned from exercises
     level = Column(Integer, default=1)  # Current level in the gamification system
     streak_days = Column(Integer, default=0)  # Consecutive days with exercises
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     # Relationships
     reminders = relationship("Reminder", backref="patient", lazy=True)
@@ -51,7 +51,7 @@ class Caregiver(UserMixin, db.Model):
     password_hash = Column(String(256), nullable=False)
     phone = Column(String(20))
     relationship_to_patient = Column(String(100))
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<Caregiver {self.name}>'
@@ -64,7 +64,7 @@ class CognitiveExercise(db.Model):
     description = Column(Text)
     difficulty = Column(String(20), default='medium')  # easy, medium, hard
     type = Column(String(50))  # memory, pattern, language, etc.
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     # Relationships
     results = relationship("ExerciseResult", backref="exercise", lazy=True)
@@ -80,7 +80,7 @@ class ExerciseResult(db.Model):
     exercise_id = Column(Integer, ForeignKey('cognitive_exercises.id'), nullable=False)
     score = Column(Float, nullable=False)
     completion_time = Column(Float)  # in seconds
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<ExerciseResult {self.patient_id} {self.exercise_id} {self.score}>'
@@ -95,7 +95,7 @@ class Reminder(db.Model):
     time = Column(String(50), nullable=False)  # Time in format HH:MM or cron format
     recurring = Column(Boolean, default=False)
     completed = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<Reminder {self.title}>'
@@ -108,7 +108,7 @@ class SafeZone(db.Model):
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     radius = Column(Float, nullable=False)  # in meters
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<SafeZone {self.name}>'
@@ -123,7 +123,7 @@ class Alert(db.Model):
     latitude = Column(Float)
     longitude = Column(Float)
     is_resolved = Column(Boolean, default=False)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<Alert {self.alert_type} for {self.patient_id}>'
@@ -138,7 +138,7 @@ class CognitiveProfile(db.Model):
     language_score = Column(Float, default=0.0)
     pattern_recognition_score = Column(Float, default=0.0)
     problem_solving_score = Column(Float, default=0.0)
-    last_updated = Column(DateTime, default=datetime.utcnow)
+    last_updated = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<CognitiveProfile {self.patient_id}>'
@@ -150,7 +150,7 @@ class GestureLog(db.Model):
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     gesture_type = Column(String(50), nullable=False)
     confidence = Column(Float)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<GestureLog {self.gesture_type}>'
@@ -166,7 +166,7 @@ class Achievement(db.Model):
     category = Column(String(50))  # Exercise completion, streak, level, etc.
     requirement = Column(Integer, nullable=False)  # Numeric requirement to earn it
     points_reward = Column(Integer, default=0)  # Points awarded when earned
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     # Relationships
     patient_achievements = relationship("PatientAchievement", backref="achievement", lazy=True)
@@ -181,7 +181,7 @@ class PatientAchievement(db.Model):
     id = Column(Integer, primary_key=True)
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     achievement_id = Column(Integer, ForeignKey('achievements.id'), nullable=False)
-    earned_at = Column(DateTime, default=datetime.utcnow)
+    earned_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<PatientAchievement {self.patient_id} {self.achievement_id}>'
@@ -196,7 +196,7 @@ class Reward(db.Model):
     icon = Column(String(100))
     points_cost = Column(Integer, nullable=False)
     is_virtual = Column(Boolean, default=True)  # Virtual vs physical reward
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     # Relationships
     patient_rewards = relationship("PatientReward", backref="reward", lazy=True)
@@ -211,7 +211,7 @@ class PatientReward(db.Model):
     id = Column(Integer, primary_key=True)
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     reward_id = Column(Integer, ForeignKey('rewards.id'), nullable=False)
-    redeemed_at = Column(DateTime, default=datetime.utcnow)
+    redeemed_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<PatientReward {self.patient_id} {self.reward_id}>'
@@ -226,7 +226,7 @@ class PointTransaction(db.Model):
     transaction_type = Column(String(50), nullable=False)  # exercise_completion, achievement, reward_redemption
     reference_id = Column(Integer)  # ID of the related entity (exercise result, achievement, etc.)
     description = Column(String(200))
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<PointTransaction {self.patient_id} {self.points} {self.transaction_type}>'

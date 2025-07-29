@@ -291,7 +291,7 @@ class AdaptiveLearningSystem:
     
     def _generate_exercise_parameters(self, exercise_id: str, difficulty: str) -> Dict[str, Any]:
         """Generate parameters for an exercise based on difficulty."""
-        params = {
+        params: Dict[str, Any] = {
             'difficulty': difficulty
         }
         

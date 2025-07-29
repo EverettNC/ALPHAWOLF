@@ -18,11 +18,16 @@ from datetime import datetime
 import tempfile
 import base64
 from io import BytesIO
-import openai
+
 from openai import OpenAI
 from gtts import gTTS
 import uuid
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
+
+# ...existing imports...
 logger = logging.getLogger(__name__)
 
 class VoiceMimicryEngine:

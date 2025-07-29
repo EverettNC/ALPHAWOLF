@@ -1,0 +1,20 @@
+version: 1.0
+runtime: python3
+build:
+  commands:
+    build:
+      - echo "Installing dependencies"
+      - pip install -r requirements.txt
+run:
+  runtime-version: 3.11
+  command: gunicorn --bind 0.0.0.0:8000 app:app
+  network:
+    port: 8000
+    env: PORT
+  env:
+    - name: PYTHONPATH
+      value: /opt/render/project/src
+    - name: DATABASE_URL
+      value: sqlite:///alphawolf.db
+    - name: SESSION_SECRET
+      value: your-production-secret-key

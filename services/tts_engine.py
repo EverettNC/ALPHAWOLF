@@ -55,6 +55,13 @@ class TTSEngine:
         
         self.logger.info("TTS Engine initialized")
     
+    def synthesize(self, text, voice_id='female_default', **kwargs):
+        """
+        Main synthesize method that other parts of your app expect.
+        This calls the generate_speech method internally.
+        """
+        return self.generate_speech(text, voice_id, cache=kwargs.get('cache', True))
+    
     def generate_speech(self, text, voice_id='female_default', cache=True):
         """
         Generate speech audio from text.

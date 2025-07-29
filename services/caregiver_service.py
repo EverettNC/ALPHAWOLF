@@ -217,7 +217,7 @@ class CaregiverService:
                 geo_service = GeolocationService()
                 
                 for zone in safe_zones:
-                    result = geo_service.is_in_safe_zone(
+                    result = geo_service.check_safe_zone(
                         patient.last_latitude, 
                         patient.last_longitude,
                         [{'name': zone.name, 'latitude': zone.latitude, 'longitude': zone.longitude, 'radius': zone.radius}]

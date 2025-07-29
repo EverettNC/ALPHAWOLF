@@ -9,12 +9,10 @@
 
 service: alphawolf
 
-frameworkVersion: '3'
+frameworkVersion: '>=3.0.0 <4.0.0'
 
 plugins:
   - serverless-python-requirements
-  - serverless-dotenv-plugin
-  - serverless-iam-roles-per-function
 
 custom:
   pythonRequirements:
@@ -38,7 +36,7 @@ custom:
 
 provider:
   name: aws
-  runtime: python3.11
+  runtime: python3.9
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
   memorySize: 256
@@ -193,7 +191,7 @@ layers:
     name: ${self:custom.layerName}
     description: Common libraries for AlphaWolf functions
     compatibleRuntimes:
-      - python3.11
+      - python3.9
     path: layer
 
 # AWS Resources

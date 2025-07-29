@@ -21,8 +21,8 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 import schedule
-import time
-import threading
+
+
 
 # Import db from extensions instead of creating a new one
 from extensions import db
@@ -35,9 +35,22 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
+# Import models after db is imported
+import models
+
 # Create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET")
+
+# Fix the secret key configuration
+app.secret_key = os.environ.get("SESSION_SECRET") or "your-fallback-secret-key-change-in-production"
+
+# Alternative approach with more explicit error handling:
+if not os.environ.get("SESSION_SECRET"):
+    logger.warning("SESSION_SECRET not found in environment variables, using fallback")
+    app.secret_key = "development-secret-key-change-for-production"
+else:
+    app.secret_key = os.environ.get("SESSION_SECRET")
+
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Configure the database
@@ -100,8 +113,6 @@ cognitive_enhancement = CognitiveEnhancementModule(
 )
 
 with app.app_context():
-    # Import models
-    import models
     # Create tables
     db.create_all()
     
@@ -504,7 +515,7 @@ def update_location():
     if patient:
         patient.last_latitude = latitude
         patient.last_longitude = longitude
-        patient.last_location_update = db.func.now()
+        patient.last_location_update = datetime.now()  # Changed from db.func.now()
         db.session.commit()
         
         # Check for wandering

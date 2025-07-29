@@ -108,7 +108,8 @@ class CognitiveService:
             
             if not profile:
                 # If no profile exists, create one with default values
-                profile = CognitiveProfile(patient_id=patient.id)
+                profile = CognitiveProfile()
+                profile.patient_id = patient.id
                 db_session.add(profile)
                 db_session.commit()
             
@@ -148,14 +149,14 @@ class CognitiveService:
                 if exercise.type in focus_areas:
                     relevance += 3
                 
-                # Adjust based on difficulty
-                if exercise.difficulty == 'easy' and max(scores.values()) < 0.3:
+                # Adjust based on difficulty, using float conversion for profile scores
+                max_score = max(float(score) for score in scores.values())
+                if exercise.difficulty == 'easy' and max_score < 0.3:
                     relevance += 2
-                elif exercise.difficulty == 'medium' and 0.3 <= max(scores.values()) < 0.7:
+                elif exercise.difficulty == 'medium' and 0.3 <= max_score < 0.7:
                     relevance += 2
-                elif exercise.difficulty == 'hard' and max(scores.values()) >= 0.7:
+                elif exercise.difficulty == 'hard' and max_score >= 0.7:
                     relevance += 2
-                
                 scored_exercises.append((exercise, relevance))
             
             # Sort by relevance (descending)
@@ -206,10 +207,11 @@ class CognitiveService:
             
             # Get patient's cognitive profile
             profile = db_session.query(CognitiveProfile).filter_by(patient_id=patient_id).first()
-            
             if not profile:
                 # Create new profile if one doesn't exist
-                profile = CognitiveProfile(patient_id=patient_id)
+                profile = CognitiveProfile()
+                profile.patient_id = patient_id
+                db_session.add(profile)
                 db_session.add(profile)
             
             # Normalize score to 0-1 range

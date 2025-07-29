@@ -131,7 +131,7 @@ class CognitiveEnhancementModule:
             self.logger.info("Starting scheduled model enhancement")
             
             # Enhance the base neural learning model
-            self.adaptive_learning.enhance_neural_model()
+            self.adaptive_learning.enhance_model()
             
             # Enhance each patient's cognitive model
             for patient_id in self.patient_models:
@@ -163,8 +163,8 @@ class CognitiveEnhancementModule:
             topic_index = day_of_month % len(topics)
             selected_topic = topics[topic_index]
             
-            # Gather research on the selected topic
-            new_findings = self.adaptive_learning.gather_dementia_research(query=selected_topic, max_results=3)
+            # Gather research on the selected topic using updated method name
+            new_findings = self.adaptive_learning.gather_research(query=selected_topic, max_results=3)
             
             if new_findings:
                 # Log the update
@@ -199,6 +199,8 @@ class CognitiveEnhancementModule:
             dict: The initialized cognitive model
         """
         try:
+            if patient_data is None:
+                patient_data = {}
             # Check if patient already has a model
             if patient_id in self.patient_models:
                 patient_model = self.patient_models[patient_id]

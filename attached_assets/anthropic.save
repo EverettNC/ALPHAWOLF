@@ -1,0 +1,9 @@
+import openai
+
+# For OpenAI
+openai.api_key = "your-api-key-here"
+
+# For Anthropic (Claude)
+import anthropic
+client = anthropic.Anthropic(api_key="your-api-key-here")
+

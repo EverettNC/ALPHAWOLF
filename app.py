@@ -79,6 +79,13 @@ from services.learning_journey import LearningJourney
 from services.research_module import ResearchModule
 from services.tts_engine import TTSEngine
 
+# Initialize AlphaWolf Brain - The core intelligence system
+from alphawolf_brain import get_alphawolf_brain, initialize_alphawolf
+from derek_controller import initialize_derek, get_derek_controller
+
+# Import Memory Lane API
+from memory_lane_api import register_memory_lane_routes
+
 # Initialize services
 gesture_service = GestureService()
 geolocation_service = GeolocationService()
@@ -111,6 +118,22 @@ cognitive_enhancement = CognitiveEnhancementModule(
     symbol_communication=symbol_communication,
     ar_navigation=ar_navigation
 )
+
+# Initialize AlphaWolf Brain System
+try:
+    alphawolf_brain = initialize_alphawolf()
+    alphawolf_brain.start_learning_systems()
+    logger.info("🐺 AlphaWolf Brain integrated and active")
+    
+    # Initialize Derek C as autonomous controller
+    derek_controller = initialize_derek(alphawolf_brain)
+    logger.info("🤖 Derek C initialized as autonomous AI architect")
+    logger.info("💼 Derek: Serving as COO and technical partner")
+    
+except Exception as e:
+    logger.error(f"⚠️ AlphaWolf Brain initialization error: {e}")
+    alphawolf_brain = None
+    derek_controller = None
 
 with app.app_context():
     # Create tables
@@ -1377,7 +1400,7 @@ def voice_control_help():
 
 @app.route('/process_voice_command', methods=['POST'])
 def process_voice_command():
-    """Process voice commands from frontend."""
+    """Process voice commands from frontend using AlphaWolf Brain."""
     # Extract command from request
     data = request.json
     if not data or 'command' not in data:
@@ -1393,7 +1416,39 @@ def process_voice_command():
     # Log the incoming command
     logging.info(f"Received voice command: {command}")
     
-    # Command processing logic
+    # Use AlphaWolf Brain if available
+    if alphawolf_brain:
+        try:
+            # Get user context if available
+            context = {
+                'user_id': session.get('user_id'),
+                'user_type': session.get('user_type'),
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            # Process through brain
+            brain_response = alphawolf_brain.think(command, context)
+            
+            # Handle any actions
+            actions = brain_response.get('actions', [])
+            for action in actions:
+                if action['type'] == 'navigate':
+                    brain_response['action'] = action
+            
+            return jsonify({
+                'success': True,
+                'command': command,
+                'response': brain_response.get('message'),
+                'intent': brain_response.get('intent'),
+                'confidence': brain_response.get('confidence'),
+                'action': brain_response.get('action')
+            })
+            
+        except Exception as e:
+            logger.error(f"AlphaWolf Brain error: {e}")
+            # Fall through to fallback
+    
+    # Fallback command processing logic (original code)
     response = {
         'success': True,
         'command': command,
@@ -1451,6 +1506,203 @@ def process_voice_command():
     logging.info(f"Voice command response: {response['response']}")
     
     return jsonify(response)
+
+@app.route('/api/brain/chat', methods=['POST'])
+def brain_chat():
+    """Chat directly with AlphaWolf Brain."""
+    if not alphawolf_brain:
+        return jsonify({
+            'success': False,
+            'error': 'AlphaWolf Brain not available'
+        }), 503
+    
+    data = request.json
+    if not data or 'message' not in data:
+        return jsonify({
+            'success': False,
+            'error': 'No message provided'
+        }), 400
+    
+    try:
+        # Get user context
+        context = {
+            'user_id': session.get('user_id'),
+            'user_type': session.get('user_type'),
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        # Add patient info if available
+        if session.get('user_type') == 'patient' and session.get('user_id'):
+            patient = models.Patient.query.get(session['user_id'])
+            if patient:
+                context['patient_type'] = 'dementia' if 'dementia' in (patient.diagnosis or '').lower() else 'general'
+        
+        # Process through brain
+        response = alphawolf_brain.think(data['message'], context)
+        
+        return jsonify({
+            'success': True,
+            'response': response.get('message'),
+            'intent': response.get('intent'),
+            'confidence': response.get('confidence'),
+            'emotional_state': alphawolf_brain.get_emotional_state()
+        })
+        
+    except Exception as e:
+        logger.error(f"Brain chat error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/brain/learn', methods=['POST'])
+def brain_learn():
+    """Teach AlphaWolf new information."""
+    if not alphawolf_brain:
+        return jsonify({
+            'success': False,
+            'error': 'AlphaWolf Brain not available'
+        }), 503
+    
+    # Check if user is caregiver
+    if session.get('user_type') != 'caregiver':
+        return jsonify({
+            'success': False,
+            'error': 'Only caregivers can teach new information'
+        }), 403
+    
+    data = request.json
+    if not data or 'text' not in data:
+        return jsonify({
+            'success': False,
+            'error': 'No text provided'
+        }), 400
+    
+    try:
+        result = alphawolf_brain.learn_from_research(data['text'])
+        return jsonify({
+            'success': True,
+            'result': result,
+            'message': 'AlphaWolf has learned from this information'
+        })
+    except Exception as e:
+        logger.error(f"Learning error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/brain/status', methods=['GET'])
+def brain_status():
+    """Get AlphaWolf Brain status."""
+    if not alphawolf_brain:
+        return jsonify({
+            'success': False,
+            'available': False
+        })
+    
+    try:
+        return jsonify({
+            'success': True,
+            'available': True,
+            'emotional_state': alphawolf_brain.get_emotional_state(),
+            'safety_alerts': len(alphawolf_brain.get_safety_alerts()),
+            'patient_profiles': len(alphawolf_brain.patient_profiles),
+            'greeting': alphawolf_brain.generate_greeting()
+        })
+    except Exception as e:
+        logger.error(f"Status error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/derek/status', methods=['GET'])
+def derek_status():
+    """Get Derek C's autonomous system status."""
+    if not derek_controller:
+        return jsonify({
+            'success': False,
+            'available': False,
+            'message': 'Derek C controller not initialized'
+        })
+    
+    try:
+        status = derek_controller.get_status()
+        return jsonify({
+            'success': True,
+            'available': True,
+            'derek': status,
+            'report': derek_controller.generate_report()
+        })
+    except Exception as e:
+        logger.error(f"Derek status error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/derek/trigger_learning', methods=['POST'])
+def derek_trigger_learning():
+    """Manually trigger Derek's learning cycle."""
+    if not derek_controller:
+        return jsonify({
+            'success': False,
+            'error': 'Derek controller not available'
+        }), 503
+    
+    # Check if user is caregiver
+    if session.get('user_type') != 'caregiver':
+        return jsonify({
+            'success': False,
+            'error': 'Only caregivers can trigger learning cycles'
+        }), 403
+    
+    try:
+        # Run learning cycle asynchronously in background
+        import asyncio
+        asyncio.create_task(derek_controller.daily_learning_cycle())
+        
+        return jsonify({
+            'success': True,
+            'message': 'Derek C learning cycle initiated',
+            'status': 'Learning in progress...'
+        })
+    except Exception as e:
+        logger.error(f"Derek learning trigger error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/derek/health', methods=['GET'])
+def derek_health():
+    """Get system health from Derek's monitoring."""
+    if not derek_controller:
+        return jsonify({
+            'success': False,
+            'error': 'Derek controller not available'
+        }), 503
+    
+    try:
+        health = derek_controller.monitor_system_health()
+        return jsonify({
+            'success': True,
+            'health': health,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Derek health check error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+# ============================================================================
+# REGISTER MEMORY LANE API ROUTES
+# ============================================================================
+register_memory_lane_routes(app)
+logger.info("✨ Memory Lane API registered - preserving existence through memory")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

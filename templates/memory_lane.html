@@ -727,18 +727,11 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/memory_lane.js') }}"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all buttons to show alerts for demo purposes
-    document.querySelectorAll('.btn').forEach(function(button) {
-      button.addEventListener('click', function(event) {
-        if (!this.classList.contains('nav-link')) {
-          event.preventDefault();
-          console.log('Button clicked: ' + this.textContent.trim());
-          alert('This button would perform an action in the full implementation.');
-        }
-      });
-    });
+    // Memory Lane JavaScript is loaded from external file
+    console.log('🐺 Memory Lane initialized - preserving existence through memory');
     
     // Filter buttons toggling
     document.querySelectorAll('.btn-group .btn').forEach(function(button) {

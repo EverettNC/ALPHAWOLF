@@ -1,0 +1,9 @@
+{
+  "model_type": "simplified",
+  "input_shape": [
+    10,
+    5
+  ],
+  "output_classes": 6,
+  "created": "2025-04-14T09:39:53.351076"
+}

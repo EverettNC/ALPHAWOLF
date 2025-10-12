@@ -1,0 +1,68 @@
+# Core Framework
+flask
+flask-cors
+deepface
+
+# Data Processing
+numpy
+pandas
+scipy
+beautifulsoup4==4.12.2
+
+# Machine Learning
+scikit-learn
+torch
+transformers
+
+# Natural Language Processing
+spacy
+nltk
+
+# Speech & Audio
+speechrecognition
+pydub
+pyaudio
+librosa
+
+# Vision
+pillow
+opencv-python
+deepface
+
+# Web & API
+requests
+aiohttp
+websockets
+schedule
+perplexity
+anthropic
+openai
+
+# Database
+sqlalchemy
+alembic
+
+# Configuration
+python-dotenv
+pyyaml
+
+# Testing
+pytest
+pytest-asyncio
+pytest-cov
+
+# Utilities
+python-dateutil
+pytz
+colorama
+autopep8
+black
+
+# GitHub Integration
+PyGithub
+
+# Additional
+tqdm
+jsonschema
+newspaper3k
+flask_sqlalchemy

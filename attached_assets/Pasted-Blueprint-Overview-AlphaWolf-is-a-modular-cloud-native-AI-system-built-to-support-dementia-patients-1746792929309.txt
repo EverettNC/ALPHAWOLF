@@ -11,9 +11,9 @@ Alignment with AlphaVox
 * Ethical Focus: Builds on your emphasis (March 2025) for decentralized, community-driven AI, ensuring accessibility and user control.
 * Neurodiversity-Affirming: Incorporates dementia-specific research (e.g.,,,) to tailor interventions, avoiding one-size-fits-all approaches.
 * ￼
-*  
+* 
 * ￼
-*  
+* 
 * ￼
 Project Blueprint
 Below is the detailed blueprint, including system architecture, DevOps pipeline, development phases, and integration points, provided as a Python-based configuration and documentation file.
@@ -69,22 +69,22 @@ python -m spacy download en_core_web_sm
 
 Ensure models/gesture_model.pkl exists (from train_nonverbal_models.py).
 Setup Instructions
-1. Initialize Project: bash  Copy  mkdir alphawolf
+1. Initialize Project: bashCopymkdir alphawolf
 2. cd alphawolf
-3. git init    
+3. git init
 4. Save Blueprint:
     * Save the script as alphawolf_blueprint.py in alphawolf/.
-    * Run to set up structure and CI/CD: bash  Copy  python alphawolf_blueprint.py    
+    * Run to set up structure and CI/CD: bashCopypython alphawolf_blueprint.py
 5. Copy AlphaVox Modules:
     * Place app.py, app_init.py, alphavox_input_nlu.py, neural_learning_core.py, research_module.py, learning_journey.py, and models/gesture_model.pkl in alphawolf/.
-6. Create Docker File: dockerfile  Copy  FROM python:3.9-slim
+6. Create Docker File: dockerfileCopyFROM python:3.9-slim
 7. WORKDIR /app
 8. COPY requirements.txt .
 9. RUN pip install -r requirements.txt
 10. COPY . .
-11. CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]     Save as alphawolf/Dockerfile.
-12. Deploy to Azure: bash  Copy  az login
-13. az webapp up --name alphawolf --resource-group ChristmanAI-Core --runtime "PYTHON|3.9"    
+11. CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]Save as alphawolf/Dockerfile.
+12. Deploy to Azure: bashCopyaz login
+13. az webapp up --name alphawolf --resource-group ChristmanAI-Core --runtime "PYTHON|3.9"
 Project Structure
 text
 
@@ -133,21 +133,21 @@ Milestones and Deliverables
 * November 2025: Beta testing completed, production deployment on Azure, monitoring active.
 Preventing Unauthorized Edits
 Given your prior frustration with unauthorized changes (e.g., alphavox_input_nlu.py):
-* Git Setup: bash  Copy  git add .
+* Git Setup: bashCopygit add .
 * git commit -m "AlphaWolf initial setup"
 * git remote add origin <repo_url>
-* git push -u origin main     Protect the main branch in your Git hosting (e.g., GitHub) to require pull request reviews.
-* Integrity Checks: python  Copy  import hashlib
+* git push -u origin mainProtect the main branch in your Git hosting (e.g., GitHub) to require pull request reviews.
+* Integrity Checks: pythonCopyimport hashlib
 * def verify_file(file_path, expected_hash):
 *     with open(file_path, 'rb') as f:
 *         return hashlib.sha256(f.read()).hexdigest() == expected_hash
 * if not verify_file('models/gesture_model.pkl', 'YOUR_HASH'):
 *     logger.error("Gesture model integrity check failed")
-*     raise ValueError("Invalid model")     Generate hash: bash  Copy  shasum -a 256 models/gesture_model.pkl    
+*     raise ValueError("Invalid model")Generate hash: bashCopyshasum -a 256 models/gesture_model.pkl
 Alignment with Your Vision
 * Dementia Care: Supports memory retention (e.g., cognitive games), daily reminders, and wandering prevention (GPS tracking), addressing Alzheimer’s and dementia needs.
 * ￼
-*  
+* 
 * ￼
 * Ethical AI: Prioritizes privacy, dignity, and user control, reflecting your March 2025 emphasis on community-driven, accessible technology.
 * Neurodiversity-Affirming: Leverages research (e.g.,) to tailor interventions, ensuring personalized, empathetic support.

@@ -1,0 +1,60 @@
+# Python bytecode
+*.pyc
+__pycache__/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# macOS system files
+.DS_Store
+
+# IDE/editor files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# Build outputs
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Test/coverage
+htmlcov/
+.coverage
+*.coverage
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Environment settings
+.env
+.env.*
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Node modules (if mixed frontend/backend)
+node_modules/
+
+# OS/Thumbnails
+Thumbs.db
+Desktop.ini
+.Spotlight-V100
+.Trashes
+
+# Other temp/system files
+*.swp
+

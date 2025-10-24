@@ -3,7 +3,7 @@ AlphaWolf Brain - Unified Cognitive Care System
 Part of The Christman AI Project - Powered by LumaCognify AI
 
 This module integrates:
-- Derek C's advanced conversational intelligence
+- AlphaWolf's advanced conversational intelligence
 - AlphaWolf's dementia care specialization
 - Memory and learning systems
 - Self-improvement capabilities
@@ -22,19 +22,42 @@ from typing import Dict, Any, Optional, List
 logger = logging.getLogger(__name__)
 
 # Import core components
-try:
-    from core.memory_engine import MemoryEngine
-    logger.info("✅ MemoryEngine imported successfully")
-except Exception as e:
-    logger.error(f"❌ Failed to import MemoryEngine: {e}")
-    # Create fallback
-    class MemoryEngine:
-        def __init__(self, file_path):
-            self.file_path = file_path
-            self._memory = []
-        def save(self, entry): pass
-        def query(self, text, intent=None): return {"context": ""}
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the
+# following core principles:
+#
+# 1. Truth — No deception, no manipulation. Use this code honestly.
+# 2. Dignity — Respect the autonomy, privacy, and humanity of all users.
+# 3. Protection — This software must never be used to harm, exploit, or surveil
+#    vulnerable individuals.
+# 4. Transparency — You must disclose modifications and contributions clearly.
+# 5. No Erasure — Do not remove the origins, mission, or ethical foundation of
+#    this work.
+#
+# This is not just code. It is redemption in code.
+#
+# For questions or licensing requests, contact:
+# Everett N. Christman
+# 📧 lumacognify@thechristmanaiproject.com
+# 🌐 https://thechristmanaiproject.com
 
+"""
+AlphaWolf Brain - Unified Cognitive Care System
+Part of The Christman AI Project - Powered by LumaCognify AI
+
+This module integrates:
+- Derek C's advanced conversational intelligence
+- AlphaWolf's dementia care specialization
+- Memory and learning systems
+- Self-improvement capabilities
+
+Mission: "How can we help you love yourself more?"
+Because no one should lose their memories—or their dignity.
+"""
 try:
     from core.conversation_engine import ConversationEngine
     logger.info("✅ ConversationEngine imported successfully")
@@ -69,8 +92,8 @@ except Exception as e:
 class AlphaWolfBrain:
     """
     The AlphaWolf Brain - A compassionate AI for cognitive care.
-    
-    Combines Derek C's intelligence with specialized dementia care features:
+
+    Combines AlphaWolf's intelligence with specialized dementia care features:
     - Memory support and reminiscence
     - Caregiver assistance
     - Patient safety monitoring

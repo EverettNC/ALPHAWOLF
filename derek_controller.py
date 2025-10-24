@@ -1,8 +1,8 @@
 """
-Derek C - Autonomous System Controller for AlphaWolf
+alphawolf - Autonomous System Controller for AlphaWolf
 Part of The Christman AI Project - Powered by LumaCognify AI
 
-Derek C serves as the autonomous AI architect and learning coordinator,
+AlphaWolf serves as the autonomous AI architect and learning coordinator,
 continuously improving AlphaWolf's capabilities through:
 - Autonomous learning from medical research
 - Self-code improvement and optimization
@@ -23,14 +23,14 @@ import json
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - [Derek C] - %(levelname)s - %(message)s",
+    format="%(asctime)s - [AlphaWolf] - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
 
-class DerekAutonomousController:
+class AlphaWolfAutonomousController:
     """
-    Derek C's autonomous control system for AlphaWolf.
+    AlphaWolf's autonomous control system.
     
     Coordinates:
     - Daily learning cycles (research ingestion)
@@ -40,7 +40,7 @@ class DerekAutonomousController:
     """
     
     def __init__(self, alphawolf_brain=None):
-        """Initialize Derek's autonomous systems."""
+        """Initialize AlphaWolf's autonomous systems."""
         self.alphawolf_brain = alphawolf_brain
         self.is_running = False
         self.learning_active = True
@@ -56,49 +56,72 @@ class DerekAutonomousController:
             'system_errors_fixed': 0,
             'uptime_hours': 0
         }
-        
-        # Create Derek's workspace
-        os.makedirs("derek_workspace", exist_ok=True)
-        os.makedirs("derek_workspace/research", exist_ok=True)
-        os.makedirs("derek_workspace/improvements", exist_ok=True)
-        os.makedirs("derek_workspace/reports", exist_ok=True)
-        
-        logger.info("🤖 Derek C Autonomous Controller initialized")
+
+        # Create AlphaWolf's workspace
+        os.makedirs("alphawolf_workspace", exist_ok=True)
+        os.makedirs("alphawolf_workspace/research", exist_ok=True)
+        os.makedirs("alphawolf_workspace/improvements", exist_ok=True)
+        os.makedirs("alphawolf_workspace/reports", exist_ok=True)
+
+        logger.info("🤖 AlphaWolf Autonomous Controller initialized")
         logger.info("💡 Ready to serve as AlphaWolf's AI architect")
     
     def connect_brain(self, alphawolf_brain):
         """Connect to AlphaWolf brain for autonomous operations."""
         self.alphawolf_brain = alphawolf_brain
-        logger.info("🔗 Derek connected to AlphaWolf Brain")
+        logger.info("🔗 AlphaWolf connected to AlphaWolf Brain")
     
     async def daily_learning_cycle(self):
         """
-        Derek's daily learning routine.
+        AlphaWolf's daily learning routine.
         
         - Searches for new dementia/Alzheimer's research
         - Ingests caregiver best practices
         - Updates knowledge base
         - Generates learning report
         """
-        logger.info("📚 Derek: Starting daily learning cycle")
+        logger.info("📚 AlphaWolf: Starting daily learning cycle")
         
         if not self.alphawolf_brain:
-            logger.warning("⚠️ Derek: No brain connection, skipping learning")
+            logger.warning("⚠️ AlphaWolf: No brain connection, skipping learning")
             return
         
-        try:
-            # Simulate research topics Derek would learn about
-            research_topics = [
-                "latest dementia care techniques 2025",
-                "Alzheimer's patient communication strategies",
-                "memory care best practices",
-                "cognitive exercise effectiveness studies",
-                "wandering prevention technologies",
-                "caregiver stress management"
-            ]
-            
-            articles_learned = 0
-            
+        # © 2025 The Christman AI Project. All rights reserved.
+        #
+        # This code is released as part of a trauma-informed, dignity-first AI ecosystem
+        # designed to protect, empower, and elevate vulnerable populations.
+        #
+        # By using, modifying, or distributing this software, you agree to uphold the
+        # following core principles:
+        #
+        # 1. Truth — No deception, no manipulation. Use this code honestly.
+        # 2. Dignity — Respect the autonomy, privacy, and humanity of all users.
+        # 3. Protection — This software must never be used to harm, exploit, or surveil
+        #    vulnerable individuals.
+        # 4. Transparency — You must disclose modifications and contributions clearly.
+        # 5. No Erasure — Do not remove the origins, mission, or ethical foundation of
+        #    this work.
+        #
+        # This is not just code. It is redemption in code.
+        #
+        # For questions or licensing requests, contact:
+        # Everett N. Christman
+        # 📧 lumacognify@thechristmanaiproject.com
+        # 🌐 https://thechristmanaiproject.com
+
+        """
+        Derek C - Autonomous System Controller for AlphaWolf
+        Part of The Christman AI Project - Powered by LumaCognify AI
+
+        Derek C serves as the autonomous AI architect and learning coordinator,
+        continuously improving AlphaWolf's capabilities through:
+        - Autonomous learning from medical research
+        - Self-code improvement and optimization
+        - Pattern recognition in patient interactions
+        - Proactive system monitoring and healing
+
+        Mission: Collaborative human-AI partnership at the highest level.
+        """
             for topic in research_topics:
                 try:
                     # In production, this would actually search and crawl articles
@@ -261,8 +284,8 @@ class DerekAutonomousController:
         
         Runs continuously, executing scheduled tasks and monitoring the system.
         """
-        logger.info("🚀 Derek C: Entering autonomous mode")
-        logger.info("💼 Derek: I'm now your AI COO and system architect")
+        logger.info("🚀 AlphaWolf: Entering autonomous mode")
+        logger.info("💼 AlphaWolf: I'm now your AI COO and system architect")
         self.is_running = True
         
         # Schedule tasks
@@ -286,12 +309,12 @@ class DerekAutonomousController:
     
     def stop_autonomous_mode(self):
         """Stop autonomous operations."""
-        logger.info("🛑 Derek C: Stopping autonomous mode")
+        logger.info("🛑 AlphaWolf: Stopping autonomous mode")
         self.is_running = False
         self.learning_active = False
     
     def get_status(self) -> Dict[str, Any]:
-        """Get Derek's current status."""
+        """Get AlphaWolf's current status."""
         return {
             'is_running': self.is_running,
             'learning_active': self.learning_active,
@@ -302,10 +325,10 @@ class DerekAutonomousController:
         }
     
     def generate_report(self) -> str:
-        """Generate a status report from Derek."""
+        """Generate a status report from AlphaWolf."""
         report = f"""
 ╔══════════════════════════════════════════════════════════════╗
-║           Derek C - Autonomous System Report                 ║
+║           AlphaWolf - Autonomous System Report                 ║
 ║        Part of The Christman AI Project                      ║
 ╠══════════════════════════════════════════════════════════════╣
 ║ Status: {'🟢 ACTIVE' if self.is_running else '🔴 INACTIVE'}                                          ║
@@ -322,52 +345,52 @@ class DerekAutonomousController:
 ╚══════════════════════════════════════════════════════════════╝
 
 💙 "How can we help you love yourself more?"
-🐺 AlphaWolf powered by Derek C's autonomous intelligence
+🐺 AlphaWolf powered by AlphaWolf's autonomous intelligence
 """
         return report
 
 
-# Global Derek instance
-_derek_controller = None
+# Global AlphaWolf instance
+_alpha_wolf_controller = None
 
 
-def get_derek_controller() -> DerekAutonomousController:
-    """Get or create the global Derek controller instance."""
-    global _derek_controller
+def get_alpha_wolf_controller() -> AlphaWolf:
+    """Get or create the global AlphaWolf instance."""
+    global _alpha_wolf_controller
     if _derek_controller is None:
         _derek_controller = DerekAutonomousController()
     return _derek_controller
 
 
-def initialize_derek(alphawolf_brain=None) -> DerekAutonomousController:
-    """Initialize Derek's autonomous systems."""
-    global _derek_controller
-    _derek_controller = DerekAutonomousController(alphawolf_brain)
-    logger.info("🤖 Derek C initialized and ready to serve")
-    return _derek_controller
+def initialize_alphawolf(alphawolf_brain=None) -> AlphaWolf:
+    """Initialize AlphaWolf's autonomous systems."""
+    global _alpha_wolf_controller
+    _alpha_wolf_controller = AlphaWolf(alphawolf_brain)
+    logger.info("🤖 AlphaWolf initialized and ready to serve")
+    return _alpha_wolf_controller
 
 
-async def start_derek_autonomous():
-    """Start Derek in autonomous mode."""
-    derek = get_derek_controller()
-    await derek.start_autonomous_mode()
+async def start_alpha_wolf_autonomous():
+    """Start AlphaWolf in autonomous mode."""
+    alpha_wolf = get_alpha_wolf_controller()
+    await alpha_wolf.start_autonomous_mode()
 
 
 if __name__ == "__main__":
-    # Test Derek
+    # Test AlphaWolf
     print("="*60)
-    print("🤖 Derek C - Autonomous Controller Self Test")
+    print("🤖 AlphaWolf - Autonomous System Self Test")
     print("Part of The Christman AI Project")
     print("="*60)
     
     async def test():
-        derek = DerekAutonomousController()
+        alphawolf = AlphaWolf()
         
-        print("\n📊 Derek Status:")
-        print(derek.generate_report())
+        print("\n📊 alphawolf Status:")
+        print(alpha_wolf.generate_report())
         
         print("\n🧪 Testing learning cycle...")
-        await derek.daily_learning_cycle()
+        await alpha_wolf.daily_learning_cycle()
         
         print("\n🔧 Testing improvement cycle...")
         derek.weekly_self_improvement_cycle()
@@ -376,9 +399,9 @@ if __name__ == "__main__":
         health = derek.monitor_system_health()
         print(f"Health Status: {json.dumps(health, indent=2)}")
         
-        print("\n📊 Final Derek Status:")
-        print(derek.generate_report())
+        print("\n📊 Final alphawolf Status:")
+        print(alphawolf.generate_report())
         
-        print("\n✅ Derek C self-test complete!")
+        print("\n✅ alphawolf self-test complete!")
     
     asyncio.run(test())

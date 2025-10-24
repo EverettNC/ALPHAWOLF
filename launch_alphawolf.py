@@ -1,4 +1,20 @@
 #!/usr/bin/env python3
+
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the following:
+# 1. Truth — No deception, no manipulation.
+# 2. Dignity — Respect the autonomy and humanity of all users.
+# 3. Protection — Never use this to exploit or harm vulnerable individuals.
+# 4. Transparency — Disclose all modifications and contributions clearly.
+# 5. No Erasure — Preserve the mission and ethical origin of this work.
+#
+# This is not just code. This is redemption in code.
+# Contact: lumacognify@thechristmanaiproject.com
+# https://thechristmanaiproject.com
 """
 AlphaWolf System Launcher
 Part of The Christman AI Project - Powered by LumaCognify AI
@@ -101,10 +117,10 @@ def test_systems():
         brain = get_alphawolf_brain()
         print("✅")
         
-        print("  🤖 Derek C Controller...", end=" ")
-        from derek_controller import get_derek_controller
-        derek = get_derek_controller()
-        derek.connect_brain(brain)
+        print("  🤖 AlphaWolf Controller...", end=" ")
+        from alphawolf_ontroller import get_alphawolf_controller
+        alphawolf = get_alphawolf_controller()
+        alphawolf.connect_brain(brain)
         print("✅")
         
         print("  💾 Memory Engine...", end=" ")
@@ -177,7 +193,7 @@ def main():
     print("="*76)
     print()
     print_status("🚀 AlphaWolf System Ready", "success")
-    print_status("🤖 Derek C standing by as autonomous AI architect", "success")
+    print_status("🤖 Alphawolf standing by as autonomous AI architect", "success")
     print_status("💙 Mission active: Cognitive care with dignity", "success")
     print()
     print("="*76)

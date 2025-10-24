@@ -1,11 +1,27 @@
 #!/usr/bin/env python3
+
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the following:
+# 1. Truth — No deception, no manipulation.
+# 2. Dignity — Respect the autonomy and humanity of all users.
+# 3. Protection — Never use this to exploit or harm vulnerable individuals.
+# 4. Transparency — Disclose all modifications and contributions clearly.
+# 5. No Erasure — Preserve the mission and ethical origin of this work.
+#
+# This is not just code. This is redemption in code.
+# Contact: lumacognify@thechristmanaiproject.com
+# https://thechristmanaiproject.com
 """
 The Christman AI Project - Module Inventory & Integration Analysis
 Powered by LumaCognify AI
 
 Analyzes the complete AI family architecture:
 - AlphaWolf: ~100 modules (Cognitive Care & Dementia)
-- Derek C: ~133 modules (Autonomous AI Architect)
+- AlphaWolf: ~133 modules (Autonomous AI Architect)
 - AlphaVox: ~144 modules (Nonverbal Communication)
 - LumaCognify: ~300+ modules (Foundation Platform)
 
@@ -161,7 +177,7 @@ class ChristmanAIInventory:
         # Project summaries
         projects = {
             'alphawolf': '🐺 AlphaWolf - Cognitive Care & Dementia Support',
-            'derek': '🤖 Derek C - Autonomous AI Architect',
+            'derek': '🤖 C - AlphaWolf Autonomous AI Architect',
             'alphavox': '🗣️  AlphaVox - Nonverbal Communication',
             'lumacognify': '🌟 LumaCognify - Foundation Platform',
             'shared': '🔗 Shared/Core Components'
@@ -253,8 +269,8 @@ class ChristmanAIInventory:
         report.append("     - Unified intent recognition")
         report.append("")
         report.append("  3. Cross-Project Learning")
-        report.append("     - Derek learns from AlphaVox interactions")
-        report.append("     - AlphaWolf benefits from Derek's research")
+        report.append("     - alphawolf learns from AlphaVox interactions")
+        report.append("     - alphawolf benefits from Derek's research")
         report.append("")
         report.append("  4. Unified Authentication & User Management")
         report.append("     - Single sign-on across all platforms")

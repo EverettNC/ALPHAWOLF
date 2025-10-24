@@ -1,4 +1,13 @@
 # memory_engine.py
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the
+# following core principles: Truth, Dignity, Protection, Transparency, No Erasure.
+#
+# For questions or licensing requests, contact: lumacognify@thechristmanaiproject.com
 import json
 import logging
 import os
@@ -50,7 +59,7 @@ class MemoryEngine:
     def query(self, text: str, intent: Optional[str] = None) -> Dict[str, Any]:
         """
         Retrieve contextually relevant memory entries.
-        This is a minimal working version so Derek can recall context.
+        This is a minimal working version so AlphaWolf can recall context.
         """
         logger.debug(f"Querying memory for context (intent={intent}): {text}")
 

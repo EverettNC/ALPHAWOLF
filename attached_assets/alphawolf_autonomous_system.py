@@ -1,4 +1,19 @@
-"""Combined autonomous learning and self-improvement runner for Derek."""
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the following:
+# 1. Truth — No deception, no manipulation.
+# 2. Dignity — Respect the autonomy and humanity of all users.
+# 3. Protection — Never use this to exploit or harm vulnerable individuals.
+# 4. Transparency — Disclose all modifications and contributions clearly.
+# 5. No Erasure — Preserve the mission and ethical origin of this work.
+#
+# This is not just code. This is redemption in code.
+# Contact: lumacognify@thechristmanaiproject.com
+# https://thechristmanaiproject.com
+"""Combined autonomous learning and self-improvement runner for AlphaWolf."""
 
 import asyncio
 import logging
@@ -11,7 +26,7 @@ from self_modifying_code import CodeModifier
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - [Derek] - %(levelname)s - %(message)s",
+    format="%(asctime)s - [AlphaWolf] - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -26,8 +41,8 @@ class AutonomousLearner:
         }
 
 
-class DerekAutonomousSystem:
-    """Coordinates Derek's learning chambers and self-modification cycles."""
+class AlphaWolfAutonomousSystem:
+    """Coordinates AlphaWolf's learning chambers and self-modification cycles."""
 
     def __init__(self, safe_mode: bool = False) -> None:
         self.learner = AutonomousLearner()
@@ -61,7 +76,7 @@ class DerekAutonomousSystem:
             logger.error("Self-improvement cycle failed: %s", exc)
 
     async def start_autonomous_operation(self) -> None:
-        logger.info("Derek Autonomous System activated")
+        logger.info("AlphaWolf Autonomous System activated")
         self.is_running = True
 
         # Schedule the asynchronous daily learning cycle
@@ -77,11 +92,11 @@ class DerekAutonomousSystem:
 
     def stop(self) -> None:
         self.is_running = False
-        logger.info("Derek Autonomous System deactivated")
+        logger.info("AlphaWolf Autonomous System deactivated")
 
 
 async def main() -> None:
-    system = DerekAutonomousSystem()
+    system = AlphaWolfAutonomousSystem()
     try:
         await system.start_autonomous_operation()
     except KeyboardInterrupt:

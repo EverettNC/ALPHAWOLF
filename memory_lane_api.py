@@ -8,6 +8,16 @@ This module implements the complete backend for Memory Lane - the killer feature
 that preserves human existence through organic memory meshing.
 """
 
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the
+# following core principles: Truth, Dignity, Protection, Transparency, No Erasure.
+#
+# For questions or licensing requests, contact: lumacognify@thechristmanaiproject.com
+
 import os
 import json
 import logging

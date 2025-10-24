@@ -1,3 +1,18 @@
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the following:
+# 1. Truth — No deception, no manipulation.
+# 2. Dignity — Respect the autonomy and humanity of all users.
+# 3. Protection — Never use this to exploit or harm vulnerable individuals.
+# 4. Transparency — Disclose all modifications and contributions clearly.
+# 5. No Erasure — Preserve the mission and ethical origin of this work.
+#
+# This is not just code. This is redemption in code.
+# Contact: lumacognify@thechristmanaiproject.com
+# https://thechristmanaiproject.com
 import sys
 from conversation_engine import ConversationEngine
 from memory_engine import MemoryEngine  # Updated
@@ -17,7 +32,7 @@ def boot():
     guardian.run_full_validation()
 
     # Continue normal boot if everything passed
-    print("🚀 Derek boot sequence continuing...")
+    print("🚀 AlphaWolf boot sequence continuing...")
     # load models, services, memory embeddings, etc.
 
 def boot():
@@ -59,18 +74,18 @@ except ImportError:
 
 # Create a simple learning coordinator fallback
 try:
-    from derek_learning_coordinator import derek_coordinator, start_derek_learning
+    from alphawolf_learning_coordinator import alphawolf_coordinator, start_alphawolf_learning
 except ImportError:
-    logger.warning("derek_learning_coordinator not found, using fallback")
+    logger.warning("alphawolf_learning_coordinator not found, using fallback")
 
     class DummyCoordinator:
         def start(self):
             logger.info("Learning coordinator fallback active")
 
-    derek_coordinator = DummyCoordinator()
+    alphawolf_coordinator = DummyCoordinator()
 
-    def start_derek_learning():
-        derek_coordinator.start()
+    def start_alphawolf_learning():
+        alphawolf_coordinator.start()
 
 
 logger = logging.getLogger(__name__)
@@ -91,7 +106,7 @@ except Exception as e:
         logger.info("Learning module unavailable, skipping text ingestion")
 
 
-class Derek:
+class AlphaWolf:
     def __init__(self, file_path: str = "./memory/memory_store.json"):
         self.file_path = file_path
         os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
@@ -99,16 +114,16 @@ class Derek:
         self.memory_engine = MemoryEngine(file_path=file_path)
         self.conversation_engine = ConversationEngine()
         self.avatar_engine = None
-        self.learning_coordinator = derek_coordinator
+        self.learning_coordinator = alphawolf_coordinator
 
-        logger.info(f"Derek initialized successfully with memory file: {file_path}")
+        logger.info(f"AlphaWolf initialized successfully with memory file: {file_path}")
 
     def generate_greeting(self) -> str:
         """
-        Returns a startup greeting when Derek Dashboard launches.
+        Returns a startup greeting when AlphaWolf Dashboard launches.
         Can be made dynamic later, but static is fine to unblock startup.
         """
-        return "Hello, I’m Derek — ready to assist you."
+        return "Hello, I’m AlphaWolf — ready to assist you."
 
     def connect_conversation_engine(self, conversation_engine):
         self.conversation_engine = conversation_engine
@@ -124,13 +139,13 @@ class Derek:
         return {}
 
     def start_learning(self):
-        """Activate Derek's coordinated learning systems."""
+        """Activate AlphaWolf's coordinated learning systems."""
         try:
-            start_derek_learning()
+            start_alphawolf_learning()
         except Exception as exc:  # pragma: no cover - defensive
             logger.error("Failed to start learning systems: %s", exc)
         else:
-            logger.info("Derek is now learning autonomously")
+            logger.info("AlphaWolf is now learning autonomously")
     
     def _search_web(self, query: str) -> str:
         """Performs a web search and returns a summary of the top result."""
@@ -232,7 +247,7 @@ class Derek:
             "mood": self.get_current_mood(),
         }
 
-    def run_self_repair(self, user_input, derek_output):
+    def run_self_repair(self, user_input, alphawolf_output):
         """Detect canned or low-depth responses and trigger auto-improvement."""
         canned_indicators = [
             "you got it",
@@ -245,17 +260,17 @@ class Derek:
             "i'm here to assist",
         ]
 
-        if any(phrase in derek_output.lower() for phrase in canned_indicators):
+        if any(phrase in alphawolf_output.lower() for phrase in canned_indicators):
             return (
                 f"⚠️ [Self-Repair Triggered]\n"
                 f"Your last response lacked depth and originality.\n\n"
                 f"🧠 USER INPUT:\n{user_input.strip()}\n\n"
-                f"🛠️ DEREK'S IMPROVED RESPONSE:\n"
+                f"🛠️ ALPHAWOLF'S IMPROVED RESPONSE:\n"
                 f"[Insert real, contextual, emotionally intelligent response here]"
             )
-        return derek_output
+        return alphawolf_output
 
-    def log_interaction(self, user_input, derek_output):
+    def log_interaction(self, user_input, alphawolf_output):
         """Logs every conversation exchange to a markdown file."""
         timestamp = datetime.datetime.now().isoformat()
         log_entry = (
@@ -270,7 +285,7 @@ class Derek:
 
 
 # -------------------------------------------------------------
-# Global Derek instance (fixed)
+# Global AlphaWolf instance (fixed)
 # -------------------------------------------------------------
-derek = Derek(file_path="./memory/memory_store.json")
+alphawolf = AlphaWolf(file_path="./memory/memory_store.json")
 

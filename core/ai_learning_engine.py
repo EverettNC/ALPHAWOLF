@@ -1,3 +1,19 @@
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the following:
+# 1. Truth — No deception, no manipulation.
+# 2. Dignity — Respect the autonomy and humanity of all users.
+# 3. Protection — Never use this to exploit or harm vulnerable individuals.
+# 4. Transparency — Disclose all modifications and contributions clearly.
+# 5. No Erasure — Preserve the mission and ethical origin of this work.
+#
+# This is not just code. This is redemption in code.
+# Contact: lumacognify@thechristmanaiproject.com
+# https://thechristmanaiproject.com
+
 """Self-Learning and Adaptation Engine for AlphaWolf.
 
 Part of The Christman AI Project - Powered by LumaCognify AI
@@ -561,7 +577,7 @@ def get_self_improvement_engine():
     return self_improvement_engine
 
 
-# --- Compatibility wrapper for AlphaWolf's brain (Derek C integration) ---
+# --- Compatibility wrapper for AlphaWolf's brain (alphawolf integration) ---
 _engine_instance = None
 
 
@@ -570,8 +586,8 @@ def learn_from_text(text: str):
     Directly embed crawled text and store in AlphaWolf's memory engine.
     This allows AlphaWolf to learn from research, caregiver tips, and
     dementia care best practices to continuously improve patient support.
-    
-    Originally designed for Derek C's knowledge acquisition system.
+
+    Originally designed for AlphaWolf's knowledge acquisition system.
     """
     if not text or not text.strip():
         logger.warning("Received empty text for learning.")

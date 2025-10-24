@@ -1,6 +1,14 @@
 ###############################################################################
 # AlphaWolf - LumaCognify AI
-# Part of The Christman AI Project
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the
+# following core principles: Truth, Dignity, Protection, Transparency, No Erasure.
+#
+# For questions or licensing requests, contact: lumacognify@thechristmanaiproject.com
 #
 # MODELS MODULE
 # Database models and relationships for the AlphaWolf platform

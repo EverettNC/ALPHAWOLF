@@ -1,14 +1,25 @@
-###############################################################################
-# AlphaWolf - LumaCognify AI
-# Part of The Christman AI Project
+# © 2025 The Christman AI Project. All rights reserved.
 #
-# A comprehensive AI-powered platform supporting neurodivergent individuals,
-# focusing on assistive technologies for cognitive care, safety, and personal 
-# empowerment for those with Alzheimer's and dementia.
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
 #
-# Copyright (c) 2025 LumaCognify, Inc. All rights reserved.
-# Licensed under the LumaCognify Public Covenant License
-###############################################################################
+# By using, modifying, or distributing this software, you agree to uphold the
+# following core principles:
+#
+# 1. Truth — No deception, no manipulation. Use this code honestly.
+# 2. Dignity — Respect the autonomy, privacy, and humanity of all users.
+# 3. Protection — This software must never be used to harm, exploit, or surveil
+#    vulnerable individuals.
+# 4. Transparency — You must disclose modifications and contributions clearly.
+# 5. No Erasure — Do not remove the origins, mission, or ethical foundation of
+#    this work.
+#
+# This is not just code. It is redemption in code.
+#
+# For questions or licensing requests, contact:
+# Everett N. Christman
+# 📧 lumacognify@thechristmanaiproject.com
+# 🌐 https://thechristmanaiproject.com
 
 import os
 import logging
@@ -78,6 +89,7 @@ from services.alphavox_input_nlu import AlphaVoxInputProcessor
 from services.learning_journey import LearningJourney
 from services.research_module import ResearchModule
 from services.tts_engine import TTSEngine
+from services.polly_tts_engine import get_polly_tts_engine
 
 # Initialize AlphaWolf Brain - The core intelligence system
 from alphawolf_brain import get_alphawolf_brain, initialize_alphawolf
@@ -99,7 +111,15 @@ neural_learning_core = NeuralLearningCore()
 alphavox_input = AlphaVoxInputProcessor()
 learning_journey = LearningJourney()
 research_module = ResearchModule()
-tts_engine = TTSEngine()
+
+# Initialize TTS - Use Polly if available, fallback to gTTS
+polly_tts = get_polly_tts_engine()
+if polly_tts.is_available():
+    tts_engine = polly_tts
+    logging.info("🎤 Using Amazon Polly Neural TTS (Derek's 3,000+ hour voice system)")
+else:
+    tts_engine = TTSEngine()
+    logging.warning("⚠️ Falling back to gTTS - Add AWS credentials for neural voices")
 
 # Initialize AlphaVox-specific cognitive enhancement services
 from services.adaptive_learning_system import AdaptiveLearningSystem
@@ -124,16 +144,16 @@ try:
     alphawolf_brain = initialize_alphawolf()
     alphawolf_brain.start_learning_systems()
     logger.info("🐺 AlphaWolf Brain integrated and active")
-    
-    # Initialize Derek C as autonomous controller
-    derek_controller = initialize_derek(alphawolf_brain)
-    logger.info("🤖 Derek C initialized as autonomous AI architect")
-    logger.info("💼 Derek: Serving as COO and technical partner")
-    
+
+    # Initialize AlphaWolf's autonomous controller
+    alphawolf_controller = initialize_derek(alphawolf_brain)
+    logger.info("🤖 AlphaWolf initialized as autonomous AI architect")
+    logger.info("💼 AlphaWolf: Serving as COO and technical partner")
+
 except Exception as e:
     logger.error(f"⚠️ AlphaWolf Brain initialization error: {e}")
     alphawolf_brain = None
-    derek_controller = None
+    alphawolf_controller = None
 
 with app.app_context():
     # Create tables
@@ -1617,26 +1637,26 @@ def brain_status():
             'error': str(e)
         }), 500
 
-@app.route('/api/derek/status', methods=['GET'])
-def derek_status():
-    """Get Derek C's autonomous system status."""
-    if not derek_controller:
+@app.route('/api/alphawolf/status', methods=['GET'])
+def alphawolf_status():
+    """Get AlphaWolf's autonomous system status."""
+    if not alphawolf_controller:
         return jsonify({
             'success': False,
             'available': False,
-            'message': 'Derek C controller not initialized'
+            'message': 'AlphaWolf controller not initialized'
         })
     
     try:
-        status = derek_controller.get_status()
+        status = alphawolf_controller.get_status()
         return jsonify({
             'success': True,
             'available': True,
-            'derek': status,
-            'report': derek_controller.generate_report()
+            'alphawolf': status,
+            'report': alphawolf_controller.generate_report()
         })
     except Exception as e:
-        logger.error(f"Derek status error: {e}")
+        logger.error(f"AlphaWolf status error: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
@@ -1648,7 +1668,7 @@ def derek_trigger_learning():
     if not derek_controller:
         return jsonify({
             'success': False,
-            'error': 'Derek controller not available'
+            'error': 'AlphaWolf controller not available'
         }), 503
     
     # Check if user is caregiver
@@ -1665,34 +1685,34 @@ def derek_trigger_learning():
         
         return jsonify({
             'success': True,
-            'message': 'Derek C learning cycle initiated',
+            'message': 'AlphaWolf learning cycle initiated',
             'status': 'Learning in progress...'
         })
     except Exception as e:
-        logger.error(f"Derek learning trigger error: {e}")
+        logger.error(f"AlphaWolf learning trigger error: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
         }), 500
 
-@app.route('/api/derek/health', methods=['GET'])
-def derek_health():
-    """Get system health from Derek's monitoring."""
-    if not derek_controller:
+@app.route('/api/alphawolf/health', methods=['GET'])
+def alphawolf_health():
+    """Get system health from AlphaWolf's monitoring."""
+    if not alphawolf_controller:
         return jsonify({
             'success': False,
-            'error': 'Derek controller not available'
+            'error': 'AlphaWolf controller not available'
         }), 503
     
     try:
-        health = derek_controller.monitor_system_health()
+        health = alphawolf_controller.monitor_system_health()
         return jsonify({
             'success': True,
             'health': health,
             'timestamp': datetime.now().isoformat()
         })
     except Exception as e:
-        logger.error(f"Derek health check error: {e}")
+        logger.error(f"AlphaWolf health check error: {e}")
         return jsonify({
             'success': False,
             'error': str(e)

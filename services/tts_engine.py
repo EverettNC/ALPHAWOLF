@@ -1,3 +1,6 @@
+"""
+Lightweight gTTS-based TTS engine (fallback)
+"""
 import logging
 import os
 import hashlib
@@ -5,6 +8,16 @@ import time
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
+
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the
+# following core principles: Truth, Dignity, Protection, Transparency, No Erasure.
+#
+# For questions or licensing requests, contact: lumacognify@thechristmanaiproject.com
 
 class TTSEngine:
     """Text-to-Speech engine for generating voice responses."""

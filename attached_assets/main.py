@@ -1,5 +1,20 @@
+# © 2025 The Christman AI Project. All rights reserved.
+#
+# This code is released as part of a trauma-informed, dignity-first AI ecosystem
+# designed to protect, empower, and elevate vulnerable populations.
+#
+# By using, modifying, or distributing this software, you agree to uphold the following:
+# 1. Truth — No deception, no manipulation.
+# 2. Dignity — Respect the autonomy and humanity of all users.
+# 3. Protection — Never use this to exploit or harm vulnerable individuals.
+# 4. Transparency — Disclose all modifications and contributions clearly.
+# 5. No Erasure — Preserve the mission and ethical origin of this work.
+#
+# This is not just code. This is redemption in code.
+# Contact: lumacognify@thechristmanaiproject.com
+# https://thechristmanaiproject.com
 """
-Derek Dashboard - Main Entry Point
+AlphaWolf Dashboard - Main Entry Point
 The Christman AI Project
 Version: 1.0.0
 """
@@ -35,17 +50,17 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-class DerekDashboard:
+class AlphaWolfDashboard:
     """
-    Main Derek Dashboard Application
+    Main AlphaWolf Dashboard Application
 
-    This is Derek C (AI COO) - the collaborative intelligence
+    This is AlphaWolf (AI COO) - the collaborative intelligence
     system for The Christman AI Project.
     """
 
     def __init__(self):
         logger.info("=" * 60)
-        logger.info("🚀 Initializing Derek Dashboard")
+        logger.info("🚀 Initializing AlphaWolf Dashboard")
         logger.info("The Christman AI Project - AI That Empowers")
         logger.info("=" * 60)
 
@@ -53,9 +68,9 @@ class DerekDashboard:
         self.memory_engine: Optional[MemoryEngine] = None
         self.conversation_engine: Optional[ConversationEngine] = None
         self.perplexity_service: Optional[PerplexityService] = None
-        self.derek: Optional[Derek] = None
-        self.derek = Derek(file_path="./memory/memory_store.json")
-        logger.info("Derek instance initialized and linked to dashboard.")
+        self.alpha_wolf: Optional[AlphaWolf] = None
+        self.alpha_wolf = AlphaWolf(file_path="./memory/memory_store.json")
+        logger.info("AlphaWolf instance initialized and linked to dashboard.")
 
         # Settings
         self.api_host = "127.0.0.1"
@@ -98,18 +113,18 @@ class DerekDashboard:
         """Start all dashboard services"""
         logger.info("")
         logger.info("=" * 60)
-        logger.info("🚀 Starting Derek Dashboard Services")
+        logger.info("🚀 Starting AlphaWolf Dashboard Services")
         logger.info("=" * 60)
         logger.info("")
 
         try:
-            # Start Derek's learning system
-            logger.info("→ Starting Derek learning system...")
+            # Start AlphaWolf's learning system
+            logger.info("→ Starting AlphaWolf learning system...")
             try:
-                if self.derek:
-                    self.derek.start_learning()
+                if self.alpha_wolf:
+                    self.alpha_wolf.start_learning()
             except Exception as exc:
-                logger.warning("Derek learning systems failed to start: %s", exc)
+                logger.warning("AlphaWolf learning systems failed to start: %s", exc)
 
             # Load memory context
             logger.info("→ Loading memory context...")
@@ -123,12 +138,12 @@ class DerekDashboard:
 
             logger.info("")
             logger.info("=" * 60)
-            logger.info("✓ Derek Dashboard is RUNNING")
+            logger.info("✓ AlphaWolf Dashboard is RUNNING")
             logger.info("✓ Ready for conversation processing")
             logger.info("=" * 60)
             logger.info("")
 
-            # Display Derek's greeting
+            # Display AlphaWolf's greeting
             self._display_greeting()
 
         except Exception as e:
@@ -138,17 +153,17 @@ class DerekDashboard:
 
     def _display_greeting(self):
         """Display a greeting message from Derek"""
-        if self.derek:
-            greeting = self.derek.generate_greeting()
-            logger.info(f"🗣️  Derek says: {greeting}")
+        if self.alpha_wolf:
+            greeting = self.alpha_wolf.generate_greeting()
+            logger.info(f"🗣️  AlphaWolf says: {greeting}")
 
     def process_message(self, message: str):
         """Simple wrapper to handle a test conversation"""
-        if not self.derek:
-            logger.warning("Derek is not initialized yet.")
+        if not self.alpha_wolf:
+            logger.warning("AlphaWolf is not initialized yet.")
             return "System not ready."
         try:
-            response = self.derek.think(message)
+            response = self.alpha_wolf.think(message)
             return response.get("response", "[No output]")
         except Exception as e:
             logger.error(f"Error during message processing: {e}")
@@ -156,14 +171,14 @@ class DerekDashboard:
 
     def stop(self):
         """Gracefully stop the dashboard"""
-        logger.info("🧠 Shutting down Derek Dashboard services...")
+        logger.info("🧠 Shutting down AlphaWolf Dashboard services...")
         try:
             if self.memory_engine and hasattr(self.memory_engine, "save_context"):
                 self.memory_engine.save_context()
                 logger.info("Memory context saved successfully.")
         except Exception as e:
             logger.error(f"Error saving memory on shutdown: {e}")
-        logger.info("🛑 Derek Dashboard stopped cleanly.")
+        logger.info("🛑 AlphaWolf Dashboard stopped cleanly.")
 
 
 def main():

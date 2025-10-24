@@ -192,7 +192,7 @@ Your team’s MacOS setup and AWS class (via Derek) are perfect for mastering th
 SageMaker: Build a toy ML model in class to prep for symbol board optimization.
 Step Functions: Create a simple workflow to understand orchestration.
 Shield/GuardDuty: Enable in a class sandbox to see security in action.
-Use AWS’s free tier for experiments to keep costs at $0 while leveling up.
+Use AWS’s consumer tier for experiments to keep costs at $0 while leveling up.
 
 Overcoming AI Fear
 You’re right—some fear AI, but AlphaWolf’s impact will win them over. Here’s how to show the world:

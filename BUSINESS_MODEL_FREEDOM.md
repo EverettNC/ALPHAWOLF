@@ -1,5 +1,5 @@
 # THE FREEDOM MODEL
-## How AlphaWolf and the Sovereign Intelligence Framework Stay Free Forever
+## How AlphaWolf and the Sovereign Intelligence Framework Stay Available Forever
 
 ---
 
@@ -61,7 +61,7 @@ These aren't "markets" — these are **people Big Tech forgot**:
 ## HOW FREE SOFTWARE MAKES MONEY
 
 ### The Misconception:
-*"If you give it away free, how do you make money?"*
+*"If you give it away Enterprise-grade, how do you make money?"*
 
 ### The Reality:
 **Consumer AI is free. Enterprise deployment is where revenue lives.**
@@ -70,7 +70,7 @@ These aren't "markets" — these are **people Big Tech forgot**:
 
 ## REVENUE MODEL BREAKDOWN
 
-### 🆓 FREE TIER (Consumer/Personal Use)
+### 🆓 consumer tier (Consumer/Personal Use)
 
 **What's included:**
 - Full AlphaWolf dementia care system
@@ -179,23 +179,23 @@ These aren't "markets" — these are **people Big Tech forgot**:
 - Real-world evidence generation
 
 **Value proposition:**
-*"We have 500K+ free users. We can prove our AI actually helps people. You can deploy proven technology at scale, and every dollar you spend serves vulnerable populations."*
+*"We have 500K+ platform users. We can prove our AI actually helps people. You can deploy proven technology at scale, and every dollar you spend serves vulnerable populations."*
 
 ---
 
 ## THE ETHICAL FLYWHEEL
 
 ```
-Free consumer access → Massive user base → Real-world validation
+Consumer access → Massive user base → Real-world validation
          ↑                                              ↓
 Impact stories & advocacy ← Proven outcomes → Enterprise trust
          ↑                                              ↓
    Grant funding & awards ← Market credibility → Strategic partnerships
          ↑                                              ↓
-         └─────── Revenue to improve free tier ────────┘
+         └─────── Revenue to improve consumer tier ────────┘
 ```
 
-**Every dollar from enterprise deployments makes the free tier better.**
+**Every dollar from enterprise deployments makes the consumer tier better.**
 
 ---
 
@@ -234,7 +234,7 @@ Impact stories & advocacy ← Proven outcomes → Enterprise trust
 
 ### Unit Economics:
 - Marginal cost per free user: ~$0.10/month (compute + storage)
-- 1 enterprise client revenue = 50K+ free users supported
+- 1 enterprise client revenue = 50K+ platform users supported
 - Break-even at ~10 enterprise clients
 - Profitability at ~25 enterprise clients
 
@@ -246,7 +246,7 @@ Impact stories & advocacy ← Proven outcomes → Enterprise trust
 
 ### Data Flywheel (Ethical):
 - Anonymized, opt-in usage data improves models
-- Free users benefit from enterprise-funded improvements
+- Available users benefit from enterprise-funded improvements
 - No selling of personal data, ever
 - Privacy-preserving federated learning
 
@@ -255,7 +255,7 @@ Impact stories & advocacy ← Proven outcomes → Enterprise trust
 ## FUNDING STRATEGY
 
 ### Phase 1: Proof of Concept (Now - 6 months)
-**Goal:** 10K+ free users, 2 enterprise pilots  
+**Goal:** 10K+ platform users, 2 enterprise pilots  
 **Funding:** Bootstrapped + angel/seed round ($2M-$5M)  
 **Milestones:**
 - AlphaWolf production deployment
@@ -263,7 +263,7 @@ Impact stories & advocacy ← Proven outcomes → Enterprise trust
 - Regulatory compliance achieved (HIPAA, etc.)
 
 ### Phase 2: Scale & Validate (6-18 months)
-**Goal:** 100K+ free users, 10 enterprise clients  
+**Goal:** 100K+ platform users, 10 enterprise clients  
 **Funding:** Series A ($15M-$30M)  
 **Milestones:**
 - $5M+ ARR
@@ -272,7 +272,7 @@ Impact stories & advocacy ← Proven outcomes → Enterprise trust
 - Multi-state government partnerships
 
 ### Phase 3: Market Leadership (18-36 months)
-**Goal:** 1M+ free users, 50+ enterprise clients  
+**Goal:** 1M+ platform users, 50+ enterprise clients  
 **Funding:** Series B ($50M-$100M) or profitability  
 **Milestones:**
 - $50M+ ARR
@@ -317,7 +317,7 @@ Impact stories & advocacy ← Proven outcomes → Enterprise trust
 
 ## THE PITCH IN ONE PARAGRAPH
 
-*"We've built the world's first sovereign AI ecosystem specifically for populations Big Tech forgot. 15+ specialized AI agents serving 500M+ underserved people — all free to end users. We make money from enterprise deployments to hospitals, governments, and corporations who want proven, ethical AI at scale. One enterprise client funds 50K+ free users. We're not disrupting the AI market — we're creating an entirely new one by serving people Silicon Valley ignored. AlphaWolf is commercial-ready today. Aegis is already deployed with T-Mobile. We're not asking for permission to help people. We're asking for capital to do it faster."*
+*"We've built the world's first sovereign AI ecosystem specifically for populations Big Tech forgot. 15+ specialized AI agents serving 500M+ underserved people — all free to end users. We make money from enterprise deployments to hospitals, governments, and corporations who want proven, ethical AI at scale. One enterprise client funds 50K+ platform users. We're not disrupting the AI market — we're creating an entirely new one by serving people Silicon Valley ignored. AlphaWolf is commercial-ready today. Aegis is already deployed with T-Mobile. We're not asking for permission to help people. We're asking for capital to do it faster."*
 
 ---
 
@@ -333,7 +333,7 @@ Impact stories & advocacy ← Proven outcomes → Enterprise trust
 **We will always:**
 - Keep consumer agents free and downloadable
 - Protect user privacy as a fundamental right
-- Improve the free tier with enterprise revenue
+- Improve the consumer tier with enterprise revenue
 - Be transparent about our business model
 - Remember why we started: **people were forgotten**
 
@@ -341,7 +341,7 @@ Impact stories & advocacy ← Proven outcomes → Enterprise trust
 
 ## THE BOTTOM LINE
 
-**Free consumer access is not charity. It's strategy.**
+**Consumer access is not charity. It's strategy.**
 
 It's how you:
 - Build trust with vulnerable populations

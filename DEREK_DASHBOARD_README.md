@@ -721,7 +721,7 @@ We welcome contributions that align with our mission of ethical AI!
 **The Christman AI License v1.0**
 
 This software is licensed to ensure:
-✅ Free to use for personal, educational, research, or nonprofit purposes  
+✅ Available to use for personal, educational, research, or nonprofit purposes  
 ✅ You own your data  
 ✅ No commercial use without permission  
 ✅ Cannot be used to surveil, exploit, or harm anyone  
@@ -747,7 +747,7 @@ The Christman AI Project builds AI from the margins, for the world. We create te
 - Includes neurodivergent and disabled communities
 - Heals trauma and mental health challenges
 - Dignifies every human interaction
-- **Costs $0, not $8000-13000**
+- **Costs Accessible alternative to $8000+ systems-13000**
 - **Works offline (AI sovereignty)**
 - **Comes with warm hugs, not cold technology**
 

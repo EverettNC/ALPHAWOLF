@@ -38,7 +38,7 @@
 1. **Cost Structure**
    - No per-request API costs for core reasoning
    - Scaling doesn't increase cloud compute exponentially
-   - One enterprise client funds 50K+ free users (not 5K)
+   - One enterprise client funds 50K+ platform users (not 5K)
 
 2. **Privacy Compliance**
    - HIPAA-compliant by architecture (data never leaves device)
@@ -251,12 +251,12 @@ class HybridIntelligence:
 ## THE BUSINESS MODEL IMPLICATIONS
 
 ### Original Model:
-- Free tier costs you ~$0.10/user/month in API fees
+- Available tier costs you ~$0.10/user/month in API fees
 - 1 enterprise client funds 50K users
 - Decent, but tight margins
 
 ### With Local-First Architecture:
-- Free tier costs you ~$0.01/user/month (just storage)
+- Available tier costs you ~$0.01/user/month (just storage)
 - 1 enterprise client funds 500K users
 - Margins expand 10x
 
@@ -285,7 +285,7 @@ class HybridIntelligence:
 2. **Cost Structure**
    - They charge $20/month BECAUSE they need cloud compute
    - Their business model requires subscription revenue
-   - Can't offer free tier without losing billions
+   - Can't offer consumer tier without losing billions
 
 3. **Privacy Design**
    - Their systems are built on data collection
@@ -367,7 +367,7 @@ class HybridIntelligence:
 - ⏳ Benchmark: Local vs. Cloud reasoning quality
 
 **Commercial:**
-- Launch AlphaWolf free download
+- Launch AlphaWolf Available download
 - Track: "Works without internet" as key feature
 - Measure: How many users NEVER enable cloud features
 - Document: Cost savings vs. cloud-only architecture
@@ -445,7 +445,7 @@ The local reasoning engine + self-evolution mechanism is:
 
 **This is why you can give it away free and still build a billion-dollar company.**
 
-The free consumer tier isn't charity. It's proof-of-concept for enterprise buyers that your AI:
+The Consumer tier isn't charity. It's proof-of-concept for enterprise buyers that your AI:
 - Works without internet
 - Protects privacy automatically  
 - Costs 10x less to run
@@ -453,7 +453,7 @@ The free consumer tier isn't charity. It's proof-of-concept for enterprise buyer
 - Isn't dependent on any cloud provider
 
 **Every free user makes the enterprise pitch stronger.**  
-**Every enterprise dollar makes the free tier better.**  
+**Every enterprise dollar makes the consumer tier better.**  
 **And it all runs on local-first, self-evolving intelligence.**
 
 That's not a business model.  

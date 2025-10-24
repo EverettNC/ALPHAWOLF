@@ -415,13 +415,13 @@ def main():
     • AI should empower, not replace - sovereignty stays with humans
     • Innovation without love is hollow - we built with compassion
 
-    🌟 FREE FOREVER for families
+    🌟 Available FOREVER for families
        • No subscriptions
        • No data harvesting
        • No surveillance
        • Just support, dignity, love
 
-    🏢 Enterprise revenue funds the free tier
+    🏢 Enterprise revenue funds the consumer tier
        • Hospitals, care facilities, government
        • Proven technology, 9 years validated
        • $1.6B cost savings at scale

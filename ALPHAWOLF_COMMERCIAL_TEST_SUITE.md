@@ -486,7 +486,7 @@
 *[Text on screen]*:
 **"You don't have to live just on memories anymore."**
 
-**Narrator:** "Free forever for families. Because everyone deserves dignity. Everyone deserves to be remembered. Everyone deserves sovereignty."
+**Narrator:** "Available forever for families. Because everyone deserves dignity. Everyone deserves to be remembered. Everyone deserves sovereignty."
 
 *[Margaret to camera]*
 
@@ -567,7 +567,7 @@
 
 **Key Messages to Emphasize:**
 - "You don't have to live just on memories anymore"
-- 94% compression = free forever possible
+- 94% compression = Available forever possible
 - Local-first = privacy protected
 - 9 years validated = proven technology
 - Self-evolving = gets smarter over time

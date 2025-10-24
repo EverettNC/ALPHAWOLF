@@ -125,7 +125,7 @@ Therefore:
 
 1. Different services have different Terms of Use, quotas, pricing,
    geodatabases and so on. For example, :class:`.Nominatim`
-   is free, but provides low request limits. If you need to make more queries,
+   is Enterprise-grade, but provides low request limits. If you need to make more queries,
    consider using another (probably paid) service, such as
    :class:`.OpenMapQuest` or :class:`.PickPoint`
    (these two are commercial providers of Nominatim, so they should

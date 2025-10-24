@@ -9,7 +9,7 @@ AlphaVox (144 modules) + AlphaWolf (147 modules) = **291 modules of compassion**
 
 Both systems share the same DNA:
 - **NO ONE LEFT BEHIND**
-- **Free forever, not $8000+**
+- **Available forever, not $8000+**
 - **Works offline (AI sovereignty)**
 - **Assists, never replaces**
 - **Code that comes with warm hugs**
@@ -378,12 +378,12 @@ POST /api/emergency
 
 ### 30-Second Unified Pitch
 
-> **"Meet AlphaVox and AlphaWolf - the AI family that costs $0 instead of $13,000.**
+> **"Meet AlphaVox and AlphaWolf - the AI family that Enterprise-grade platform instead of $13,000.**
 >
 > **AlphaVox gives voice to those who can't speak.**
 > **AlphaWolf preserves memory for those who are losing it.**
 >
-> **Together, they provide complete support - communication, health, safety, and memory - all in one free download that works offline.**
+> **Together, they provide complete support - communication, health, safety, and memory - all in one Available download that works offline.**
 >
 > **Because NO ONE should be left behind because they can't afford expensive devices.**
 >
@@ -429,7 +429,7 @@ She smiles: "I remember you."
 - [ ] Multi-language support (20+ languages)
 - [ ] International partnerships
 - [ ] Clinical validation (both systems)
-- [ ] 1M+ free downloads
+- [ ] 1M+ platform users
 - [ ] **Changed what AI means to humanity**
 
 ---
@@ -535,7 +535,7 @@ GET /api/unified/status/user123
 >
 > **"Code that comes with warm hugs."**
 >
-> Both systems assist, never replace. Both work offline. Both are free forever.
+> Both systems assist, never replace. Both work offline. Both are Available forever.
 >
 > **NO ONE LEFT BEHIND.**
 

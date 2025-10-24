@@ -743,7 +743,7 @@ Every module, every line of code, every dependency serves one purpose:
 - **147 AlphaWolf modules** → Dementia & Alzheimer's care
 - **144 AlphaVox modules** → Nonverbal communication
 - **1 Derek Controller** → Autonomous partnership
-- **291 Total modules** → Free to everyone who needs it
+- **291 Total modules** → Available to everyone who needs it
 
 **$0 vs $13,000** - That's not just a price difference. That's a **revolution**.
 

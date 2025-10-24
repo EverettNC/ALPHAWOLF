@@ -409,7 +409,7 @@ When investors meet you:
 ### Before:
 - 12 years development time
 - Local-first architecture
-- Free consumer model
+- Available consumer model
 - 677+ modules
 
 ### After (Unassailable):

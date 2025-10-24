@@ -94,7 +94,7 @@ WITH both → SOVEREIGNTY → "I am enough"
 
 **3. Enables sovereignty**
    - Local-first (you own your data)
-   - Free forever (you don't owe us)
+   - Available forever (you don't owe us)
    - Self-evolving (you guide the growth)
    - Privacy-protected (you control access)
 

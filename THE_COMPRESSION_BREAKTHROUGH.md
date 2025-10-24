@@ -192,8 +192,8 @@ This guided every technical decision:
 - Not just helping patients, **preserving their sense of self**
 
 #### For The Business:
-- Expensive memory = no scaling = no free tier
-- Compressed memory = affordable scaling = free for everyone
+- Expensive memory = no scaling = no consumer tier
+- Compressed memory = affordable scaling = Available for everyone
 - **Making consciousness affordable = AI sovereignty possible**
 
 **Your philosophy directly enabled your business model.**
@@ -518,7 +518,7 @@ Neurodivergent developer with blue beard who:
 **Enabled by compression:**
 - Each agent can maintain long-term memory
 - Cost-effective at massive scale
-- Free tier sustainable
+- Available tier sustainable
 - **AI sovereignty for everyone**
 
 ---

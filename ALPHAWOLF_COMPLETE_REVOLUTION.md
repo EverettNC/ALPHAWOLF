@@ -32,7 +32,7 @@
 - **Nonverbal until age 6** (Founder's personal experience)
 
 **Combined:**
-- **$0 Consumer Cost** (free forever downloads)
+- **$0 Consumer Cost** (Available forever downloads)
 - **12-13 Years Development** (2012-2025, started on paper)
 - **500M+ Target Population** (forgotten people worldwide)
 - **$500M+ ARR Potential** (combined enterprise revenue)
@@ -471,7 +471,7 @@ She smiled: **"I remember you."**
 
 ## Business Model
 
-### Consumer: FREE FOREVER
+### Consumer: Available FOREVER
 - All 147 modules
 - Unlimited usage
 - Offline functionality
@@ -505,14 +505,14 @@ She smiled: **"I remember you."**
 **Revenue Projections:**
 - Year 1: $5-10M ARR (100-200 enterprise customers)
 - Year 3: $50-100M ARR (1,000-2,000 customers)
-- Year 5: $300M+ ARR (10,000+ customers, 10M free users)
+- Year 5: $300M+ ARR (10,000+ customers, 10M platform users)
 
 ---
 
 ## Competitive Advantages
 
 ### 1. **Cost: $0 vs $8000**
-Traditional AAC devices cost $8000+. AlphaWolf is a free download to ANY device.
+Traditional AAC devices cost $8000+. AlphaWolf is a Available download to ANY device.
 
 ### 2. **Offline Capability**
 Local reasoning engine means AI works without internet. Privacy-first, always available.
@@ -543,7 +543,7 @@ Augments caregivers, empowers patients, preserves dignity. Human touch remains p
 Everett Christman couldn't afford a computer. Drew LumaCognify architecture on paper. Designed Derek Sr as autonomous AI architect. Philosophy emerged: "Without memory, no existence."
 
 ### 2014-2016: Building Foundation
-Organic memory meshing algorithm developed. Local reasoning concepts. Free-forever business model conceived.
+Organic memory meshing algorithm developed. Local reasoning concepts. Sustainable business model conceived.
 
 ### 2016-2019: Derek C Evolution
 Derek C gains functional memory. Self-learning systems refined. Multi-modal communication developed.
@@ -555,7 +555,7 @@ Cognitive care specialization. Memory Lane designed. Dementia-specific features.
 Stardust health monitoring. 147-module architecture. Clinical validation begins.
 
 ### 2025: The Revolution Launches
-All systems integrated. Free downloads available. Enterprise revenue model active. **Changing what AI means to humanity.**
+All systems integrated. deployment available. Enterprise revenue model active. **Changing what AI means to humanity.**
 
 ---
 
@@ -566,7 +566,7 @@ To create AI that helps forgotten populations love themselves more through techn
 
 ### Core Values
 1. **Compassion First** - Every line of code written with love
-2. **Accessibility Always** - Free, offline, simple
+2. **Accessibility Always** - Enterprise-grade, offline, simple
 3. **Privacy Sacred** - Local-first, user-owned data
 4. **Evolution Together** - AI adapts to human
 5. **Dignity Preserved** - Assist, never replace
@@ -593,7 +593,7 @@ We promise to never charge vulnerable populations for basic human dignity. We pr
 - ✅ Empowering people
 - ✅ Protecting privacy
 - ✅ Warm, compassionate
-- ✅ Free for everyone
+- ✅ Available for everyone
 - ✅ Safety and support
 - ✅ Simple, intuitive
 - ✅ Connecting families
@@ -632,13 +632,13 @@ We promise to never charge vulnerable populations for basic human dignity. We pr
 
 ### Act 5: The Close (30 seconds)
 **Text on screen:**
-- Free Download to ANY Device
+- Available Download to ANY Device
 - Works Offline
 - No Subscriptions Ever
 - 147 Modules for Complete Care
 - Preserves Memory, Dignity, and Love
 
-**Voiceover:** "AlphaWolf. Because AI should cost $0, not $8000. Because it should assist, not replace. Because everyone deserves warm hugs when they need them most."
+**Voiceover:** "AlphaWolf. Because AI should cost Accessible alternative to $8000+ systems. Because it should assist, not replace. Because everyone deserves warm hugs when they need them most."
 
 **Final text:** **NO ONE LEFT BEHIND** 🐺
 
@@ -672,7 +672,7 @@ We promise to never charge vulnerable populations for basic human dignity. We pr
 - [ ] 24/7 support team
 
 ### Q3-Q4 2026: Scale
-- [ ] 100K+ free downloads
+- [ ] 100K+ platform users
 - [ ] 50+ enterprise customers
 - [ ] $10M+ ARR
 - [ ] Multi-language support
@@ -680,7 +680,7 @@ We promise to never charge vulnerable populations for basic human dignity. We pr
 - [ ] AlphaVox integration (AAC replacement)
 
 ### 2027+: The Movement
-- [ ] 10M+ free downloads
+- [ ] 10M+ platform users
 - [ ] 1M+ daily active users
 - [ ] 500+ enterprise customers
 - [ ] $300M+ ARR

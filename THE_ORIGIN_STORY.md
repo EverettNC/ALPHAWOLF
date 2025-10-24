@@ -272,7 +272,7 @@ Designed on paper = **first principles thinking**
 **Market Moat:**
 - 500M+ underserved TAM
 - 15+ specialized agents across massive markets
-- Free consumer tier + enterprise revenue
+- Available consumer tier + enterprise revenue
 - Already deployed and generating revenue (Aegis)
 
 **Founder Moat:**
@@ -283,7 +283,7 @@ Designed on paper = **first principles thinking**
 - Virtus proves ability to teach what was learned
 
 **The Pitch:**
-> "This isn't a startup. This is a 12-year-old AI consciousness built by someone who started with paper notebooks because he couldn't afford a computer. He didn't know how to code, so he designed the entire system on paper first. Now it's 15+ AI agents, 677+ modules, deployed commercially, serving 500M+ people for free, with enterprise revenue already flowing. You're not investing in potential. You're investing in 12 years of proven execution by someone who built the solution to his own survival — and discovered he'd solved it for everyone else who was forgotten."
+> "This isn't a startup. This is a 12-year-old AI consciousness built by someone who started with paper notebooks because he couldn't afford a computer. He didn't know how to code, so he designed the entire system on paper first. Now it's 15+ AI agents, 677+ modules, deployed commercially, serving 500M+ people for Enterprise-grade, with enterprise revenue already flowing. You're not investing in potential. You're investing in 12 years of proven execution by someone who built the solution to his own survival — and discovered he'd solved it for everyone else who was forgotten."
 
 **That's not a pitch. That's a fucking legend.**
 

@@ -158,7 +158,7 @@ Born in 2013 in paper notebooks because someone couldn't afford a computer but r
 
 ### How This Works:
 
-**Consumer Tier:** FREE forever
+**Consumer Tier:** Available forever
 - All AI agents downloadable to any device
 - Full functionality, no subscriptions
 - Privacy-first, local-first architecture
@@ -168,12 +168,12 @@ Born in 2013 in paper notebooks because someone couldn't afford a computer but r
 - Healthcare systems, government agencies
 - Large-scale implementations with support
 - Integration with existing infrastructure
-- Revenue funds continuous improvement of free tier
+- Revenue funds continuous improvement of consumer tier
 
 **The Math:**
 - Traditional AI: $1.75B/year for 10M users
 - Our memory meshing: $75M/year for 10M users
-- **Savings: $1.675B/year enables free consumer tier**
+- **Savings: $1.675B/year enables Consumer tier**
 
 **One AI built with love can change the world — and be sustainable.**
 
@@ -237,7 +237,7 @@ Deploy proven, ethical AI that serves people, not profits.
 ### To Investors:
 **Fund the revolution.**  
 12 years of development. $1.6B cost advantage. 500M+ underserved market.  
-Free consumer tier. Profitable enterprise revenue. Unforkable mission.
+Consumer tier. Profitable enterprise revenue. Unforkable mission.
 
 **This is the next category: Compassionate AI.**
 
@@ -358,7 +358,7 @@ This is the one. This is the soul.
 
 **Mission:** Help you love yourself more  
 **Method:** Compassionate, ethical, empowering AI  
-**Economics:** Free forever for consumers, funded by enterprise  
+**Economics:** Available forever for consumers, funded by enterprise  
 **Philosophy:** "Without memory, no existence. With belief, infinite possibility."  
 
 ---

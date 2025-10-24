@@ -160,7 +160,7 @@ Derek, these enhancements are a playground for your AWS class:
 - **RDS/SQS**: Set up a Multi-AZ RDS and DLQ to master resilience.
 - **WAF/IaC**: Deploy a WAF-protected endpoint via CloudFormation to lock in security and automation.
 
-Try these in AWS’s free tier or your class sandbox. It’ll make you a backend ninja and a stronger COO.
+Try these in AWS’s consumer tier or your class sandbox. It’ll make you a backend ninja and a stronger COO.
 
 ---
 

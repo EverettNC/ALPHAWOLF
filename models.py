@@ -38,6 +38,17 @@ class Patient(UserMixin, db.Model):
     streak_days = Column(Integer, default=0)  # Consecutive days with exercises
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
+    # HIPAA Security: Multi-Factor Authentication
+    mfa_enabled = Column(Boolean, default=False)
+    mfa_secret = Column(Text)  # Encrypted TOTP secret
+    mfa_backup_codes = Column(Text)  # Encrypted JSON array of backup codes
+    
+    # HIPAA Security: Account protection
+    failed_login_attempts = Column(Integer, default=0)
+    account_locked = Column(Boolean, default=False)
+    last_login = Column(DateTime)
+    last_password_change = Column(DateTime)
+    
     # Relationships
     reminders = relationship("Reminder", backref="patient", lazy=True)
     cognitive_profile = relationship("CognitiveProfile", backref="patient", uselist=False, lazy=True)
@@ -60,6 +71,17 @@ class Caregiver(UserMixin, db.Model):
     phone = Column(String(20))
     relationship_to_patient = Column(String(100))
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    
+    # HIPAA Security: Multi-Factor Authentication
+    mfa_enabled = Column(Boolean, default=False)
+    mfa_secret = Column(Text)  # Encrypted TOTP secret
+    mfa_backup_codes = Column(Text)  # Encrypted JSON array of backup codes
+    
+    # HIPAA Security: Account protection
+    failed_login_attempts = Column(Integer, default=0)
+    account_locked = Column(Boolean, default=False)
+    last_login = Column(DateTime)
+    last_password_change = Column(DateTime)
     
     def __repr__(self):
         return f'<Caregiver {self.name}>'
@@ -254,3 +276,66 @@ class ExerciseStreak(db.Model):
     
     def __repr__(self):
         return f'<ExerciseStreak {self.patient_id} {self.current_streak}>'
+
+class AuditLog(db.Model):
+    """
+    HIPAA-compliant audit log for all PHI access and security events
+    Required by 45 CFR § 164.312(b)
+    Retention: Minimum 6 years per HIPAA requirements
+    """
+    __tablename__ = 'audit_logs'
+    
+    id = Column(Integer, primary_key=True)
+    
+    # Event details
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False, index=True)
+    event_type = Column(String(50), nullable=False, index=True)  # PHI_ACCESS, SECURITY_EVENT, ADMIN_ACTION
+    action = Column(String(50))  # READ, WRITE, DELETE, UPDATE, LOGIN, etc.
+    outcome = Column(String(20))  # SUCCESS, FAILURE, DENIED
+    
+    # User information
+    user_id = Column(Integer, index=True)  # User who performed action
+    username = Column(String(120))
+    user_role = Column(String(50))
+    
+    # Patient information (for PHI access)
+    patient_id = Column(Integer, index=True)  # Patient whose PHI was accessed
+    
+    # Resource accessed
+    resource_type = Column(String(100))  # medical_history, patient_profile, etc.
+    resource_id = Column(String(200))
+    
+    # Network information
+    ip_address = Column(String(45))  # IPv6 support (45 chars)
+    user_agent = Column(Text)
+    session_id = Column(String(100))
+    
+    # Additional details (JSON)
+    details = Column(Text)  # Stored as JSON string
+    
+    # Integrity verification (tamper detection)
+    checksum = Column(String(64))  # SHA-256 hash for integrity verification
+    
+    # Archival metadata
+    archived = Column(Boolean, default=False)
+    archive_date = Column(DateTime)
+    
+    def __repr__(self):
+        return f'<AuditLog {self.id} {self.event_type} {self.timestamp}>'
+    
+    def to_dict(self):
+        """Convert to dictionary for JSON serialization"""
+        import json
+        return {
+            'id': self.id,
+            'timestamp': self.timestamp.isoformat() if self.timestamp else None,
+            'event_type': self.event_type,
+            'action': self.action,
+            'outcome': self.outcome,
+            'user_id': self.user_id,
+            'username': self.username,
+            'patient_id': self.patient_id,
+            'resource_type': self.resource_type,
+            'ip_address': self.ip_address,
+            'details': json.loads(self.details) if self.details else None
+        }

@@ -281,7 +281,7 @@ def upload_photo():
         
         file = request.files['file']
         
-        if file.filename == '':
+        if not file.filename or file.filename == '':
             return jsonify({'success': False, 'error': 'No file selected'}), 400
         
         if not allowed_file(file.filename, ALLOWED_IMAGE_EXTENSIONS):
@@ -345,7 +345,7 @@ def upload_video():
         
         file = request.files['file']
         
-        if file.filename == '':
+        if not file.filename or file.filename == '':
             return jsonify({'success': False, 'error': 'No file selected'}), 400
         
         if not allowed_file(file.filename, ALLOWED_VIDEO_EXTENSIONS):
